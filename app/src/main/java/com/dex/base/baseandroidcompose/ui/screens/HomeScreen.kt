@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.dex.base.baseandroidcompose.ads.BannerAdSize
 import com.dex.base.baseandroidcompose.ads.BannerAdView
-import com.dex.base.baseandroidcompose.ads.BannerAdViewOld
 import com.dex.base.baseandroidcompose.utils.HighScoreManager
 import com.dex.base.baseandroidcompose.utils.PlayerScore
 
