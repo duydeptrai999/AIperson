@@ -389,6 +389,7 @@ fun DetailedFactorsCard(
                 "Độ ẩm" to factors.humidityScore,
                 "Gió" to factors.windScore,
                 "Tầm nhìn" to factors.visibilityScore,
+                "Áp suất" to factors.pressureScore,
                 "Thoải mái" to factors.comfortScore,
                 "Sức khỏe" to factors.healthScore,
                 "Hoạt động" to factors.activityScore,

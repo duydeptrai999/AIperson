@@ -22,6 +22,7 @@ import com.dex.base.baseandroidcompose.ui.screens.WeatherHomeScreen
 import com.dex.base.baseandroidcompose.ui.screens.WeatherDetailScreen
 import com.dex.base.baseandroidcompose.ui.viewmodels.WeatherViewModel
 import com.dex.base.baseandroidcompose.data.models.UserLevel
+import com.dex.base.baseandroidcompose.data.models.UserProfile
 
 /**
  * Main Navigation Graph for the Weather App
@@ -280,11 +281,6 @@ fun ProfileScreen(
                     
                     Text(
                         text = "Nghề nghiệp: ${userProfile.occupation.displayName}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    
-                    Text(
-                        text = "Tuổi: ${userProfile.age}",
                         style = MaterialTheme.typography.bodyMedium
                     )
                     

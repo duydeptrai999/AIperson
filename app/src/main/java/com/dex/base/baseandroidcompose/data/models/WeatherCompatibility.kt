@@ -64,6 +64,7 @@ data class CompatibilityFactors(
     val humidityScore: Float,
     val windScore: Float,
     val visibilityScore: Float,
+    val pressureScore: Float,
     val comfortScore: Float,
     val healthScore: Float,
     val activityScore: Float,

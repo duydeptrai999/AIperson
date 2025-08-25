@@ -37,9 +37,7 @@
     <string name="excellent_match">Excellent Match!</string>
     <string name="perfect_weather_desc">Perfect weather for your activities</string>
     <string name="your_points">Your Points</string>
-    <string name="five_day_forecast">5-Day Forecast</string>
-    <string name="today">Today</string>
-    <string name="tomorrow">Tomorrow</string>
+
     
     <!-- User Profile Strings -->
     <string name="user_profile_title">Your Profile</string>

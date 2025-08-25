@@ -189,10 +189,7 @@ fun WeatherHomeScreen(
                 )
             }
             
-            // Weather Forecast Card
-            item {
-                WeatherForecastCard()
-            }
+
         }
     }
 }
@@ -395,21 +392,39 @@ fun CurrentWeatherCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (weatherData != null) {
-                // Weather Icon based on actual weather condition
+                // Enhanced weather icon based on description with Vietnamese support
                 val weatherIcon = when {
-                    weatherData.description.contains("clear", ignoreCase = true) -> "☀️"
-                    weatherData.description.contains("cloud", ignoreCase = true) -> "☁️"
-                    weatherData.description.contains("rain", ignoreCase = true) -> "🌧️"
-                    weatherData.description.contains("snow", ignoreCase = true) -> "❄️"
+                    weatherData.description.contains("clear", ignoreCase = true) || 
+                    weatherData.description.contains("trời quang", ignoreCase = true) -> "☀️"
+                    weatherData.description.contains("cloud", ignoreCase = true) || 
+                    weatherData.description.contains("mây", ignoreCase = true) -> "☁️"
+                    weatherData.description.contains("rain", ignoreCase = true) || 
+                    weatherData.description.contains("mưa", ignoreCase = true) -> when {
+                        weatherData.description.contains("heavy", ignoreCase = true) || 
+                        weatherData.description.contains("cường độ nặng", ignoreCase = true) -> "🌧️"
+                        weatherData.description.contains("light", ignoreCase = true) || 
+                        weatherData.description.contains("nhẹ", ignoreCase = true) -> "🌦️"
+                        else -> "🌧️"
+                    }
+                    weatherData.description.contains("snow", ignoreCase = true) || 
+                    weatherData.description.contains("tuyết", ignoreCase = true) -> "❄️"
                     weatherData.description.contains("mist", ignoreCase = true) || 
-                    weatherData.description.contains("fog", ignoreCase = true) -> "🌫️"
+                    weatherData.description.contains("fog", ignoreCase = true) || 
+                    weatherData.description.contains("sương mù", ignoreCase = true) -> "🌫️"
+                    weatherData.description.contains("thunderstorm", ignoreCase = true) || 
+                    weatherData.description.contains("dông", ignoreCase = true) -> "⛈️"
                     else -> "🌤️"
                 }
                 
                 val iconColor = when {
-                    weatherData.description.contains("clear", ignoreCase = true) -> SunYellow
-                    weatherData.description.contains("cloud", ignoreCase = true) -> Color.Gray
-                    weatherData.description.contains("rain", ignoreCase = true) -> DeepSkyBlue
+                    weatherData.description.contains("clear", ignoreCase = true) || 
+                    weatherData.description.contains("trời quang", ignoreCase = true) -> SunYellow
+                    weatherData.description.contains("cloud", ignoreCase = true) || 
+                    weatherData.description.contains("mây", ignoreCase = true) -> Color.Gray
+                    weatherData.description.contains("rain", ignoreCase = true) || 
+                    weatherData.description.contains("mưa", ignoreCase = true) -> DeepSkyBlue
+                    weatherData.description.contains("thunderstorm", ignoreCase = true) || 
+                    weatherData.description.contains("dông", ignoreCase = true) -> Color(0xFF4A148C)
                     else -> SunYellow
                 }
                 
@@ -449,23 +464,53 @@ fun CurrentWeatherCard(
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                // Weather Details Row with real data
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    WeatherDetailItem(
-                        label = stringResource(R.string.humidity),
-                        value = "${weatherData.humidity}%"
-                    )
-                    WeatherDetailItem(
-                        label = stringResource(R.string.wind_speed),
-                        value = "${weatherData.windSpeed.roundToInt()} km/h"
-                    )
-                    WeatherDetailItem(
-                        label = "Feels Like",
-                        value = "${weatherData.feelsLike.roundToInt()}°C"
-                    )
+                // Enhanced Weather Details with more comprehensive information
+                Column {
+                    // Primary weather details row
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        WeatherDetailItem(
+                            label = stringResource(R.string.humidity),
+                            value = "${weatherData.humidity}%",
+                            icon = "💧"
+                        )
+                        WeatherDetailItem(
+                            label = stringResource(R.string.wind_speed),
+                            value = "${weatherData.windSpeed.roundToInt()} m/s",
+                            icon = "💨"
+                        )
+                        WeatherDetailItem(
+                            label = "Feels Like",
+                            value = "${weatherData.feelsLike.roundToInt()}°C",
+                            icon = "🌡️"
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    // Secondary weather details row
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        WeatherDetailItem(
+                            label = "Pressure",
+                            value = "${weatherData.pressure} hPa",
+                            icon = "📊"
+                        )
+                        WeatherDetailItem(
+                            label = "Visibility",
+                            value = "${(weatherData.visibility / 1000.0).roundToInt()} km",
+                            icon = "👁️"
+                        )
+                        WeatherDetailItem(
+                            label = "Cloudiness",
+                            value = "${weatherData.cloudiness}%",
+                            icon = "☁️"
+                        )
+                    }
                 }
             } else {
                 // Loading state
@@ -504,21 +549,32 @@ fun CurrentWeatherCard(
 @Composable
 fun WeatherDetailItem(
     label: String,
-    value: String
+    value: String,
+    icon: String = ""
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(horizontal = 4.dp)
     ) {
+        if (icon.isNotEmpty()) {
+            Text(
+                text = icon,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(bottom = 2.dp)
+            )
+        }
         Text(
             text = value,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center
         )
         Text(
             text = label,
             style = MaterialTheme.typography.bodySmall,
-            color = RainyGray
+            color = RainyGray,
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -837,96 +893,6 @@ fun EnhancedPointsDisplayCard(
                     trackColor = SunYellow.copy(alpha = 0.2f)
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun WeatherForecastCard() {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = WeatherCardBackground
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.five_day_forecast),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            
-            Spacer(modifier = Modifier.height(12.dp))
-            
-            // Forecast items (placeholder)
-            repeat(5) { index ->
-                ForecastItem(
-                    day = when(index) {
-                        0 -> stringResource(R.string.today)
-                        1 -> stringResource(R.string.tomorrow)
-                        else -> "Day ${index + 1}"
-                    },
-                    icon = if (index % 2 == 0) "☀️" else "⛅",
-                    highTemp = "${30 - index}°",
-                    lowTemp = "${22 - index}°"
-                )
-                if (index < 4) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ForecastItem(
-    day: String,
-    icon: String,
-    highTemp: String,
-    lowTemp: String
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = day,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.weight(1f)
-        )
-        
-        Text(
-            text = icon,
-            fontSize = 20.sp,
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
-        
-        Row {
-            Text(
-                text = highTemp,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = " / ",
-                style = MaterialTheme.typography.bodyMedium,
-                color = RainyGray
-            )
-            Text(
-                text = lowTemp,
-                style = MaterialTheme.typography.bodyMedium,
-                color = RainyGray
-            )
         }
     }
 }
