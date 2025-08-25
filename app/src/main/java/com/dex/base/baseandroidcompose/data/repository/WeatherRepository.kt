@@ -5,6 +5,7 @@ import com.dex.base.baseandroidcompose.data.api.WeatherApiService
 import com.dex.base.baseandroidcompose.data.models.Location
 import com.dex.base.baseandroidcompose.data.models.WeatherData
 import com.dex.base.baseandroidcompose.data.models.WeatherResponse
+import com.dex.base.baseandroidcompose.utils.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentHashMap
@@ -35,13 +36,20 @@ class WeatherRepository {
                 }
                 
                 // Fetch from API
+                Logger.d("Fetching weather data for city: $cityName")
                 val response = apiService.getCurrentWeatherByCity(
                     cityName = cityName,
                     apiKey = WeatherApiService.API_KEY
                 )
                 
+                Logger.d("API Response - Code: ${response.code()}, Success: ${response.isSuccessful}")
+                
                 if (response.isSuccessful && response.body() != null) {
-                    val weatherData = WeatherData.fromWeatherResponse(response.body()!!)
+                    val responseBody = response.body()!!
+                    Logger.d("Raw API Response: $responseBody")
+                    
+                    val weatherData = WeatherData.fromWeatherResponse(responseBody)
+                    Logger.d("Converted WeatherData: $weatherData")
                     
                     // Cache the result
                     cache[cacheKey] = CachedWeatherData(
@@ -49,9 +57,15 @@ class WeatherRepository {
                         timestamp = System.currentTimeMillis()
                     )
                     
+                    Logger.d("Weather data cached successfully for $cityName")
                     Result.success(weatherData)
                 } else {
-                    Result.failure(Exception("API Error: ${response.code()} - ${response.message()}"))
+                    val errorMsg = "API Error: ${response.code()} - ${response.message()}"
+                    Logger.e(errorMsg)
+                    if (response.errorBody() != null) {
+                        Logger.e("Error body: ${response.errorBody()?.string()}")
+                    }
+                    Result.failure(Exception(errorMsg))
                 }
                 
             } catch (e: Exception) {

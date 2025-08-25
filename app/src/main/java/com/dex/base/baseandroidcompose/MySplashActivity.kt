@@ -45,6 +45,7 @@ import com.dex.base.baseandroidcompose.ui.theme.BaseAndroidComposeTheme
 import com.dex.base.baseandroidcompose.ui.theme.QuickTestTheme
 import com.dex.base.baseandroidcompose.utils.Helper
 import com.dex.base.baseandroidcompose.utils.Logger
+import com.dex.base.baseandroidcompose.utils.MyPref
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
@@ -95,7 +96,12 @@ class MySplashActivity : ComponentActivity() {
                             modifier = Modifier.padding(innerPadding)
                         )
                         Screen.INTRO -> IntroScreen(
-                            onIntroComplete = { navigateToMain() },
+                            onIntroComplete = { 
+                                // Lưu trạng thái đã hiển thị intro
+                                MyPref.putBoolean(this@MySplashActivity, MyPref.DISPLAYED_INTRO, true)
+                                Logger.d("Intro completed, saved DISPLAYED_INTRO = true")
+                                navigateToMain() 
+                            },
                             modifier = Modifier.padding(innerPadding)
                         )
                     }
@@ -234,7 +240,16 @@ class MySplashActivity : ComponentActivity() {
     
     private fun navigateToSelectLanguage() {
         Logger.d("navigateToSelectLanguage: Moving to SelectLanguageScreen")
-        currentScreen = Screen.SELECT_LANGUAGE
+        
+        // Kiểm tra xem đã hiển thị intro chưa
+        val hasDisplayedIntro = MyPref.getBoolean(this, MyPref.DISPLAYED_INTRO, false)
+        if (hasDisplayedIntro) {
+            Logger.d("Intro already displayed, going directly to MainActivity")
+            navigateToMain()
+        } else {
+            Logger.d("First time, showing SelectLanguageScreen")
+            currentScreen = Screen.SELECT_LANGUAGE
+        }
         isLoading = false
     }
     

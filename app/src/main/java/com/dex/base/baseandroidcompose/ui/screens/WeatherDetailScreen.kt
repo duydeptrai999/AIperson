@@ -24,6 +24,18 @@ import com.dex.base.baseandroidcompose.data.models.*
 import com.dex.base.baseandroidcompose.ui.viewmodels.WeatherViewModel
 import com.dex.base.baseandroidcompose.ui.theme.*
 
+/**
+ * Get color based on compatibility score
+ */
+internal fun getScoreColor(score: Float): Color {
+    return when {
+        score >= 80f -> Color(0xFF4CAF50) // Green
+        score >= 60f -> Color(0xFFFF9800) // Orange
+        score >= 40f -> Color(0xFFFF5722) // Red-Orange
+        else -> Color(0xFFF44336) // Red
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherDetailScreen(
@@ -631,14 +643,5 @@ fun MetricItem(
                 fontWeight = FontWeight.Bold
             )
         }
-    }
-}
-
-internal fun getScoreColor(score: Float): Color {
-    return when {
-        score >= 80f -> Color(0xFF4CAF50) // Green
-        score >= 60f -> Color(0xFFFF9800) // Orange
-        score >= 40f -> Color(0xFFFF5722) // Red-Orange
-        else -> Color(0xFFF44336) // Red
     }
 }

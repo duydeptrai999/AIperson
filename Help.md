@@ -6,9 +6,23 @@
 Hướng dẫn chi tiết về cách tích hợp OpenWeatherMap API vào Weather Personalized App để lấy dữ liệu thời tiết chính xác nhất và tính toán Weather Compatibility Score.
 
 ### API Configuration
-- **API Key**: `927565d05e50545fc0077d2bdd4d5855`
+- **API Key**: `927565d05e50545fc0077d2bdd4d5855` (đã cập nhật trong WeatherApiService.kt)
 - **Base URL**: `https://api.openweathermap.org/data/2.5/`
-- **Security**: API key được lưu trong `local.properties` và `BuildConfig`
+- **Security**: API key được cấu hình trực tiếp trong WeatherApiService.kt
+- **Environment**: Cấu hình mẫu trong .env.example cho development
+
+### 🔧 Troubleshooting & Bug Fixes
+
+**Lỗi đã sửa**:
+1. **"Unresolved reference 'getScoreColor'"**: 
+   - **Nguyên nhân**: Hàm getScoreColor được định nghĩa ở cuối file nhưng sử dụng ở trên
+   - **Giải pháp**: Di chuyển hàm lên đầu file WeatherDetailScreen.kt
+   - **Vị trí**: Sau các import statements
+
+2. **API Key Configuration**:
+   - **Nguyên nhân**: Placeholder "YOUR_API_KEY_HERE" chưa được thay thế
+   - **Giải pháp**: Cập nhật API key thực tế vào WeatherApiService.kt
+   - **File**: `app/src/main/java/.../data/api/WeatherApiService.kt`
 
 ### Core Endpoints
 1. **Current Weather** (`/weather`): Lấy thời tiết hiện tại

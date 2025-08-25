@@ -2,6 +2,13 @@
 
 ## [Latest] - 2024-12-19
 
+### Fixed
+- ✅ **API Key Configuration**: Cập nhật OpenWeatherMap API key (927565d05e50545fc0077d2bdd4d5855) vào WeatherApiService.kt
+- ✅ **WeatherDetailScreen.kt**: Sửa lỗi 'Unresolved reference getScoreColor' bằng cách di chuyển hàm lên đầu file
+- ✅ **Environment Configuration**: Cập nhật .env.example với cấu hình OpenWeatherMap API đúng
+
+## [Previous] - 2024-12-19
+
 ### Enhanced
 - ✅ **WeatherAPI.md**: Bổ sung hướng dẫn lấy thông tin thời tiết đầy đủ & chính xác nhất
   - **Multi-Source Data Validation**: Validation dữ liệu từ nhiều nguồn với kiểm tra giá trị hợp lý

@@ -37,6 +37,6 @@ interface WeatherApiService {
         const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
         
         // You need to get your API key from https://openweathermap.org/api
-        const val API_KEY = "YOUR_API_KEY_HERE" // Replace with actual API key
+        const val API_KEY = "927565d05e50545fc0077d2bdd4d5855" // OpenWeatherMap API key
     }
 }

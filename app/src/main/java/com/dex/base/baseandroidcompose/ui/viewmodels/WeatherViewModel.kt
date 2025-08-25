@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.dex.base.baseandroidcompose.data.ai.WeatherCompatibilityEngine
 import com.dex.base.baseandroidcompose.data.models.*
 import com.dex.base.baseandroidcompose.data.repository.WeatherRepository
+import com.dex.base.baseandroidcompose.utils.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,21 +26,28 @@ class WeatherViewModel @Inject constructor(
     val userProfile: StateFlow<UserProfile> = _userProfile.asStateFlow()
     
     init {
-        loadWeatherData("Ho Chi Minh City")
+        loadWeatherData("Hanoi")
     }
     
     fun loadWeatherData(city: String) {
+        Logger.d("Loading weather data for city: $city")
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            Logger.d("UI State updated - Loading: true")
             
             try {
                 val weatherResult = weatherRepository.getCurrentWeatherByCity(city)
+                Logger.d("Weather repository result: ${if (weatherResult.isSuccess) "SUCCESS" else "FAILURE"}")
+                
                 weatherResult.fold(
                     onSuccess = { weatherData ->
+                        Logger.d("Weather data received successfully: $weatherData")
+                        
                         val compatibility = compatibilityEngine.calculateCompatibility(
                             weatherData = weatherData,
                             userProfile = _userProfile.value
                         )
+                        Logger.d("Compatibility calculated: $compatibility")
                 
                         // Update user points
                         val updatedProfile = _userProfile.value.copy(
@@ -47,9 +55,11 @@ class WeatherViewModel @Inject constructor(
                             totalPointsEarned = _userProfile.value.totalPointsEarned + compatibility.pointsEarned
                         )
                         _userProfile.value = updatedProfile
+                        Logger.d("User profile updated with points: ${compatibility.pointsEarned}")
                         
                         // Generate daily insights
                         val insights = generateDailyInsights(weatherData, compatibility, updatedProfile)
+                        Logger.d("Daily insights generated: $insights")
                         
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
@@ -58,20 +68,31 @@ class WeatherViewModel @Inject constructor(
                             dailyInsights = insights,
                             error = null
                         )
+                        Logger.d("UI State updated with weather data successfully")
                     },
                     onFailure = { exception ->
+                        val errorMsg = exception.message ?: "Failed to load weather data"
+                        Logger.e("Weather data loading failed: $errorMsg")
+                        Logger.e("Exception details: ${exception.stackTraceToString()}")
+                        
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
-                            error = exception.message ?: "Failed to load weather data"
+                            error = errorMsg
                         )
+                        Logger.d("UI State updated with error: $errorMsg")
                     }
                 )
                 
             } catch (e: Exception) {
+                val errorMsg = e.message ?: "Unknown error occurred"
+                Logger.e("Exception in loadWeatherData: $errorMsg")
+                Logger.e("Exception stack trace: ${e.stackTraceToString()}")
+                
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = e.message ?: "Unknown error occurred"
+                    error = errorMsg
                 )
+                Logger.d("UI State updated with exception error: $errorMsg")
             }
         }
     }
