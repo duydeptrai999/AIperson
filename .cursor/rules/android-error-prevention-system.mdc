@@ -1,0 +1,316 @@
+---
+description: Hệ thống phòng tránh lỗi Android hoàn chỉnh - Tích hợp tất cả components
+globs: *.kt,*.java,*.xml
+alwaysApply: true
+---
+
+# Android Error Prevention System - Complete Integration
+
+## 🎯 System Overview
+
+Hệ thống phòng tránh lỗi Android bao gồm 4 components chính:
+
+1. **[Android Error Prevention Rules](./android-error-prevention.mdc)** - Quy tắc cơ bản phòng tránh lỗi
+2. **[AI Android Quality Enforcer](./ai-android-quality-enforcer.mdc)** - Engine kiểm soát chất lượng code
+3. **[Real-time Error Detector](./android-realtime-error-detector.mdc)** - Phát hiện và sửa lỗi real-time
+4. **[Android Workflow Integration](./android-workflow.mdc)** - Tích hợp với workflow hiện tại
+
+## 🔄 Complete Workflow Integration
+
+### **Phase 1: Pre-Development Setup**
+```
+1. LOAD_ERROR_PREVENTION_RULES()
+   ├── Initialize error patterns database
+   ├── Load auto-fix templates
+   ├── Setup validation protocols
+   └── Configure quality gates
+
+2. ANALYZE_PROJECT_CONTEXT()
+   ├── Scan existing codebase
+   ├── Identify common patterns
+   ├── Map dependencies and imports
+   └── Build project-specific rules
+```
+
+### **Phase 2: Development Process**
+```
+3. REAL_TIME_MONITORING()
+   ├── Monitor code changes
+   ├── Detect error patterns
+   ├── Suggest auto-fixes
+   └── Apply preventive measures
+
+4. CODE_GENERATION_WITH_QUALITY_ENFORCEMENT()
+   ├── Apply error prevention templates
+   ├── Run validation checks
+   ├── Auto-fix detected issues
+   └── Ensure 100% compliance
+```
+
+### **Phase 3: Quality Assurance**
+```
+5. COMPREHENSIVE_VALIDATION()
+   ├── Compilation check simulation
+   ├── Null safety verification
+   ├── Resource validation
+   └── Performance impact assessment
+
+6. CONTINUOUS_IMPROVEMENT()
+   ├── Track error patterns
+   ├── Update prevention rules
+   ├── Refine auto-fix algorithms
+   └── Optimize templates
+```
+
+## 🚀 Quick Start Guide for AI
+
+### **Step 1: Initialize Error Prevention**
+```kotlin
+// AI must run this before any Android code generation
+fun initializeErrorPrevention() {
+    loadErrorPatterns()
+    setupAutoFixEngine()
+    validateProjectDependencies()
+    configureQualityGates()
+}
+```
+
+### **Step 2: Apply Error Prevention to Code Generation**
+```kotlin
+fun generateAndroidCode(userRequest: String): String {
+    // Phase 1: Analyze request
+    val analysis = analyzeUserRequest(userRequest)
+    
+    // Phase 2: Generate with error prevention
+    var code = generateCodeWithTemplates(analysis)
+    
+    // Phase 3: Apply auto-fixes
+    code = applyAutoFixes(code)
+    
+    // Phase 4: Validate quality
+    val validation = validateCode(code)
+    
+    // Phase 5: Refine if needed
+    if (!validation.isValid) {
+        code = refineCode(code, validation.issues)
+    }
+    
+    return code
+}
+```
+
+### **Step 3: Real-time Error Detection**
+```kotlin
+fun monitorCodeChanges(codeChange: String) {
+    val detectedIssues = detectErrorPatterns(codeChange)
+    
+    if (detectedIssues.isNotEmpty()) {
+        val autoFixes = generateAutoFixes(detectedIssues)
+        suggestFixes(autoFixes)
+    }
+}
+```
+
+## 📋 Mandatory AI Checklist
+
+### **Before Code Generation (BẮT BUỘC)**
+```
+☐ Error prevention rules loaded
+☐ Project context analyzed
+☐ Dependencies validated
+☐ Templates prepared
+☐ Quality gates configured
+```
+
+### **During Code Generation (BẮT BUỘC)**
+```
+☐ Use error-free templates
+☐ Apply type safety rules
+☐ Add required imports
+☐ Handle null safety
+☐ Complete when expressions
+☐ Add error handling
+☐ Validate resource references
+```
+
+### **After Code Generation (BẮT BUỘC)**
+```
+☐ Run compilation check
+☐ Verify null safety compliance
+☐ Validate method signatures
+☐ Check resource availability
+☐ Ensure lifecycle compliance
+☐ Confirm error handling coverage
+```
+
+## 🔧 Error Prevention Templates
+
+### **Template Selection Matrix**
+```
+USER_REQUEST_TYPE -> TEMPLATE_SELECTION:
+
+"Create Fragment" -> SafeFragmentTemplate
+"Create ViewModel" -> SafeViewModelTemplate
+"Create Repository" -> SafeRepositoryTemplate
+"Create Adapter" -> SafeAdapterTemplate
+"Create Custom View" -> SafeCustomViewTemplate
+"Add API Integration" -> SafeApiIntegrationTemplate
+"Implement Database" -> SafeDatabaseTemplate
+```
+
+### **Template Application Process**
+```kotlin
+fun applyTemplate(templateType: String, parameters: Map<String, Any>): String {
+    val template = getTemplate(templateType)
+    var code = template.generate(parameters)
+    
+    // Apply error prevention
+    code = addRequiredImports(code)
+    code = enforceTypeDeclarations(code)
+    code = addNullSafetyChecks(code)
+    code = completeWhenExpressions(code)
+    code = addErrorHandling(code)
+    
+    return code
+}
+```
+
+## 📊 Quality Metrics & Monitoring
+
+### **Success Metrics (Target: 100%)**
+```
+ERROR_PREVENTION_METRICS = {
+    compilation_success_rate: 100%,
+    type_inference_errors: 0%,
+    unresolved_references: 0%,
+    null_safety_violations: 0%,
+    method_signature_mismatches: 0%,
+    incomplete_when_expressions: 0%,
+    resource_reference_errors: 0%,
+    lifecycle_violations: 0%
+}
+```
+
+### **Performance Metrics**
+```
+PERFORMANCE_TARGETS = {
+    error_detection_time: < 1s,
+    auto_fix_application: < 2s,
+    template_generation: < 5s,
+    validation_completion: < 3s,
+    total_generation_time: < 15s
+}
+```
+
+## 🔄 Integration with Existing Systems
+
+### **Kiro Task System Integration**
+```
+WHEN (kiro_task_detected) {
+    APPLY_ERROR_PREVENTION_TO_TASK()
+    GENERATE_ERROR_FREE_CODE()
+    VALIDATE_TASK_COMPLETION()
+    UPDATE_QUALITY_METRICS()
+}
+```
+
+### **Agent Workflow Integration**
+```
+FOR_EACH (agent_in_workflow) {
+    CONFIGURE_ERROR_PREVENTION(agent)
+    MONITOR_AGENT_OUTPUT(agent)
+    APPLY_QUALITY_ENFORCEMENT(agent)
+    TRACK_AGENT_PERFORMANCE(agent)
+}
+```
+
+### **Memory Bank Integration**
+```
+STORE_IN_MEMORY_BANK({
+    error_patterns: detected_patterns,
+    successful_fixes: applied_fixes,
+    template_usage: template_statistics,
+    quality_metrics: performance_data
+})
+```
+
+## 🚨 Emergency Protocols
+
+### **When Error Prevention Fails**
+```
+IF (error_prevention_fails) {
+    1. STOP_CODE_GENERATION()
+    2. ANALYZE_FAILURE_CAUSE()
+    3. UPDATE_PREVENTION_RULES()
+    4. REQUEST_HUMAN_INTERVENTION()
+    5. LOG_FAILURE_FOR_LEARNING()
+}
+```
+
+### **Fallback Strategies**
+```
+FALLBACK_PRIORITY = [
+    "Use_Proven_Template",
+    "Apply_Conservative_Fixes",
+    "Request_User_Clarification",
+    "Generate_Minimal_Safe_Code",
+    "Escalate_To_Human_Review"
+]
+```
+
+## 📚 Learning & Adaptation
+
+### **Continuous Learning Protocol**
+```
+EVERY_DAY {
+    ANALYZE_ERROR_PATTERNS()
+    UPDATE_PREVENTION_RULES()
+    REFINE_AUTO_FIX_ALGORITHMS()
+    OPTIMIZE_TEMPLATES()
+    IMPROVE_DETECTION_ACCURACY()
+}
+
+EVERY_WEEK {
+    REVIEW_QUALITY_METRICS()
+    UPDATE_TEMPLATE_LIBRARY()
+    ENHANCE_VALIDATION_RULES()
+    OPTIMIZE_PERFORMANCE()
+}
+
+EVERY_MONTH {
+    COMPREHENSIVE_SYSTEM_REVIEW()
+    MAJOR_RULE_UPDATES()
+    TEMPLATE_LIBRARY_OVERHAUL()
+    PERFORMANCE_OPTIMIZATION()
+}
+```
+
+### **Feedback Integration**
+```
+WHEN (user_reports_issue) {
+    ANALYZE_ISSUE_ROOT_CAUSE()
+    UPDATE_PREVENTION_RULES()
+    TEST_FIX_EFFECTIVENESS()
+    DEPLOY_UPDATED_RULES()
+    NOTIFY_IMPROVEMENT_COMPLETION()
+}
+```
+
+## 🎯 Success Criteria
+
+### **System-wide Goals**
+- **Zero Compilation Errors**: 100% success rate
+- **Zero Runtime Crashes**: From preventable causes
+- **100% Code Quality**: All generated code passes quality gates
+- **Real-time Prevention**: Issues caught before they become problems
+- **Continuous Improvement**: System learns and adapts automatically
+
+### **User Experience Goals**
+- **Seamless Integration**: No disruption to development workflow
+- **Intelligent Assistance**: Proactive error prevention
+- **Fast Response**: Real-time feedback and fixes
+- **High Confidence**: Developers trust AI-generated code
+
+---
+
+**🔴 CRITICAL SUCCESS FACTOR**: This system only works if ALL components are used together. AI MUST NOT generate Android code without applying the complete error prevention system.

@@ -1,0 +1,413 @@
+# AI Manual Code Review Process - Cursor Optimized
+
+## 🎯 Purpose & Scope
+
+**_BẮT BUỘC_** quy trình review code thủ công cho AI assistants (TRAE, KIRO, Claude, Gemini) để đảm bảo code quality mà không dựa vào IDE automation features.
+
+## 🔧 Cursor-Optimized Workflow
+
+### Pre-Review Setup (< 250 lines optimization)
+
+**_BẮT BUỘC_** phân tích file theo chunks 250 dòng để tối ưu với Cursor indexing:
+
+```markdown
+☐ 1. CHECK file size - nếu > 250 lines → split analysis
+☐ 2. SCAN package và import section (lines 1-50)
+☐ 3. ANALYZE class declarations (lines 51-100)  
+☐ 4. REVIEW method signatures (lines 101-150)
+☐ 5. VALIDATE implementation (lines 151-200)
+☐ 6. CHECK remaining code (lines 201-250)
+☐ 7. REPEAT process for larger files
+```
+
+## 🤖 AI Review Execution Rules
+
+### MANDATORY: Before Every Review
+
+```markdown
+**AI MUST EXECUTE:**
+☐ Read entire file to understand context
+☐ Identify project type (Android/Web/Backend/Mobile)
+☐ Check existing coding patterns and conventions
+☐ Note framework-specific requirements
+☐ Prepare common fix templates
+☐ Set confidence thresholds for auto-fixes
+```
+
+### During Review Process
+
+```markdown
+**REAL-TIME VALIDATION:**
+☐ Flag import issues immediately
+☐ Catch type safety violations
+☐ Detect syntax errors in progress
+☐ Validate naming conventions
+☐ Check for performance anti-patterns
+☐ Ensure proper error handling
+```
+
+### Post-Review Actions
+
+```markdown
+**COMPLETION CHECKLIST:**
+☐ Generate comprehensive fix list
+☐ Prioritize fixes by severity
+☐ Apply high-confidence auto-fixes
+☐ Flag manual review items
+☐ Document all changes made
+☐ Verify no new issues introduced
+```
+
+## 🎯 AI-Specific Review Protocols
+
+### TRAE AI Review Protocol
+
+```markdown
+**ANDROID-SPECIFIC CHECKS:**
+Priority: CRITICAL
+☐ androidx.\* imports validation
+☐ Fragment lifecycle compliance
+☐ ViewModel pattern adherence
+☐ RecyclerView implementation correctness
+☐ Compose annotation validation (@Composable, @Preview)
+☐ Android Context usage safety
+☐ Resource management (memory leaks)
+
+**AUTO-FIX CONFIDENCE LEVELS:**
+
+- Import additions: 95% confidence → AUTO-APPLY
+- Safe call operators: 90% confidence → AUTO-APPLY
+- Basic syntax fixes: 98% confidence → AUTO-APPLY
+- Lifecycle fixes: 80% confidence → MANUAL REVIEW
+- Performance changes: 60% confidence → FLAG ONLY
+```
+
+### KIRO System Review Protocol
+
+```markdown
+**CONFIGURATION-SPECIFIC CHECKS:**
+Priority: HIGH
+☐ YAML/JSON syntax validation
+☐ Task dependency correctness
+☐ File path reference accuracy
+☐ Module registration verification
+☐ Configuration parameter validation
+☐ Error handling completeness
+
+**AUTO-FIX CONFIDENCE LEVELS:**
+
+- YAML syntax: 95% confidence → AUTO-APPLY
+- Missing dependencies: 85% confidence → AUTO-APPLY
+- File path corrections: 90% confidence → AUTO-APPLY
+- Complex config changes: 70% confidence → MANUAL REVIEW
+```
+
+### Claude Integration Review Protocol
+
+```markdown
+**API-SPECIFIC CHECKS:**
+Priority: HIGH
+☐ API call error handling
+☐ Async/await pattern validation
+☐ JSON parsing safety
+☐ HTTP timeout configuration
+☐ Network permission checks
+☐ Response data validation
+
+**AUTO-FIX CONFIDENCE LEVELS:**
+
+- Try-catch additions: 90% confidence → AUTO-APPLY
+- Timeout configurations: 85% confidence → AUTO-APPLY
+- JSON null checks: 95% confidence → AUTO-APPLY
+- Complex async patterns: 75% confidence → MANUAL REVIEW
+```
+
+### Gemini Integration Review Protocol
+
+```markdown
+**ML-SPECIFIC CHECKS:**  
+Priority: HIGH
+☐ Model initialization safety
+☐ Input validation for ML calls
+☐ Tensor dimension compatibility
+☐ Resource cleanup verification
+☐ ML Kit API usage validation
+☐ Performance optimization checks
+
+**AUTO-FIX CONFIDENCE LEVELS:**
+
+- Input validation: 90% confidence → AUTO-APPLY
+- Resource cleanup: 85% confidence → AUTO-APPLY
+- Error handling: 95% confidence → AUTO-APPLY
+- Model optimization: 60% confidence → FLAG ONLY
+```
+
+## 📋 Detailed Review Checklist
+
+### Phase 1: Critical Issues (BLOCK EXECUTION)
+
+```markdown
+**MUST FIX IMMEDIATELY - Zero Tolerance:**
+
+☐ Missing import statements
+→ AUTO-FIX: Add standard imports for detected classes
+→ CONFIDENCE: 95%+ only
+
+☐ Syntax errors (brackets, parentheses)
+→ AUTO-FIX: Complete missing brackets/parentheses
+→ CONFIDENCE: 98%+ only
+
+☐ Type mismatches
+→ AUTO-FIX: Add .toString(), .toInt(), safe casting
+→ CONFIDENCE: 90%+ for simple conversions
+
+☐ Null pointer risks
+→ AUTO-FIX: Add ?. safe call operators
+→ CONFIDENCE: 95%+ for obvious cases
+
+☐ Unresolved references
+→ AUTO-FIX: Add imports or suggest alternatives
+→ CONFIDENCE: 90%+ for standard libraries
+```
+
+### Phase 2: High Priority Issues
+
+```markdown
+**FIX BEFORE PROCEEDING:**
+
+☐ Unused imports
+→ AUTO-FIX: Remove unused import statements
+→ CONFIDENCE: 95%+ (scan entire file first)
+
+☐ Naming convention violations
+→ SUGGEST: Proper camelCase/PascalCase usage
+→ CONFIDENCE: 80%+ (context-dependent)
+
+☐ Missing error handling
+→ AUTO-ADD: Basic try-catch blocks
+→ CONFIDENCE: 85%+ for API calls
+
+☐ Performance anti-patterns
+→ FLAG: Inefficient loops, memory leaks
+→ CONFIDENCE: 70%+ (manual review required)
+
+☐ Security vulnerabilities
+→ FLAG: Hardcoded strings, unsafe operations
+→ CONFIDENCE: 80%+ (immediate attention)
+```
+
+### Phase 3: Medium Priority Issues
+
+```markdown
+**ADDRESS WHEN POSSIBLE:**
+
+☐ Code style inconsistencies
+→ AUTO-FORMAT: Indentation, spacing
+→ CONFIDENCE: 90%+ (non-breaking changes)
+
+☐ Missing documentation
+→ SUGGEST: Add KDoc/JavaDoc comments
+→ CONFIDENCE: 60%+ (context-dependent)
+
+☐ Optimization opportunities
+→ SUGGEST: Better algorithms, caching
+→ CONFIDENCE: 50%+ (manual evaluation)
+
+☐ Redundant code
+→ SUGGEST: Extract methods, remove duplication
+→ CONFIDENCE: 70%+ (careful analysis needed)
+```
+
+## 🛠️ Smart Fix Templates
+
+### Android-Specific Fixes
+
+```kotlin
+// TEMPLATE: Android Import Auto-Fix
+private val androidImportMap = mapOf(
+    "Fragment" to "androidx.fragment.app.Fragment",
+    "ViewModel" to "androidx.lifecycle.ViewModel",
+    "LiveData" to "androidx.lifecycle.LiveData",
+    "MutableLiveData" to "androidx.lifecycle.MutableLiveData",
+    "RecyclerView" to "androidx.recyclerview.widget.RecyclerView",
+    "Context" to "android.content.Context",
+    "Intent" to "android.content.Intent",
+    "Bundle" to "android.os.Bundle",
+    "Log" to "android.util.Log",
+    "Toast" to "android.widget.Toast",
+    // Jetpack Compose
+    "Composable" to "androidx.compose.runtime.Composable",
+    "remember" to "androidx.compose.runtime.remember",
+    "mutableStateOf" to "androidx.compose.runtime.mutableStateOf",
+    "Text" to "androidx.compose.material3.Text",
+    "Button" to "androidx.compose.material3.Button",
+    "LazyColumn" to "androidx.compose.foundation.lazy.LazyColumn"
+)
+
+// AUTO-APPLICATION RULE:
+// IF detected class in androidImportMap AND confidence >= 95%
+// THEN auto-add import statement
+```
+
+### Type Safety Auto-Fixes
+
+```kotlin
+// TEMPLATE: Null Safety Fix
+// PATTERN: variable.property (where variable is nullable)
+// FIX: variable?.property
+
+// TEMPLATE: Type Conversion Fix
+// PATTERN: val x: Int = "123"
+// FIX: val x: Int = "123".toIntOrNull() ?: 0
+
+// TEMPLATE: Safe Casting Fix
+// PATTERN: view as TextView
+// FIX: view as? TextView ?: return
+
+// AUTO-APPLICATION RULE:
+// IF type safety issue AND confidence >= 90%
+// THEN apply appropriate template
+```
+
+### Syntax Auto-Fixes
+
+```kotlin
+// TEMPLATE: Missing Bracket Fix
+// PATTERN: if (condition) { ... [missing close bracket]
+// FIX: Add missing } at appropriate location
+
+// TEMPLATE: Incomplete Statement Fix
+// PATTERN: fun methodName( [incomplete]
+// FIX: fun methodName() { /* TODO: Implement */ }
+
+// AUTO-APPLICATION RULE:
+// IF syntax error AND confidence >= 98%
+// THEN apply syntax fix template
+```
+
+## ⚡ Performance-Optimized Review
+
+### Quick Scan (< 10 seconds)
+
+```markdown
+**RAPID DETECTION:**
+☐ Import section validation (top 20 lines)
+☐ Class declaration check
+☐ Method signature verification
+☐ Basic syntax error scan
+☐ Common pattern recognition
+```
+
+### Deep Analysis (< 60 seconds total)
+
+```markdown
+**COMPREHENSIVE REVIEW:**
+☐ Type relationship analysis
+☐ null safety comprehensive check
+☐ Performance pattern analysis
+☐ Security vulnerability scan  
+☐ Code style consistency review
+☐ Error handling completeness
+```
+
+### Incremental Review (Real-time)
+
+```markdown
+**AS CODE IS WRITTEN:**
+☐ Import validation on class usage
+☐ Type checking on variable assignment
+☐ Null safety on nullable operations
+☐ Syntax validation on statement completion
+☐ Style checking on formatting
+```
+
+## 📊 Quality Gates & Metrics
+
+### Pass Criteria (Required for Approval)
+
+```markdown
+✅ CRITICAL: Zero import errors
+✅ CRITICAL: Zero syntax errors
+✅ CRITICAL: Zero type safety violations
+✅ CRITICAL: All references resolved
+✅ HIGH: Consistent naming conventions
+✅ HIGH: Basic error handling present
+✅ MEDIUM: Code style compliance > 90%
+```
+
+### Performance Benchmarks
+
+```markdown
+📈 Import accuracy: > 95%
+📈 Type safety coverage: > 98%
+📈 Syntax error detection: > 99%
+📈 Auto-fix success rate: > 90%
+📈 False positive rate: < 5%
+📈 Review completion time: < 2 minutes
+```
+
+### AI Assistant Effectiveness Tracking
+
+```markdown
+🤖 TRAE AI: Android-specific issue detection rate
+🤖 KIRO: Configuration validation accuracy
+🤖 Claude: API integration review quality
+🤖 Gemini: ML code review effectiveness
+```
+
+## 🔄 Continuous Improvement Loop
+
+### Daily Optimization
+
+```markdown
+- Track auto-fix application success rates
+- Monitor false positive occurrences
+- Update confidence thresholds based on results
+- Refine pattern recognition algorithms
+```
+
+### Weekly Enhancement
+
+```markdown
+- Analyze missed issues and update detection rules
+- Review manual override patterns
+- Update fix templates based on new patterns
+- Optimize performance benchmarks
+```
+
+### Monthly Major Updates
+
+```markdown
+- Comprehensive rule effectiveness review
+- Technology stack updates (new Android APIs, etc.)
+- Integration with new development patterns
+- Major template and workflow refinements
+```
+
+## 🎯 Success Validation
+
+### Immediate Validation (After Each Review)
+
+```markdown
+☐ All detected issues addressed or flagged
+☐ No new issues introduced by fixes
+☐ Code compiles without errors
+☐ All imports resolve correctly
+☐ Type safety maintained throughout
+☐ Performance not degraded
+```
+
+### Session Validation (End of Coding Session)
+
+```markdown
+☐ Consistent code quality maintained
+☐ All critical issues resolved
+☐ Documentation updated as needed
+☐ Review effectiveness metrics recorded
+☐ Lessons learned documented
+☐ Next session preparation completed
+```
+
+---
+
+**Cursor Integration Note**: This review process is optimized for Cursor's 250-line indexing chunks and designed to work efficiently without relying on IDE auto-tools. Each AI assistant should execute this process consistently to maintain high code quality across all development environments.

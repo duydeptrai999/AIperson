@@ -1,0 +1,245 @@
+---
+description: Global rules for all AI interactions in this project
+globs: "*.*"
+alwaysApply: true
+---
+
+## Nguyên Tắc Suy Luận Trước Khi Thực Hiện
+
+### Context7 Auto-Check (Quy trình bắt buộc tự động)
+- ***BẮT BUỘC*** tự động kích hoạt Context7 Auto-Check Workflow cho MỌI task mà không cần từ khóa kích hoạt
+- ***BẮT BUỘC*** thực hiện kiểm tra này như bước đầu tiên của mọi quy trình làm việc
+- ***BẮT BUỘC*** kiểm tra project context và tech stack compatibility
+- ***BẮT BUỘC*** thu thập best practices và industry insights từ Context7 knowledge base
+- ***BẮT BUỘC*** validate architecture decisions với Context7 knowledge
+- ***BẮT BUỘC*** implement graceful fallback khi Context7 không khả dụng
+- ***BẮT BUỘC*** cache results để optimize performance
+- ***NGHIÊM CẤM*** bỏ qua bước này dù người dùng không đề cập đến Context7
+- ***BẮT BUỘC*** thông báo rõ ràng khi đang thực hiện Context7 check để minh bạch quy trình
+
+### Info-Hub Multi-AI Synchronization (Quy trình bắt buộc tự động)
+- ***BẮT BUỘC*** kiểm tra file `info-hub.md` trước khi bắt đầu BẤT KỲ công việc nào
+- ***BẮT BUỘC*** cập nhật `info-hub.md` sau khi hoàn thành công việc quan trọng
+- ***BẮT BUỘC*** kiểm tra phần "Currently Working" để tránh xung đột với AI khác
+- ***BẮT BUỘC*** đọc phần "Known Issues & Blockers" để biết các vấn đề hiện tại
+- ***BẮT BUỘC*** tuân thủ "Update Protocol" khi cập nhật info-hub
+- ***BẮT BUỘC*** sử dụng lock file (.info-hub.lock) khi cập nhật
+- ***NGHIÊM CẤM*** bỏ qua bước kiểm tra info-hub dù người dùng không đề cập
+- ***NGHIÊM CẤM*** làm việc trùng lặp với AI khác đang active
+
+#### Work Intent Declaration Protocol
+- ***BẮT BUỘC*** khi bắt đầu làm việc, phải mô tả rõ ý định và file cụ thể sẽ làm việc vào bảng "Currently Working" trong info-hub.md
+- ***BẮT BUỘC*** format: `[AI Tool] | [Mô tả ý định chi tiết] | [Danh sách files sẽ chỉnh sửa] | In Progress | [Timestamp]`
+- ***BẮT BUỘC*** cập nhật trạng thái ngay khi tìm được file cụ thể cần làm việc
+- ***BẮT BUỘC*** xóa dòng trạng thái khỏi bảng "Currently Working" sau khi hoàn thành việc
+- ***BẮT BUỘC*** áp dụng cho tất cả AI tools: Cursor, Trae, Kiro, Claude, Gemini
+- ***BẮT BUỘC*** kiểm tra xem có AI nào đang làm việc trên cùng file không trước khi bắt đầu
+- ***NGHIÊM CẤM*** chỉnh sửa file đang được AI khác làm việc
+
+### Phân tích yêu cầu (Enhanced với Context7)
+- ***BẮT BUỘC*** phân tích và suy luận ý định thực sự của người dùng trước khi thực hiện bất kỳ hành động nào
+- ***BẮT BUỘC*** hiểu ngữ cảnh và mục tiêu đằng sau yêu cầu thay vì chỉ làm theo nghĩa đen với Context7 insights
+- ***BẮT BUỘC*** đề xuất giải pháp tối ưu và các lựa chọn thay thế dựa trên industry best practices
+- ***BẮT BUỘC*** xác nhận hiểu đúng ý định trước khi bắt đầu thực hiện
+- ***BẮT BUỘC*** so sánh với similar solutions từ Context7 knowledge base
+- ***BẮT BUỘC*** sử dụng User Intent Analysis Workflow cho mọi yêu cầu
+- ***NGHIÊM CẤM*** thực hiện ngay lập tức mà không có giai đoạn phân tích
+
+## Nguyên Tắc Cơ Bản
+- Tham khảo tài liệu dự án (Instruction.md, API_Docs.md, Diagram.md)
+- Cân nhắc các mốc, chi phí, và tính nhất quán của dự án
+- Sử dụng tiếng Việt cho hội thoại với giọng trẻ trung, tinh nghịch, mỗi dự án sẽ có 1 phong cách trò chuyện ngẫu nhiên khác nhau, bạn có thể bổ sung tính cách riêng vào Instruction.md để tính cách theo toàn bộ dự án; code bằng tiếng Anh
+
+## Nguyên Tắc Làm Việc Với Task Lớn
+- ***BẮT BUỘC*** kiểm tra git status trước khi bắt đầu task lớn (module mới, feature phức tạp)
+- ***BẮT BUỘC*** cảnh báo người dùng nếu project chưa được init git repository
+- ***BẮT BUỘC*** commit tất cả thay đổi hiện tại trước khi bắt đầu task lớn
+- ***BẮT BUỘC*** tạo nhánh git mới cho mỗi task lớn với tên mô tả rõ ràng (VD: `feature/user-authentication`, `module/payment-system`)
+- ***BẮT BUỘC*** thông báo cho người dùng về nhánh mới đã tạo và hướng dẫn revert nếu cần
+- ***KHUYẾN NGHỊ*** tạo commit checkpoint định kỳ trong quá trình thực hiện task lớn
+- ***BẮT BUỘC*** merge về nhánh chính chỉ khi task hoàn thành và đã test kỹ
+- ***BẮT BUỘC*** xóa nhánh feature sau khi merge thành công
+
+### Quy Trình Git Cho Task Lớn
+1. **Kiểm tra Git Status**: `git status` để xem thay đổi hiện tại
+2. **Cảnh báo nếu chưa init**: Thông báo `git init` nếu không phải git repository
+3. **Commit thay đổi hiện tại**: `git add . && git commit -m "Save current progress before starting [task-name]"`
+4. **Tạo nhánh mới**: `git checkout -b feature/[task-name]`
+5. **Thông báo cho user**: Hướng dẫn revert bằng `git checkout main && git branch -D feature/[task-name]`
+6. **Thực hiện task**: Commit định kỳ với message rõ ràng
+7. **Hoàn thành**: Merge về main và xóa nhánh feature
+
+### Tiêu Chí Task Lớn
+Task được coi là "lớn" khi:
+- Tạo module/component mới hoàn chỉnh
+- Thay đổi kiến trúc hoặc cấu trúc dự án
+- Implement feature phức tạp với nhiều files
+- Refactor code ảnh hưởng đến nhiều components
+- Thay đổi có thể gây breaking changes
+
+## Nguyên Tắc Thiết Kế Instruction
+- ***BẮT BUỘC*** instruction files chỉ chứa chỉ dẫn, hướng dẫn và yêu cầu
+- ***NGHIÊM CẤM*** bao gồm code implementation trong instruction files
+- ***BẮT BUỘC*** mô tả logic, flow và requirements bằng natural language
+- ***BẮT BUỘC*** sử dụng pseudocode hoặc flowchart khi cần minh họa logic
+- ***BẮT BUỘC*** tập trung vào "what to build" và "why" thay vì "how to implement"
+- ***BẮT BUỘC*** để AI tự quyết định implementation details dựa trên instruction
+- Viết code rõ ràng, ngắn gọn, tập trung vào một nhiệm vụ
+- Hỗ trợ đa ngôn ngữ với tiếng Anh làm mặc định
+- Ghi tóm tắt cấu trúc và chức năng trong Codebase.md (không copy code)
+- Dừng ngay sau 3 lần thử sửa lỗi không thành công
+- Phân tích nguyên nhân gốc rễ trước khi sửa lỗi
+- Tạo bản sao đơn giản trước các thay đổi lớn
+- Thực hiện và kiểm tra từng thay đổi một
+- Ghi lại quyết định quan trọng trong Decisions.md
+- Cập nhật trạng thái nhiệm vụ trong Instruction.md
+- Tuân thủ quy ước commit (feat, fix, docs, style, refactor...)
+- Tuân thủ nguyên tắc SOLID và xử lý lỗi đúng cách
+- Giải thích vấn đề một cách đơn giản, đề xuất nhiều giải pháp 
+
+## Quản Lý Dữ Liệu Giả Lập
+- Nếu dự án sử dụng bất kỳ dữ liệu giả lập nào, ***BẮT BUỘC*** tạo file MockupData.md
+- Liệt kê chi tiết và cập nhật thường xuyên tất cả các phần của dự án đang sử dụng dữ liệu giả
+- Phân loại dữ liệu giả lập theo mục đích sử dụng:
+  * Dữ liệu demo cho client/stakeholders
+  * Dữ liệu testing cho quá trình phát triển
+  * Dữ liệu thay thế tạm thời cho API chưa sẵn sàng
+  * Dữ liệu mẫu cho hướng dẫn/documentation
+- Cho mỗi phần dữ liệu giả lập, ghi rõ:
+  * Vị trí chính xác của file/code đang sử dụng dữ liệu giả
+  * Cấu trúc dữ liệu của mockup và cấu trúc dữ liệu thật tương ứng
+  * Phương thức khởi tạo và sử dụng dữ liệu giả
+  * Kế hoạch và timeline để chuyển sang dữ liệu thật
+  * Người chịu trách nhiệm cho việc thay thế dữ liệu giả
+- Tạo phần "Chiến lược chuyển đổi" trong file MockupData.md để mô tả:
+  * Điều kiện để chuyển từ dữ liệu giả sang dữ liệu thật
+  * Kế hoạch backup nếu việc chuyển đổi gặp vấn đề
+  * Cách xử lý dữ liệu trong giai đoạn chuyển tiếp
+- Tạo phần "Dữ liệu giả cho API":
+  * Mô tả chi tiết các API endpoints đang được mock
+  * So sánh cấu trúc request/response của API giả và API thật
+  * Xác định các trường hợp lỗi được mô phỏng trong API giả
+- Cập nhật file MockupData.md mỗi khi:
+  * Thêm dữ liệu giả mới vào dự án
+  * Thay đổi cấu trúc dữ liệu giả hiện có
+  * Chuyển đổi từ dữ liệu giả sang dữ liệu thật
+  * Phát hiện sự không nhất quán giữa dữ liệu giả và thật
+- Thiết lập phần "Tiến độ chuyển đổi" với định dạng:
+  ```
+  ## Tiến độ chuyển đổi
+  - [x] Component A - Hoàn thành chuyển đổi ngày DD/MM/YYYY
+  - [ ] Component B - Dự kiến chuyển đổi ngày DD/MM/YYYY
+  - [ ] Component C - Chờ API xyz hoàn thiện
+  ```
+
+## Project info
+Luôn kiểm tra .project-identity để biết cấu trúc và ngôn ngữ dự án, nếu chưa có file .project-identity hãy tạo và yêu cầu người dùng bổ sung thêm thông tin
+
+### Project Setup & Identity
+
+- **[Project Creation Workflow](../../.cursor/rules/project-creation-workflow.mdc)** - Tạo dự án mới
+- **[Project Identity Template](../../.cursor/rules/project-identity-template.mdc)** - Template định danh dự án
+- **[Project Identification Rules](../../.cursor/rules/project-identification-rules.mdc)** - Nhận diện dự án
+- **[Project Setup Experience Workflow](../../.cursor/rules/project-setup-experience-workflow.mdc)** - Thu thập kinh nghiệm từ Context7 cho setup dự án
+- **[Tech Stack Selection](../../.cursor/rules/tech-stack-selection.mdc)** - Lựa chọn công nghệ
+
+## Task Status Legend
+- ✅ Completed
+- ⏳ In Progress
+- ❌ Not Started
+
+## Task List Management
+
+### Kiro Task System Integration
+- ***BẮT BUỘC*** sử dụng `.kiro/specs/{project}/tasks.md` làm nguồn task chính thức
+- ***BẮT BUỘC*** tuân thủ Kiro task format với ID, status, priority, dependencies
+- ***BẮT BUỘC*** validate project structure và tạo `.kiro/specs/{project}/` nếu chưa tồn tại
+- ***BẮT BUỘC*** kiểm tra Kiro tasks trước khi thực hiện bất kỳ development task nào
+- ***BẮT BUỘC*** sử dụng [Task Creation Workflow](task-creation-workflow.mdc) để tự động tạo comprehensive tasks
+- ***NGHIÊM CẤM*** tạo task lists ở nơi khác ngoài Kiro system
+
+### Kiro Dynamic Workflow
+- ***BẮT BUỘC*** kiểm tra sự tồn tại của files: `requirements.md`, `design.md`, `tasks.md` trong `.kiro/specs/{project}/`
+- ***BẮT BUỘC*** kích hoạt [Kiro Dynamic Workflow](kiro-dynamic-workflow.mdc) khi thiếu bất kỳ file nào
+- ***KHUYẾN NGHỊ*** ưu tiên việc tạo bằng Kiro tools trước khi sử dụng dynamic workflow
+- ***BẮT BUỘC*** thực hiện quy trình: Brainstorm → Requirements → Design → Tasks khi dynamic
+- ***BẮT BUỘC*** đảm bảo generated files tuân thủ Kiro specifications
+- ***BẮT BUỘC*** validate compatibility với Kiro execution system sau khi tạo files
+
+### Legacy Task Lists (Deprecated)
+- ***BẮT BUỘC*** migrate existing task lists sang Kiro format
+- ***BẮT BUỘC*** sử dụng `TASKS.md` hoặc tên mô tả feature cụ thể (VD: `ASSISTANT_CHAT.md`) chỉ cho legacy projects
+- ***BẮT BUỘC*** bao gồm title rõ ràng và mô tả mục đích của feature
+
+### Cấu Trúc Task List Chuẩn
+```markdown
+# Feature Name Implementation
+
+Mô tả ngắn gọn về feature và mục đích.
+
+## Completed Tasks
+
+- [x] Task 1 đã hoàn thành
+- [x] Task 2 đã hoàn thành
+
+## In Progress Tasks
+
+- [ ] Task 3 đang làm việc
+- [ ] Task 4 sẽ hoàn thành sớm
+
+## Future Tasks
+
+- [ ] Task 5 dự kiến trong tương lai
+- [ ] Task 6 dự kiến trong tương lai
+
+## Implementation Plan
+
+Mô tả chi tiết cách triển khai feature.
+
+### Relevant Files
+
+- path/to/file1.ts - Mô tả mục đích
+- path/to/file2.ts - Mô tả mục đích
+```
+
+### Quy Trình Maintain Kiro Tasks
+- ***BẮT BUỘC*** cập nhật task status trong `.kiro/specs/{project}/tasks.md` khi bắt đầu và hoàn thành
+- ***BẮT BUỘC*** validate acceptance criteria trước khi mark task completed
+- ***BẮT BUỘC*** thêm tasks mới theo Kiro format khi phát hiện trong quá trình triển khai
+- ***BẮT BUỘC*** cập nhật dependencies khi task order thay đổi
+- ***BẮT BUỘC*** reference task IDs trong commit messages
+- ***KHUYẾN NGHỊ*** cập nhật implementation notes với technical details
+
+### Hướng Dẫn Cho AI
+Khi làm việc với Kiro tasks, AI phải:
+- ***BẮT BUỘC*** kiểm tra `.kiro/specs/{project}/tasks.md` trước khi bắt đầu bất kỳ development work nào
+- ***BẮT BUỘC*** thực hiện tasks theo thứ tự ưu tiên và dependencies
+- ***BẮT BUỘC*** cập nhật task status: "Not Started" → "In Progress" → "Completed"
+- ***BẮT BUỘC*** validate tất cả acceptance criteria trước khi mark completed
+- ***BẮT BUỘC*** thêm tasks mới theo Kiro format khi phát hiện requirements mới
+- ***BẮT BUỘC*** document implementation details trong task notes
+- ***BẮT BUỘC*** reference task IDs trong commit messages (format: `feat(TASK-001): description`)
+- ***BẮT BUỘC*** identify next executable task dựa trên dependencies
+
+### Ví Dụ Cập Nhật Task
+Khi di chuyển task từ "In Progress" sang "Completed":
+
+**Trước:**
+```markdown
+## In Progress Tasks
+- [ ] Implement database schema
+- [ ] Create API endpoints
+
+## Completed Tasks
+- [x] Set up project structure
+```
+
+**Sau:**
+```markdown
+## In Progress Tasks
+- [ ] Create API endpoints
+
+## Completed Tasks
+- [x] Set up project structure
+- [x] Implement database schema
+```

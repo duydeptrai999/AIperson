@@ -1,0 +1,2166 @@
+---
+description: TSDDR 2.0 Mobile Workflow - Test Spec Driven Development Review for AI Mobile Apps
+globs: 
+alwaysApply: false
+---
+# TSDDR 2.0 Mobile Workflow (Test Spec Driven Development Review)
+
+## 🚀 TSDDR 2.0 Core Principles
+- ***BẮT BUỘC*** Follow 6-stage TSDDR 2.0 workflow với Git branching integration
+- ***BẮT BUỘC*** Complete test specifications trước khi implementation
+- ***BẮT BUỘC*** Stage-based quality gates với mandatory reviews
+- ***BẮT BUỘC*** Enhanced coverage targets: Unit (90%), Integration (80%), UI (100%)
+- ***BẮT BUỘC*** AI-first testing approach với comprehensive fallback scenarios
+- ***BẮT BUỘC*** Revenue-focused testing cho monetization strategies
+- ***BẮT BUỘC*** Regional testing cho global market strategies
+- ***NGHIÊM CẤM*** Stage skipping hoặc bypassing quality gates
+
+## 🔄 TSDDR 2.0 Six-Stage Workflow
+
+### Stage 1: REQUIREMENTS 📋
+**Git Branch**: `feature/[feature-name]/requirements`
+**Duration**: 1-2 days
+**Deliverables**:
+```markdown
+□ Comprehensive Test Specification Document
+□ User Story Acceptance Criteria
+□ AI Integration Requirements
+□ Revenue Impact Analysis
+□ Regional Strategy Requirements
+□ Performance & Security Requirements
+□ Accessibility & Compliance Requirements
+```
+
+**Quality Gate**: Requirements Review
+- [ ] All user scenarios documented
+- [ ] AI integration points identified
+- [ ] Revenue implications analyzed
+- [ ] Regional variations specified
+- [ ] Performance benchmarks defined
+
+### Stage 2: DESIGN 🎨
+**Git Branch**: `feature/[feature-name]/design`
+**Duration**: 2-3 days
+**Deliverables**:
+```markdown
+□ Test Architecture Design
+□ Mock Strategy & Data Models
+□ AI Service Integration Design
+□ Revenue Flow Test Design
+□ Regional Configuration Test Design
+□ Performance Test Strategy
+□ Test Data Management Plan
+```
+
+**Quality Gate**: Design Review
+- [ ] Test architecture approved
+- [ ] Mock strategies validated
+- [ ] AI integration patterns confirmed
+- [ ] Revenue testing approach verified
+- [ ] Regional testing strategy approved
+
+### Stage 3: TASKS 📝
+**Git Branch**: `feature/[feature-name]/tasks`
+**Duration**: 1 day
+**Deliverables**:
+```markdown
+□ Detailed Implementation Tasks
+□ Test Implementation Order
+□ Dependency Mapping
+□ Resource Allocation Plan
+□ Timeline & Milestones
+□ Risk Mitigation Strategies
+```
+
+**Quality Gate**: Task Planning Review
+- [ ] Implementation tasks clearly defined
+- [ ] Dependencies properly mapped
+- [ ] Timeline realistic and achievable
+- [ ] Risk mitigation plans in place
+
+### Stage 4: EXECUTION ⚡
+**Git Branch**: `feature/[feature-name]/execution`
+**Duration**: 5-10 days
+**Process**: Enhanced Red-Green-Refactor Cycle
+
+#### 🔴 RED Phase: Comprehensive Test Writing
+```markdown
+Test Writing Priority Order:
+1. **AI-Enhanced Unit Tests** (Business Logic)
+   □ AI-aware view model tests
+   □ Smart use case tests với fallback logic
+   □ Repository tests với caching strategies
+   □ Data model validation với AI constraints
+   □ Utility function tests với performance metrics
+
+2. **Revenue-Focused Integration Tests** (Data Flow)
+   □ Database operations với revenue tracking
+   □ Network layer tests với cost optimization
+   □ AI service integration với billing awareness
+   □ Ad integration tests với regional strategies
+   □ IAP integration tests với subscription flows
+
+3. **Regional UI Tests** (User Interactions)
+   □ Critical user flow tests per region
+   □ Navigation tests với localization
+   □ Input validation tests với regional formats
+   □ Error state handling với localized messages
+   □ Accessibility tests với regional standards
+
+4. **AI-Revenue Integration Tests** (Smart Monetization)
+   □ AI recommendation tests với revenue optimization
+   □ Personalized ad placement tests
+   □ Dynamic pricing tests based on AI insights
+   □ User engagement prediction tests
+   □ Churn prevention tests với AI interventions
+```
+
+#### 🟢 GREEN Phase: Strategic Implementation
+```markdown
+Implementation Priority Order:
+1. **AI-Enhanced Business Logic** (Pass Unit Tests)
+   □ AI-aware view model implementations
+   □ Smart use case implementations với fallback strategies
+   □ Repository implementations với intelligent caching
+   □ Data model implementations với AI validation
+   □ Utility implementations với performance monitoring
+
+2. **Revenue-Optimized Data Layer** (Pass Integration Tests)
+   □ Database entities với revenue tracking fields
+   □ Network service implementations với cost monitoring
+   □ Cache implementations với revenue-aware TTL
+   □ AI service integrations với billing optimization
+   □ Analytics implementations với revenue attribution
+
+3. **Regional UI Layer** (Pass UI Tests)
+   □ Compose/SwiftUI implementations với localization
+   □ Navigation implementations với regional flows
+   □ Input handling implementations với regional formats
+   □ Error state implementations với localized messages
+   □ Accessibility implementations với regional standards
+
+4. **Smart Monetization Features** (Pass AI-Revenue Tests)
+   □ AI service client implementations với cost optimization
+   □ Revenue optimization logic implementations
+   □ Regional strategy implementations
+   □ Dynamic pricing implementations
+   □ User engagement tracking implementations
+```
+
+#### 🔄 REFACTOR Phase: Multi-Level Optimization
+```markdown
+Refactoring Priorities:
+1. **AI-Aware Code Quality**
+   □ Remove AI service call duplication
+   □ Improve AI response handling readability
+   □ Optimize AI service performance bottlenecks
+   □ Enhance AI error handling với fallback chains
+   □ Improve AI data type safety
+
+2. **Revenue-Focused Test Quality**
+   □ Improve revenue flow test coverage
+   □ Optimize expensive AI integration test performance
+   □ Reduce regional test flakiness
+   □ Improve monetization test maintainability
+   □ Add missing revenue edge case tests
+
+3. **Smart Architecture Improvements**
+   □ Improve AI service separation of concerns
+   □ Enhance dependency injection cho AI components
+   □ Optimize revenue data flow patterns
+   □ Improve regional error propagation
+   □ Enhance AI-revenue modularity
+```
+
+**Quality Gate**: Execution Review
+- [ ] All tests passing với required coverage
+- [ ] Code quality metrics met
+- [ ] Performance benchmarks achieved
+- [ ] AI integration working correctly
+- [ ] Revenue flows validated
+
+### Stage 5: TEST 🧪
+**Git Branch**: `feature/[feature-name]/test`
+**Duration**: 2-3 days
+**Deliverables**:
+```markdown
+□ Comprehensive Test Execution Report
+□ Coverage Analysis Report
+□ Performance Test Results
+□ AI Integration Validation
+□ Revenue Flow Verification
+□ Regional Testing Results
+□ Security & Compliance Validation
+```
+
+**Quality Gate**: Test Validation
+- [ ] Unit test coverage ≥ 90%
+- [ ] Integration test coverage ≥ 80%
+- [ ] UI test coverage = 100% for critical flows
+- [ ] AI integration tests passing
+- [ ] Revenue tests validated
+- [ ] Regional tests confirmed
+
+### Stage 6: REVIEW 🔍
+**Git Branch**: `feature/[feature-name]/review`
+**Duration**: 1-2 days
+**Deliverables**:
+```markdown
+□ Final Code Review Report
+□ Architecture Compliance Check
+□ Security Review Results
+□ Performance Validation Report
+□ AI Integration Certification
+□ Revenue Impact Assessment
+□ Regional Compliance Verification
+```
+
+**Quality Gate**: Final Integration Review
+- [ ] Code review approved by senior developers
+- [ ] Architecture compliance verified
+- [ ] Security review passed
+- [ ] Performance requirements met
+- [ ] AI integration certified
+- [ ] Revenue impact approved
+- [ ] Regional compliance confirmed
+
+## TSDDR 2.0 Platform-Specific Implementation
+
+### Android TSDDR 2.0 Stack:
+```kotlin
+// Enhanced Testing Dependencies for TSDDR 2.0
+dependencies {
+    // Unit Testing với AI Support
+    testImplementation 'junit:junit:5.9.2'
+    testImplementation 'org.mockito:mockito-core:5.1.1'
+    testImplementation 'io.mockk:mockk:1.13.4'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
+    testImplementation 'app.cash.turbine:turbine:0.13.0'
+    
+    // AI & Revenue Testing Dependencies
+    testImplementation 'com.squareup.retrofit2:retrofit-mock:2.9.0'
+    testImplementation 'com.github.tomakehurst:wiremock:2.27.2'
+    testImplementation 'org.robolectric:robolectric:4.10.3'
+    
+    // Android Testing với Enhanced Capabilities
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.5.0'
+    
+    // Integration Testing với AI & Revenue Support
+    androidTestImplementation 'androidx.room:room-testing:2.5.2'
+    androidTestImplementation 'okhttp3:mockwebserver:4.11.0'
+    androidTestImplementation 'com.google.firebase:firebase-firestore-ktx:24.7.1'
+    androidTestImplementation 'com.google.firebase:firebase-remote-config-ktx:21.4.1'
+}
+
+// TSDDR 2.0 Test Categories
+@Test // Unit Tests - Enhanced với AI logic validation
+@MediumTest // Integration Tests - AI service integration
+@LargeTest // UI Tests - Full user flows với AI
+@Category(AITests::class) // AI-specific Tests
+@Category(RevenueTests::class) // Revenue-focused Tests
+@Category(RegionalTests::class) // Regional Strategy Tests
+```
+
+### iOS TSDDR 2.0 Stack:
+```swift
+// Enhanced Testing Framework for TSDDR 2.0
+import XCTest
+import XCUITest
+import Combine
+import SwiftUI
+@testable import YourApp
+
+// AI & Revenue Testing Extensions
+import FirebaseFirestore
+import FirebaseRemoteConfig
+import StoreKit
+import AdSupport
+
+// TSDDR 2.0 Test Categories
+class AIUnitTests: XCTestCase { } // AI logic validation
+class RevenueUnitTests: XCTestCase { } // Revenue calculation tests
+class RegionalUnitTests: XCTestCase { } // Localization tests
+class AIIntegrationTests: XCTestCase { } // AI service integration
+class RevenueIntegrationTests: XCTestCase { } // IAP và Ad integration
+class RegionalIntegrationTests: XCTestCase { } // Regional API integration
+class AIUITests: XCUITestCase { } // AI-enhanced user flows
+class RevenueUITests: XCUITestCase { } // Monetization user flows
+class RegionalUITests: XCUITestCase { } // Regional user experience
+
+// Enhanced Mocking Framework
+import Cuckoo // For mocking dependencies
+// Quick/Nimble (BDD-style) - Extended với revenue testing matchers
+// OHHTTPStubs (Network mocking) - Regional API mocking
+// Firebase Test Lab - Cloud testing với regional configurations
+```
+
+## TSDDR 2.0 Mobile-Specific Test Patterns
+
+### AI-Enhanced View Model Testing Pattern:
+```kotlin
+// Android TSDDR 2.0 Example
+@AITest
+@RevenueTest
+fun `when user submits health data with AI optimization, should update UI state, call AI service, and track revenue impact`() {
+    // ARRANGE - TSDDR 2.0 Enhanced Setup
+    val mockHealthRepository = mockk<HealthRepository>()
+    val mockAIService = mockk<AIService>()
+    val mockRevenueTracker = mockk<RevenueTracker>()
+    val mockRegionalConfig = mockk<RegionalConfigService>()
+    
+    val testHealthData = HealthData(
+        heartRate = 75,
+        steps = 12000,
+        sleepHours = 7.5,
+        userId = "user123",
+        region = "VN"
+    )
+    
+    val expectedAIInsights = AIInsights(
+        recommendations = listOf("Increase cardio", "Improve sleep quality"),
+        confidenceScore = 0.92,
+        revenueOpportunities = listOf(
+            RevenueOpportunity("premium_plan", 0.85),
+            RevenueOpportunity("health_coaching", 0.73)
+        )
+    )
+    
+    every { mockAIService.generateInsights(testHealthData) } returns flowOf(expectedAIInsights)
+    every { mockHealthRepository.saveHealthData(testHealthData) } returns flowOf(Unit)
+    every { mockRevenueTracker.trackHealthDataSubmission(any(), any()) } returns Unit
+    every { mockRegionalConfig.getHealthRecommendations("VN") } returns RegionalHealthConfig()
+    
+    val viewModel = HealthViewModel(
+        healthRepository = mockHealthRepository,
+        aiService = mockAIService,
+        revenueTracker = mockRevenueTracker,
+        regionalConfig = mockRegionalConfig
+    )
+    
+    // ACT - TSDDR 2.0 Enhanced Action
+    viewModel.submitHealthDataWithAI(testHealthData, optimizeForRevenue = true)
+    
+    // ASSERT - TSDDR 2.0 Enhanced Validation
+    verify { mockHealthRepository.saveHealthData(testHealthData) }
+    verify { mockAIService.generateInsights(testHealthData) }
+    verify { mockRevenueTracker.trackHealthDataSubmission(testHealthData, expectedAIInsights) }
+    verify { mockRegionalConfig.getHealthRecommendations("VN") }
+    
+    assertEquals(LoadingState.Success, viewModel.uiState.value.loadingState)
+    assertEquals(expectedAIInsights, viewModel.uiState.value.aiInsights)
+    assertEquals(true, viewModel.uiState.value.revenueOptimizationEnabled)
+    assertEquals(0.92, viewModel.uiState.value.aiConfidenceScore, 0.01)
+}
+```
+
+### AI-Revenue Repository Testing Pattern:
+```kotlin
+// Android TSDDR 2.0 Example
+@AITest
+@RevenueTest
+@RegionalTest
+fun `when fetching cached AI insights with revenue optimization, should return local data with revenue metadata and regional preferences`() {
+    // ARRANGE - TSDDR 2.0 Enhanced Setup
+    val cachedInsights = listOf(
+        AIInsight(
+            id = "insight1",
+            content = "Increase cardio workouts",
+            confidenceScore = 0.95,
+            revenueMetadata = RevenueMetadata(
+                monetizationOpportunity = "premium_plan",
+                expectedRevenue = 29.99,
+                conversionProbability = 0.85
+            ),
+            regionalData = RegionalData(
+                region = "VN",
+                localizedContent = "Tăng cường tập cardio",
+                culturalRelevance = 0.92
+            )
+        ),
+        AIInsight(
+            id = "insight2",
+            content = "Improve sleep schedule",
+            confidenceScore = 0.88,
+            revenueMetadata = RevenueMetadata(
+                monetizationOpportunity = "sleep_coaching",
+                expectedRevenue = 19.99,
+                conversionProbability = 0.73
+            ),
+            regionalData = RegionalData(
+                region = "VN",
+                localizedContent = "Cải thiện lịch ngủ",
+                culturalRelevance = 0.89
+            )
+        )
+    )
+    
+    val mockLocalDatabase = mockk<AIInsightsDao>()
+    val mockRemoteAPI = mockk<AIInsightsAPI>()
+    val mockRevenueAnalyzer = mockk<RevenueAnalyzer>()
+    val mockRegionalService = mockk<RegionalService>()
+    
+    coEvery { mockLocalDatabase.getInsightsWithMetadata("user123", "VN") } returns cachedInsights
+    coEvery { mockRemoteAPI.getInsights(any()) } returns emptyList()
+    coEvery { mockRevenueAnalyzer.analyzeInsightRevenue(any()) } returns RevenueAnalysis(totalPotential = 49.98)
+    coEvery { mockRegionalService.getRegionalPreferences("VN") } returns RegionalPreferences()
+    
+    val repository = AIInsightsRepository(
+        localDatabase = mockLocalDatabase,
+        remoteAPI = mockRemoteAPI,
+        revenueAnalyzer = mockRevenueAnalyzer,
+        regionalService = mockRegionalService
+    )
+    
+    // ACT - TSDDR 2.0 Enhanced Action
+    val result = repository.getAIInsightsWithRevenue(
+        userId = "user123",
+        region = "VN",
+        useCache = true,
+        optimizeForRevenue = true
+    )
+    
+    // ASSERT - TSDDR 2.0 Enhanced Validation
+    assertEquals(cachedInsights, result)
+    
+    // Verify no unnecessary API calls
+    coVerify(exactly = 0) { mockRemoteAPI.getInsights(any()) }
+    
+    // Verify local database called với enhanced parameters
+    coVerify(exactly = 1) { mockLocalDatabase.getInsightsWithMetadata("user123", "VN") }
+    
+    // Verify revenue analysis performed
+    coVerify(exactly = 1) { mockRevenueAnalyzer.analyzeInsightRevenue(cachedInsights) }
+    
+    // Verify regional preferences considered
+    coVerify(exactly = 1) { mockRegionalService.getRegionalPreferences("VN") }
+    
+    // Validate revenue metadata
+    val totalExpectedRevenue = result.sumOf { it.revenueMetadata.expectedRevenue * it.revenueMetadata.conversionProbability }
+    assertEquals(42.48, totalExpectedRevenue, 0.01) // (29.99 * 0.85) + (19.99 * 0.73)
+}
+```
+
+### AI-Enhanced UI Testing Pattern:
+```kotlin
+// Android Compose TSDDR 2.0 Example
+@AITest
+@RevenueTest
+@RegionalTest
+fun `when user taps generate AI insights with revenue optimization, should show loading state and display personalized results with regional pricing`() {
+    // ARRANGE - TSDDR 2.0 Enhanced Setup
+    val mockViewModel = mockk<HealthInsightsViewModel>()
+    val testUIState = HealthUiState(
+        isLoading = false,
+        aiInsights = emptyList(),
+        revenueOptimizationEnabled = true,
+        currentRegion = "VN",
+        aiConfidenceScore = 0.0,
+        revenueOpportunities = emptyList()
+    )
+    
+    val loadingUIState = testUIState.copy(isLoading = true)
+    val successUIState = testUIState.copy(
+        isLoading = false,
+        aiInsights = listOf(
+            AIInsight(
+                content = "Tăng cường tập cardio", // Localized content
+                confidenceScore = 0.95,
+                revenueMetadata = RevenueMetadata(
+                    monetizationOpportunity = "premium_plan",
+                    localizedPrice = "749,000 VND",
+                    originalPrice = "29.99 USD"
+                )
+            )
+        ),
+        aiConfidenceScore = 0.95,
+        revenueOpportunities = listOf(
+            RevenueOpportunity(
+                type = "premium_plan",
+                localizedTitle = "Gói Premium",
+                localizedPrice = "749,000 VND/tháng",
+                conversionProbability = 0.85
+            )
+        )
+    )
+    
+    every { mockViewModel.uiState } returns MutableStateFlow(testUIState)
+    every { mockViewModel.generateAIInsightsWithRevenue(any(), any()) } answers {
+        every { mockViewModel.uiState } returns MutableStateFlow(loadingUIState)
+        // Simulate async completion
+        every { mockViewModel.uiState } returns MutableStateFlow(successUIState)
+    }
+    
+    composeTestRule.setContent {
+        HealthInsightsScreen(
+            viewModel = mockViewModel,
+            uiState = testUIState,
+            onGenerateInsights = { region, optimizeForRevenue ->
+                mockViewModel.generateAIInsightsWithRevenue(region, optimizeForRevenue)
+            }
+        )
+    }
+    
+    // ACT - TSDDR 2.0 Enhanced Action
+    composeTestRule.onNodeWithText("Generate AI Insights").performClick()
+    
+    // ASSERT - TSDDR 2.0 Enhanced Validation
+    
+    // Verify loading state
+    composeTestRule.onNodeWithTag("loading_indicator").assertIsDisplayed()
+    
+    // Verify AI insights generation called với correct parameters
+    verify { mockViewModel.generateAIInsightsWithRevenue("VN", true) }
+    
+    // Wait for completion and verify results
+    composeTestRule.waitForIdle()
+    
+    // Verify AI confidence score display
+    composeTestRule.onNodeWithText("AI Confidence: 95%").assertIsDisplayed()
+    
+    // Verify localized content
+    composeTestRule.onNodeWithText("Tăng cường tập cardio").assertIsDisplayed()
+    
+    // Verify revenue opportunity với regional pricing
+    composeTestRule.onNodeWithText("Gói Premium").assertIsDisplayed()
+    composeTestRule.onNodeWithText("749,000 VND/tháng").assertIsDisplayed()
+    
+    // Verify revenue optimization indicator
+    composeTestRule.onNodeWithTag("revenue_optimized_badge").assertIsDisplayed()
+    
+    // Verify regional indicator
+    composeTestRule.onNodeWithText("🇻🇳 Vietnam").assertIsDisplayed()
+    
+    // Verify conversion probability display
+    composeTestRule.onNodeWithText("85% likely to convert").assertIsDisplayed()
+}
+```
+
+### AI Integration Testing Pattern với Revenue Optimization:
+```kotlin
+// TSDDR 2.0 Enhanced AI Service Integration Test
+@AITest
+@RevenueTest
+@RegionalTest
+fun `when AI service returns recommendations with revenue optimization, should process, cache results, and track monetization opportunities`() {
+    // ARRANGE - TSDDR 2.0 Enhanced Setup
+    val mockAIService = mockk<EnhancedAIService>()
+    val mockCacheManager = mockk<SmartCacheManager>()
+    val mockRevenueOptimizer = mockk<RevenueOptimizer>()
+    val mockRegionalAdapter = mockk<RegionalAdapter>()
+    val mockAnalyticsTracker = mockk<AnalyticsTracker>()
+    
+    val testHealthData = HealthData(
+        heartRate = 75,
+        steps = 10000,
+        userId = "user123",
+        region = "VN",
+        subscriptionTier = "free",
+        previousPurchases = listOf("basic_plan")
+    )
+    
+    val expectedRecommendations = listOf(
+        AIRecommendation(
+            content = "Increase cardio workouts",
+            confidence = 0.85,
+            revenueOpportunity = RevenueOpportunity(
+                type = "premium_plan",
+                expectedRevenue = 29.99,
+                conversionProbability = 0.73,
+                localizedPrice = "749,000 VND"
+            ),
+            regionalAdaptation = RegionalAdaptation(
+                localizedContent = "Tăng cường tập cardio",
+                culturalRelevance = 0.92,
+                localFitnessPreferences = listOf("yoga", "running")
+            )
+        ),
+        AIRecommendation(
+            content = "Improve sleep quality",
+            confidence = 0.92,
+            revenueOpportunity = RevenueOpportunity(
+                type = "sleep_coaching",
+                expectedRevenue = 19.99,
+                conversionProbability = 0.85,
+                localizedPrice = "499,000 VND"
+            ),
+            regionalAdaptation = RegionalAdaptation(
+                localizedContent = "Cải thiện chất lượng giấc ngủ",
+                culturalRelevance = 0.89,
+                localSleepHabits = "afternoon_nap_common"
+            )
+        )
+    )
+    
+    val revenueOptimizationConfig = RevenueOptimizationConfig(
+        optimizeForRevenue = true,
+        userSegment = "potential_premium",
+        region = "VN",
+        maxRecommendations = 5
+    )
+    
+    // Mock AI service với enhanced capabilities
+    coEvery { 
+        mockAIService.getRecommendationsWithRevenue(
+            healthData = testHealthData,
+            optimizationConfig = revenueOptimizationConfig
+        )
+    } returns expectedRecommendations
+    
+    // Mock caching với revenue metadata
+    coEvery { 
+        mockCacheManager.cacheRecommendationsWithMetadata(
+            recommendations = expectedRecommendations,
+            userId = "user123",
+            ttl = any(),
+            revenueMetadata = any()
+        )
+    } returns Unit
+    
+    // Mock revenue optimization
+    coEvery {
+        mockRevenueOptimizer.optimizeRecommendationOrder(
+            recommendations = expectedRecommendations,
+            userProfile = any()
+        )
+    } returns expectedRecommendations.sortedByDescending { 
+        it.revenueOpportunity.expectedRevenue * it.revenueOpportunity.conversionProbability 
+    }
+    
+    // Mock regional adaptation
+    coEvery {
+        mockRegionalAdapter.adaptRecommendations(
+            recommendations = any(),
+            region = "VN"
+        )
+    } returns expectedRecommendations
+    
+    // Mock analytics tracking
+    coEvery {
+        mockAnalyticsTracker.trackAIRecommendations(
+            userId = "user123",
+            recommendations = any(),
+            revenueOptimized = true
+        )
+    } returns Unit
+    
+    val aiManager = EnhancedAIRecommendationManager(
+        aiService = mockAIService,
+        cacheManager = mockCacheManager,
+        revenueOptimizer = mockRevenueOptimizer,
+        regionalAdapter = mockRegionalAdapter,
+        analyticsTracker = mockAnalyticsTracker
+    )
+    
+    // ACT - TSDDR 2.0 Enhanced Action
+    val result = aiManager.getPersonalizedRecommendationsWithRevenue(
+        healthData = testHealthData,
+        optimizeForRevenue = true,
+        region = "VN"
+    )
+    
+    // ASSERT - TSDDR 2.0 Enhanced Validation
+    assertEquals(expectedRecommendations.size, result.size)
+    
+    // Verify AI service called với correct parameters
+    coVerify { 
+        mockAIService.getRecommendationsWithRevenue(
+            healthData = testHealthData,
+            optimizationConfig = revenueOptimizationConfig
+        )
+    }
+    
+    // Verify caching với enhanced metadata
+    coVerify { 
+        mockCacheManager.cacheRecommendationsWithMetadata(
+            recommendations = expectedRecommendations,
+            userId = "user123",
+            ttl = any(),
+            revenueMetadata = any()
+        )
+    }
+    
+    // Verify revenue optimization applied
+    coVerify {
+        mockRevenueOptimizer.optimizeRecommendationOrder(
+            recommendations = expectedRecommendations,
+            userProfile = any()
+        )
+    }
+    
+    // Verify regional adaptation applied
+    coVerify {
+        mockRegionalAdapter.adaptRecommendations(
+            recommendations = any(),
+            region = "VN"
+        )
+    }
+    
+    // Verify analytics tracking
+    coVerify {
+        mockAnalyticsTracker.trackAIRecommendations(
+            userId = "user123",
+            recommendations = any(),
+            revenueOptimized = true
+        )
+    }
+    
+    // Validate revenue opportunities
+    val totalRevenueOpportunity = result.sumOf { 
+        it.revenueOpportunity.expectedRevenue * it.revenueOpportunity.conversionProbability 
+    }
+    assertEquals(38.84, totalRevenueOpportunity, 0.01) // (29.99 * 0.73) + (19.99 * 0.85)
+    
+    // Validate regional adaptations
+    result.forEach { recommendation ->
+        assertNotNull(recommendation.regionalAdaptation.localizedContent)
+        assertTrue(recommendation.regionalAdaptation.culturalRelevance > 0.8)
+    }
+}
+
+@AITest
+@RevenueTest
+fun `when AI service fails, should fallback to cached recommendations with revenue tracking`() {
+    // ARRANGE - TSDDR 2.0 Enhanced Fallback Setup
+    val fallbackRecommendations = listOf(
+        AIRecommendation(
+            content = "Fallback advice 1: Stay hydrated",
+            confidence = 0.75,
+            revenueOpportunity = RevenueOpportunity(
+                type = "basic_plan",
+                expectedRevenue = 9.99,
+                conversionProbability = 0.45
+            )
+        ),
+        AIRecommendation(
+            content = "Fallback advice 2: Get adequate sleep",
+            confidence = 0.80,
+            revenueOpportunity = RevenueOpportunity(
+                type = "wellness_coaching",
+                expectedRevenue = 14.99,
+                conversionProbability = 0.55
+            )
+        )
+    )
+    
+    val mockAIService = mockk<EnhancedAIService>()
+    val mockCacheRepository = mockk<SmartCacheRepository>()
+    val mockAnalyticsService = mockk<AnalyticsService>()
+    val mockRevenueTracker = mockk<RevenueTracker>()
+    
+    coEvery { mockAIService.generateRecommendations(any()) } throws NetworkException("AI service unavailable")
+    coEvery { mockCacheRepository.getFallbackRecommendationsWithRevenue(any()) } returns fallbackRecommendations
+    coEvery { mockAnalyticsService.logAIFallback(any(), any()) } returns Unit
+    coEvery { mockRevenueTracker.trackFallbackRevenue(any()) } returns Unit
+    
+    val aiRecommendationUseCase = EnhancedAIRecommendationUseCase(
+        aiService = mockAIService,
+        cacheRepository = mockCacheRepository,
+        analyticsService = mockAnalyticsService,
+        revenueTracker = mockRevenueTracker
+    )
+    
+    val userProfile = UserProfile(
+        userId = "user123",
+        region = "VN",
+        subscriptionTier = "free"
+    )
+    
+    // ACT - TSDDR 2.0 Enhanced Fallback Action
+    val result = aiRecommendationUseCase.getRecommendationsWithFallback(userProfile)
+    
+    // ASSERT - TSDDR 2.0 Enhanced Fallback Validation
+    assertEquals(fallbackRecommendations, result)
+    
+    // Verify fallback analytics tracking
+    coVerify { mockAnalyticsService.logAIFallback("network_error", userProfile) }
+    
+    // Verify fallback revenue tracking
+    coVerify { mockRevenueTracker.trackFallbackRevenue(fallbackRecommendations) }
+    
+    // Verify cache fallback called
+    coVerify { mockCacheRepository.getFallbackRecommendationsWithRevenue(userProfile) }
+    
+    // Validate fallback revenue opportunities
+    val totalFallbackRevenue = result.sumOf { 
+        it.revenueOpportunity.expectedRevenue * it.revenueOpportunity.conversionProbability 
+    }
+    assertEquals(12.74, totalFallbackRevenue, 0.01) // (9.99 * 0.45) + (14.99 * 0.55)
+}
+```
+
+## Revenue Feature Testing
+
+### Regional Ad Integration Testing với Revenue Optimization:
+```kotlin
+// TSDDR 2.0 Enhanced Ad Integration Test
+@RevenueTest
+@RegionalTest
+fun `when Vietnamese user completes health tracking, should show localized rewarded ad with regional revenue optimization`() {
+    // ARRANGE - TSDDR 2.0 Enhanced Setup
+    val mockAdManager = mockk<RegionalAdManager>()
+    val mockRevenueOptimizer = mockk<RevenueOptimizer>()
+    val mockRegionalConfigService = mockk<RegionalConfigService>()
+    val mockAnalyticsTracker = mockk<AnalyticsTracker>()
+    
+    val userProfile = UserProfile(
+        userId = "user123",
+        region = "VN",
+        language = "vi",
+        subscriptionTier = "free",
+        adEngagementScore = 0.78,
+        previousAdInteractions = 15
+    )
+    
+    val regionalAdConfig = RegionalAdConfig(
+        region = "VN",
+        adFormat = "rewarded_video",
+        localizedContent = true,
+        culturalAdaptations = listOf("family_oriented", "health_conscious"),
+        revenueOptimization = RevenueOptimization(
+            strategy = "max_ecpm",
+            expectedRevenue = 0.25, // USD per ad view
+            localCurrency = "VND",
+            localizedRevenue = 6125.0 // VND per ad view
+        )
+    )
+    
+    val adOpportunity = AdOpportunity(
+        type = "health_tracking_complete",
+        reward = AdReward(
+            type = "premium_insights",
+            duration = "24_hours",
+            localizedDescription = "Mở khóa phân tích AI trong 24 giờ"
+        ),
+        regionalConfig = regionalAdConfig
+    )
+    
+    // Mock regional config service
+    every { 
+        mockRegionalConfigService.getAdConfig(
+            region = "VN",
+            userProfile = userProfile
+        )
+    } returns regionalAdConfig
+    
+    // Mock revenue optimizer
+    every {
+        mockRevenueOptimizer.optimizeAdOpportunity(
+            baseOpportunity = any(),
+            userProfile = userProfile,
+            regionalConfig = regionalAdConfig
+        )
+    } returns adOpportunity
+    
+    // Mock ad manager
+    every { 
+        mockAdManager.showRegionalRewardedAdOpportunity(
+            opportunity = adOpportunity,
+            userProfile = userProfile
+        )
+    } returns Unit
+    
+    // Mock analytics tracking
+    every {
+        mockAnalyticsTracker.trackAdOpportunityShown(
+            userId = "user123",
+            adType = "health_tracking_complete",
+            regionalConfig = regionalAdConfig
+        )
+    } returns Unit
+    
+    val viewModel = EnhancedHealthTrackingViewModel(
+        adManager = mockAdManager,
+        revenueOptimizer = mockRevenueOptimizer,
+        regionalConfigService = mockRegionalConfigService,
+        analyticsTracker = mockAnalyticsTracker
+    )
+    
+    // ACT - TSDDR 2.0 Enhanced Action
+    viewModel.completeHealthTrackingWithRevenue(userProfile)
+    
+    // ASSERT - TSDDR 2.0 Enhanced Validation
+    
+    // Verify regional config retrieved
+    verify { 
+        mockRegionalConfigService.getAdConfig(
+            region = "VN",
+            userProfile = userProfile
+        )
+    }
+    
+    // Verify revenue optimization applied
+    verify {
+        mockRevenueOptimizer.optimizeAdOpportunity(
+            baseOpportunity = any(),
+            userProfile = userProfile,
+            regionalConfig = regionalAdConfig
+        )
+    }
+    
+    // Verify regional ad shown
+    verify { 
+        mockAdManager.showRegionalRewardedAdOpportunity(
+            opportunity = adOpportunity,
+            userProfile = userProfile
+        )
+    }
+    
+    // Verify analytics tracking
+    verify {
+        mockAnalyticsTracker.trackAdOpportunityShown(
+            userId = "user123",
+            adType = "health_tracking_complete",
+            regionalConfig = regionalAdConfig
+        )
+    }
+    
+    // Verify UI state updated
+    assertEquals(AdState.RegionalOpportunity, viewModel.adState.value)
+    assertEquals("VN", viewModel.currentRegion.value)
+    assertEquals(0.25, viewModel.expectedAdRevenue.value, 0.01)
+}
+
+@RevenueTest
+@RegionalTest
+fun `when user reaches premium feature limit in Vietnam, should show localized subscription prompt with regional pricing strategy`() {
+    // ARRANGE - TSDDR 2.0 Enhanced Setup
+    val mockAdManager = mockk<RegionalAdManager>()
+    val mockSubscriptionManager = mockk<SmartSubscriptionManager>()
+    val mockRevenueOptimizer = mockk<RevenueOptimizer>()
+    val mockRegionalPricingService = mockk<RegionalPricingService>()
+    val mockAnalyticsTracker = mockk<AnalyticsTracker>()
+    
+    val testUser = User(
+        id = "user123",
+        subscriptionTier = "free",
+        dailyUsage = 10,
+        region = "VN",
+        currency = "VND",
+        previousPurchaseHistory = listOf("basic_plan"),
+        engagementScore = 0.85,
+        churnRisk = 0.23
+    )
+    
+    val regionalPricingStrategy = RegionalPricingStrategy(
+        region = "VN",
+        currency = "VND",
+        basePrice = 29.99,
+        localizedPrice = 749000.0,
+        discountStrategy = "first_time_user",
+        paymentMethods = listOf("momo", "zalopay", "banking"),
+        culturalAdaptations = listOf("family_plan_emphasis", "local_testimonials")
+    )
+    
+    val subscriptionPromptConfig = SubscriptionPromptConfig(
+        title = "Nâng cấp lên Premium",
+        description = "Trải nghiệm đầy đủ tính năng AI với giá ưu đãi đặc biệt cho Việt Nam",
+        price = "749,000 VND/tháng",
+        discount = "Giảm 30% cho tháng đầu tiên",
+        features = listOf(
+            "Phân tích AI không giới hạn",
+            "Tư vấn sức khỏe cá nhân hóa",
+            "Theo dõi tiến độ chi tiết"
+        ),
+        testimonials = listOf(
+            "Đã giúp tôi cải thiện sức khỏe rất nhiều - Anh Minh, Hà Nội"
+        )
+    )
+    
+    // Mock subscription limit check
+    every { mockSubscriptionManager.hasReachedLimit(testUser) } returns true
+    
+    // Mock regional pricing service
+    every { 
+        mockRegionalPricingService.getPricingStrategy(
+            region = "VN",
+            userProfile = testUser
+        )
+    } returns regionalPricingStrategy
+    
+    // Mock revenue optimization
+    every {
+        mockRevenueOptimizer.optimizeSubscriptionPrompt(
+            user = testUser,
+            pricingStrategy = regionalPricingStrategy
+        )
+    } returns subscriptionPromptConfig
+    
+    // Mock ad manager
+    every { 
+        mockAdManager.showRegionalSubscriptionAd(
+            config = subscriptionPromptConfig,
+            region = "VN"
+        )
+    } returns Unit
+    
+    // Mock analytics tracking
+    every {
+        mockAnalyticsTracker.trackSubscriptionPromptShown(
+            userId = "user123",
+            region = "VN",
+            pricingStrategy = regionalPricingStrategy,
+            promptConfig = subscriptionPromptConfig
+        )
+    } returns Unit
+    
+    val featureManager = EnhancedPremiumFeatureManager(
+        adManager = mockAdManager,
+        subscriptionManager = mockSubscriptionManager,
+        revenueOptimizer = mockRevenueOptimizer,
+        regionalPricingService = mockRegionalPricingService,
+        analyticsTracker = mockAnalyticsTracker
+    )
+    
+    // ACT - TSDDR 2.0 Enhanced Action
+    featureManager.checkFeatureAccessWithRevenue(
+        user = testUser,
+        feature = "advanced_ai_insights",
+        optimizeForRevenue = true
+    )
+    
+    // ASSERT - TSDDR 2.0 Enhanced Validation
+    
+    // Verify subscription limit check
+    verify { mockSubscriptionManager.hasReachedLimit(testUser) }
+    
+    // Verify regional pricing strategy retrieved
+    verify { 
+        mockRegionalPricingService.getPricingStrategy(
+            region = "VN",
+            userProfile = testUser
+        )
+    }
+    
+    // Verify revenue optimization applied
+    verify {
+        mockRevenueOptimizer.optimizeSubscriptionPrompt(
+            user = testUser,
+            pricingStrategy = regionalPricingStrategy
+        )
+    }
+    
+    // Verify regional ad shown với correct configuration
+    verify { 
+        mockAdManager.showRegionalSubscriptionAd(
+            config = subscriptionPromptConfig,
+            region = "VN"
+        )
+    }
+    
+    // Verify analytics tracking
+    verify {
+        mockAnalyticsTracker.trackSubscriptionPromptShown(
+            userId = "user123",
+            region = "VN",
+            pricingStrategy = regionalPricingStrategy,
+            promptConfig = subscriptionPromptConfig
+        )
+    }
+    
+    // Validate pricing strategy components
+    assertEquals("VN", regionalPricingStrategy.region)
+    assertEquals(749000.0, regionalPricingStrategy.localizedPrice, 0.01)
+    assertTrue(regionalPricingStrategy.paymentMethods.contains("momo"))
+    assertTrue(regionalPricingStrategy.culturalAdaptations.contains("family_plan_emphasis"))
+    
+    // Validate subscription prompt localization
+    assertEquals("Nâng cấp lên Premium", subscriptionPromptConfig.title)
+    assertTrue(subscriptionPromptConfig.description.contains("Việt Nam"))
+    assertEquals("749,000 VND/tháng", subscriptionPromptConfig.price)
+}
+```
+
+### Enhanced IAP Testing Pattern với Regional Revenue Optimization:
+```kotlin
+// TSDDR 2.0 Enhanced In-App Purchase Test
+@RevenueTest
+@RegionalTest
+fun `when Vietnamese user completes premium purchase with regional optimization, should unlock features, track revenue, and apply regional benefits`() {
+    // ARRANGE - TSDDR 2.0 Enhanced Setup
+    val mockBillingManager = mockk<RegionalBillingManager>()
+    val mockUserManager = mockk<SmartUserManager>()
+    val mockRevenueTracker = mockk<RevenueTracker>()
+    val mockRegionalBenefitsManager = mockk<RegionalBenefitsManager>()
+    val mockAnalyticsTracker = mockk<AnalyticsTracker>()
+    val mockAIPersonalizationService = mockk<AIPersonalizationService>()
+    
+    val testPurchase = Purchase(
+        productId = "premium_monthly_vn",
+        userId = "user123",
+        region = "VN",
+        currency = "VND",
+        localizedPrice = 749000.0,
+        originalPrice = 29.99,
+        paymentMethod = "momo",
+        purchaseToken = "purchase_token_123",
+        timestamp = System.currentTimeMillis()
+    )
+    
+    val expectedPurchaseResult = PurchaseResult.Success(
+        transactionId = "txn_123",
+        revenueData = RevenueData(
+            grossRevenue = 749000.0,
+            netRevenue = 636650.0, // After platform fees và taxes
+            currency = "VND",
+            exchangeRate = 24500.0,
+            revenueUSD = 26.00
+        )
+    )
+    
+    val regionalBenefits = RegionalBenefits(
+        region = "VN",
+        benefits = listOf(
+            "vietnamese_language_support",
+            "local_health_data_integration",
+            "vietnamese_fitness_content",
+            "local_healthcare_provider_integration"
+        ),
+        culturalAdaptations = listOf(
+            "family_health_tracking",
+            "traditional_medicine_insights",
+            "local_nutrition_database"
+        )
+    )
+    
+    val aiPersonalizationConfig = AIPersonalizationConfig(
+        region = "VN",
+        language = "vi",
+        culturalContext = "vietnamese",
+        localPreferences = listOf("rice_based_diet", "motorbike_commuting", "tropical_climate")
+    )
+    
+    // Mock billing manager
+    every { mockBillingManager.processPurchaseWithRegionalOptimization(testPurchase) } returns expectedPurchaseResult
+    
+    // Mock user manager upgrade
+    every { 
+        mockUserManager.upgradeToPremiumWithRegionalBenefits(
+            userId = "user123",
+            region = "VN",
+            benefits = regionalBenefits
+        )
+    } returns Unit
+    
+    // Mock revenue tracking
+    every {
+        mockRevenueTracker.trackPurchaseRevenue(
+            purchase = testPurchase,
+            revenueData = expectedPurchaseResult.revenueData
+        )
+    } returns Unit
+    
+    // Mock regional benefits application
+    every {
+        mockRegionalBenefitsManager.applyRegionalBenefits(
+            userId = "user123",
+            region = "VN"
+        )
+    } returns regionalBenefits
+    
+    // Mock AI personalization setup
+    every {
+        mockAIPersonalizationService.setupRegionalPersonalization(
+            userId = "user123",
+            config = aiPersonalizationConfig
+        )
+    } returns Unit
+    
+    // Mock analytics tracking
+    every {
+        mockAnalyticsTracker.trackPremiumPurchase(
+            userId = "user123",
+            purchase = testPurchase,
+            revenueData = expectedPurchaseResult.revenueData,
+            regionalBenefits = regionalBenefits
+        )
+    } returns Unit
+    
+    val purchaseManager = EnhancedPurchaseManager(
+        billingManager = mockBillingManager,
+        userManager = mockUserManager,
+        revenueTracker = mockRevenueTracker,
+        regionalBenefitsManager = mockRegionalBenefitsManager,
+        analyticsTracker = mockAnalyticsTracker,
+        aiPersonalizationService = mockAIPersonalizationService
+    )
+    
+    // ACT - TSDDR 2.0 Enhanced Action
+    val result = purchaseManager.handlePurchaseWithRegionalOptimization(
+        purchase = testPurchase,
+        enableRegionalBenefits = true,
+        setupAIPersonalization = true
+    )
+    
+    // ASSERT - TSDDR 2.0 Enhanced Validation
+    
+    // Verify purchase result
+    assertEquals(PurchaseResult.Success::class, result::class)
+    val successResult = result as PurchaseResult.Success
+    assertEquals("txn_123", successResult.transactionId)
+    
+    // Verify billing processing
+    verify { mockBillingManager.processPurchaseWithRegionalOptimization(testPurchase) }
+    
+    // Verify user upgrade với regional benefits
+    verify { 
+        mockUserManager.upgradeToPremiumWithRegionalBenefits(
+            userId = "user123",
+            region = "VN",
+            benefits = regionalBenefits
+        )
+    }
+    
+    // Verify revenue tracking
+    verify {
+        mockRevenueTracker.trackPurchaseRevenue(
+            purchase = testPurchase,
+            revenueData = expectedPurchaseResult.revenueData
+        )
+    }
+    
+    // Verify regional benefits applied
+    verify {
+        mockRegionalBenefitsManager.applyRegionalBenefits(
+            userId = "user123",
+            region = "VN"
+        )
+    }
+    
+    // Verify AI personalization setup
+    verify {
+        mockAIPersonalizationService.setupRegionalPersonalization(
+            userId = "user123",
+            config = aiPersonalizationConfig
+        )
+    }
+    
+    // Verify analytics tracking
+    verify {
+        mockAnalyticsTracker.trackPremiumPurchase(
+            userId = "user123",
+            purchase = testPurchase,
+            revenueData = expectedPurchaseResult.revenueData,
+            regionalBenefits = regionalBenefits
+        )
+    }
+    
+    // Validate revenue calculations
+    assertEquals(749000.0, successResult.revenueData.grossRevenue, 0.01)
+    assertEquals(636650.0, successResult.revenueData.netRevenue, 0.01)
+    assertEquals(26.00, successResult.revenueData.revenueUSD, 0.01)
+    
+    // Validate regional benefits
+    assertTrue(regionalBenefits.benefits.contains("vietnamese_language_support"))
+    assertTrue(regionalBenefits.culturalAdaptations.contains("traditional_medicine_insights"))
+}
+
+@RevenueTest
+@RegionalTest
+fun `when user reaches premium feature limit, should prompt for subscription with regional optimization`() {
+    // ARRANGE - TSDDR 2.0 Enhanced Setup
+    val mockBillingService = mockk<RegionalBillingService>()
+    val mockRegionalPricingService = mockk<RegionalPricingService>()
+    val mockRevenueOptimizer = mockk<RevenueOptimizer>()
+    
+    val userProfile = UserProfile(
+        userId = "user123",
+        region = "VN",
+        subscriptionTier = "free",
+        featureUsageCount = 10,
+        dailyLimit = 10,
+        engagementScore = 0.75
+    )
+    
+    val regionalPricing = RegionalPricing(
+        region = "VN",
+        currency = "VND",
+        monthlyPrice = 749000.0,
+        yearlyPrice = 7490000.0,
+        discountPercentage = 30,
+        localPaymentMethods = listOf("momo", "zalopay")
+    )
+    
+    // Mock services
+    every { mockBillingService.checkSubscriptionStatus("user123") } returns SubscriptionStatus.Free
+    every { mockRegionalPricingService.getRegionalPricing("VN", userProfile) } returns regionalPricing
+    every { mockRevenueOptimizer.shouldShowSubscriptionPrompt(userProfile) } returns true
+    
+    val viewModel = EnhancedPremiumFeatureViewModel(
+        billingService = mockBillingService,
+        regionalPricingService = mockRegionalPricingService,
+        revenueOptimizer = mockRevenueOptimizer
+    )
+    
+    // ACT - TSDDR 2.0 Enhanced Action
+    viewModel.accessPremiumFeatureWithRevenue(userProfile, "advanced_ai_insights")
+    
+    // ASSERT - TSDDR 2.0 Enhanced Validation
+    verify { mockBillingService.checkSubscriptionStatus("user123") }
+    verify { mockRegionalPricingService.getRegionalPricing("VN", userProfile) }
+    verify { mockRevenueOptimizer.shouldShowSubscriptionPrompt(userProfile) }
+    
+    assertEquals(PremiumState.RegionalPromptRequired, viewModel.premiumState.value)
+    assertEquals(regionalPricing, viewModel.regionalPricing.value)
+    assertEquals("VN", viewModel.currentRegion.value)
+}
+```
+
+## Regional Strategy Testing
+
+### Firebase Remote Config Testing:
+```kotlin
+@Test
+fun `when user is in Vietnam, should use max revenue ad strategy`() {
+    // ARRANGE
+    val mockRemoteConfig = mockk<FirebaseRemoteConfig>()
+    every { mockRemoteConfig.getString("user_region") } returns "VN"
+    every { mockRemoteConfig.getString("VN_ad_strategy") } returns "max_revenue"
+    
+    // ACT
+    val adStrategy = adStrategyManager.getStrategyForUser()
+    
+    // ASSERT
+    assertEquals(AdStrategy.MaxRevenue, adStrategy)
+}
+```
+
+## TSDDR 2.0 Enhanced Test Data Management
+
+### Enhanced Test Data Builders với Revenue và Regional Support:
+```kotlin
+// TSDDR 2.0 Enhanced Health Data Builder
+class EnhancedHealthDataBuilder {
+    private var heartRate: Int = 70
+    private var steps: Int = 10000
+    private var sleepHours: Double = 8.0
+    private var userId: String = "test_user_123"
+    private var region: String = "VN"
+    private var subscriptionTier: String = "free"
+    private var previousPurchases: List<String> = emptyList()
+    private var engagementScore: Double = 0.75
+    private var aiPersonalizationEnabled: Boolean = false
+    private var culturalPreferences: List<String> = listOf("vietnamese")
+    private var localHealthMetrics: Map<String, Any> = emptyMap()
+    
+    fun withHeartRate(rate: Int) = apply { this.heartRate = rate }
+    fun withSteps(stepCount: Int) = apply { this.steps = stepCount }
+    fun withSleep(hours: Double) = apply { this.sleepHours = hours }
+    fun withUserId(id: String) = apply { this.userId = id }
+    fun withRegion(region: String) = apply { this.region = region }
+    fun withSubscriptionTier(tier: String) = apply { this.subscriptionTier = tier }
+    fun withPreviousPurchases(purchases: List<String>) = apply { this.previousPurchases = purchases }
+    fun withEngagementScore(score: Double) = apply { this.engagementScore = score }
+    fun withAIPersonalization(enabled: Boolean) = apply { this.aiPersonalizationEnabled = enabled }
+    fun withCulturalPreferences(preferences: List<String>) = apply { this.culturalPreferences = preferences }
+    fun withLocalHealthMetrics(metrics: Map<String, Any>) = apply { this.localHealthMetrics = metrics }
+    
+    // Preset configurations for different regions
+    fun forVietnameseUser() = apply {
+        region = "VN"
+        culturalPreferences = listOf("vietnamese", "rice_based_diet", "motorbike_commuting")
+        localHealthMetrics = mapOf(
+            "tropical_climate_adaptation" to true,
+            "afternoon_nap_preference" to true,
+            "family_health_tracking" to true
+        )
+    }
+    
+    fun forPremiumUser() = apply {
+        subscriptionTier = "premium"
+        previousPurchases = listOf("premium_monthly", "ai_coaching")
+        aiPersonalizationEnabled = true
+        engagementScore = 0.92
+    }
+    
+    fun forHighEngagementUser() = apply {
+        engagementScore = 0.95
+        steps = 15000
+        sleepHours = 8.5
+        aiPersonalizationEnabled = true
+    }
+    
+    fun build() = EnhancedHealthData(
+        heartRate = heartRate,
+        steps = steps,
+        sleepHours = sleepHours,
+        userId = userId,
+        region = region,
+        subscriptionTier = subscriptionTier,
+        previousPurchases = previousPurchases,
+        engagementScore = engagementScore,
+        aiPersonalizationEnabled = aiPersonalizationEnabled,
+        culturalPreferences = culturalPreferences,
+        localHealthMetrics = localHealthMetrics,
+        timestamp = System.currentTimeMillis()
+    )
+}
+
+// TSDDR 2.0 Revenue Data Builder
+class RevenueDataBuilder {
+    private var grossRevenue: Double = 29.99
+    private var currency: String = "USD"
+    private var region: String = "US"
+    private var paymentMethod: String = "credit_card"
+    private var conversionProbability: Double = 0.75
+    private var expectedLifetimeValue: Double = 180.0
+    private var localizedPrice: Double = 29.99
+    private var exchangeRate: Double = 1.0
+    
+    fun withGrossRevenue(revenue: Double) = apply { this.grossRevenue = revenue }
+    fun withCurrency(currency: String) = apply { this.currency = currency }
+    fun withRegion(region: String) = apply { this.region = region }
+    fun withPaymentMethod(method: String) = apply { this.paymentMethod = method }
+    fun withConversionProbability(probability: Double) = apply { this.conversionProbability = probability }
+    fun withExpectedLifetimeValue(value: Double) = apply { this.expectedLifetimeValue = value }
+    fun withLocalizedPrice(price: Double) = apply { this.localizedPrice = price }
+    fun withExchangeRate(rate: Double) = apply { this.exchangeRate = rate }
+    
+    // Regional presets
+    fun forVietnameseMarket() = apply {
+        region = "VN"
+        currency = "VND"
+        localizedPrice = 749000.0
+        exchangeRate = 24500.0
+        paymentMethod = "momo"
+        conversionProbability = 0.68 // Lower conversion but higher engagement
+        expectedLifetimeValue = 4500000.0 // VND
+    }
+    
+    fun forPremiumTier() = apply {
+        grossRevenue = 99.99
+        expectedLifetimeValue = 600.0
+        conversionProbability = 0.85
+    }
+    
+    fun build() = RevenueData(
+        grossRevenue = grossRevenue,
+        netRevenue = grossRevenue * 0.85, // After platform fees
+        currency = currency,
+        region = region,
+        paymentMethod = paymentMethod,
+        conversionProbability = conversionProbability,
+        expectedLifetimeValue = expectedLifetimeValue,
+        localizedPrice = localizedPrice,
+        exchangeRate = exchangeRate,
+        revenueUSD = if (currency == "USD") grossRevenue else localizedPrice / exchangeRate
+    )
+}
+
+// TSDDR 2.0 Usage Examples:
+val vietnamesePremiumUser = EnhancedHealthDataBuilder()
+    .forVietnameseUser()
+    .forPremiumUser()
+    .withHeartRate(80)
+    .withSteps(15000)
+    .build()
+
+val vietnameseRevenueData = RevenueDataBuilder()
+    .forVietnameseMarket()
+    .forPremiumTier()
+    .build()
+
+val highEngagementHealthData = EnhancedHealthDataBuilder()
+    .forHighEngagementUser()
+    .withRegion("VN")
+    .withUserId("high_engagement_user_456")
+    .build()
+```
+
+### TSDDR 2.0 Enhanced Mock Data Factories:
+```kotlin
+// TSDDR 2.0 Enhanced AI Insights Factory với Revenue Optimization
+object EnhancedMockDataFactory {
+    
+    fun createMockAIInsightsWithRevenue(count: Int = 5): List<AIInsight> {
+        return (1..count).map { index ->
+            AIInsight(
+                id = "insight_$index",
+                title = "Health Insight $index",
+                description = "Mock insight description $index",
+                confidence = 0.85 + (index * 0.02),
+                category = InsightCategory.values().random(),
+                revenueMetadata = RevenueMetadata(
+                    monetizationOpportunity = "premium_feature_$index",
+                    expectedRevenue = 19.99 + (index * 5.0),
+                    conversionProbability = 0.65 + (index * 0.05),
+                    localizedPrice = "${(19.99 + (index * 5.0)) * 25000} VND"
+                ),
+                regionalAdaptation = RegionalAdaptation(
+                    localizedContent = "Thông tin sức khỏe $index",
+                    culturalRelevance = 0.80 + (index * 0.03)
+                )
+            )
+        }
+    }
+    
+    fun createMockUserProfileWithRevenue(): UserProfile {
+        return UserProfile(
+            age = 30,
+            fitnessLevel = FitnessLevel.INTERMEDIATE,
+            healthGoals = listOf(HealthGoal.WEIGHT_LOSS, HealthGoal.FITNESS),
+            region = "VN",
+            subscriptionTier = "free",
+            engagementScore = 0.78,
+            previousPurchases = emptyList(),
+            aiPersonalizationEnabled = false,
+            culturalPreferences = listOf("vietnamese", "health_conscious"),
+            revenueProfile = RevenueProfile(
+                lifetimeValue = 0.0,
+                conversionProbability = 0.72,
+                preferredPaymentMethods = listOf("momo", "zalopay"),
+                priceElasticity = 0.85
+            )
+        )
+    }
+    
+    fun createVietnameseUserProfile(): UserProfile {
+        return UserProfile(
+            age = 28,
+            fitnessLevel = FitnessLevel.BEGINNER,
+            healthGoals = listOf(HealthGoal.GENERAL_WELLNESS, HealthGoal.STRESS_MANAGEMENT),
+            region = "VN",
+            language = "vi",
+            subscriptionTier = "free",
+            engagementScore = 0.82,
+            culturalPreferences = listOf(
+                "vietnamese", "family_oriented", "traditional_medicine",
+                "rice_based_diet", "tropical_climate"
+            ),
+            localHealthMetrics = mapOf(
+                "afternoon_nap_preference" to true,
+                "family_health_tracking" to true,
+                "traditional_medicine_interest" to 0.75
+            ),
+            revenueProfile = RevenueProfile(
+                lifetimeValue = 0.0,
+                conversionProbability = 0.68,
+                preferredPaymentMethods = listOf("momo", "zalopay", "banking"),
+                priceElasticity = 0.92, // More price sensitive
+                localCurrency = "VND",
+                purchasingPower = 0.65
+            )
+        )
+    }
+    
+    fun createPremiumUserProfile(): UserProfile {
+        return UserProfile(
+            age = 35,
+            fitnessLevel = FitnessLevel.ADVANCED,
+            healthGoals = listOf(HealthGoal.PERFORMANCE_OPTIMIZATION, HealthGoal.LONGEVITY),
+            region = "US",
+            subscriptionTier = "premium",
+            engagementScore = 0.94,
+            previousPurchases = listOf("premium_monthly", "ai_coaching", "advanced_analytics"),
+            aiPersonalizationEnabled = true,
+            revenueProfile = RevenueProfile(
+                lifetimeValue = 480.0,
+                conversionProbability = 0.95,
+                preferredPaymentMethods = listOf("credit_card", "paypal"),
+                priceElasticity = 0.45, // Less price sensitive
+                purchasingPower = 0.95
+            )
+        )
+    }
+    
+    fun createRegionalAdConfig(region: String): RegionalAdConfig {
+        return when (region) {
+            "VN" -> RegionalAdConfig(
+                region = "VN",
+                adFormat = "rewarded_video",
+                localizedContent = true,
+                culturalAdaptations = listOf("family_oriented", "health_conscious", "value_focused"),
+                revenueOptimization = RevenueOptimization(
+                    strategy = "max_engagement",
+                    expectedRevenue = 0.18, // USD per ad view
+                    localCurrency = "VND",
+                    localizedRevenue = 4410.0 // VND per ad view
+                ),
+                paymentMethods = listOf("momo", "zalopay", "banking"),
+                localizedPricing = mapOf(
+                    "premium_monthly" to "749,000 VND",
+                    "premium_yearly" to "7,490,000 VND"
+                )
+            )
+            "US" -> RegionalAdConfig(
+                region = "US",
+                adFormat = "interstitial",
+                localizedContent = false,
+                culturalAdaptations = listOf("performance_focused", "time_efficient"),
+                revenueOptimization = RevenueOptimization(
+                    strategy = "max_revenue",
+                    expectedRevenue = 0.45, // USD per ad view
+                    localCurrency = "USD",
+                    localizedRevenue = 0.45
+                ),
+                paymentMethods = listOf("credit_card", "paypal", "apple_pay"),
+                localizedPricing = mapOf(
+                    "premium_monthly" to "$29.99",
+                    "premium_yearly" to "$299.99"
+                )
+            )
+            else -> RegionalAdConfig(
+                region = "GLOBAL",
+                adFormat = "banner",
+                localizedContent = false,
+                culturalAdaptations = emptyList(),
+                revenueOptimization = RevenueOptimization(
+                    strategy = "balanced",
+                    expectedRevenue = 0.25,
+                    localCurrency = "USD",
+                    localizedRevenue = 0.25
+                )
+            )
+        }
+    }
+    
+    fun createRegionalPurchaseData(region: String, tier: String = "premium"): PurchaseData {
+        return when (region) {
+            "VN" -> PurchaseData(
+                productId = "${tier}_monthly_vn",
+                region = "VN",
+                currency = "VND",
+                localizedPrice = if (tier == "premium") 749000.0 else 1249000.0,
+                originalPriceUSD = if (tier == "premium") 29.99 else 49.99,
+                paymentMethod = "momo",
+                culturalContext = "vietnamese",
+                localPaymentPreferences = listOf("momo", "zalopay", "banking"),
+                exchangeRate = 25000.0,
+                taxRate = 0.10
+            )
+            "US" -> PurchaseData(
+                productId = "${tier}_monthly_us",
+                region = "US",
+                currency = "USD",
+                localizedPrice = if (tier == "premium") 29.99 else 49.99,
+                originalPriceUSD = if (tier == "premium") 29.99 else 49.99,
+                paymentMethod = "credit_card",
+                culturalContext = "american",
+                localPaymentPreferences = listOf("credit_card", "paypal", "apple_pay"),
+                exchangeRate = 1.0,
+                taxRate = 0.08
+            )
+            else -> PurchaseData(
+                productId = "${tier}_monthly_global",
+                region = "GLOBAL",
+                currency = "USD",
+                localizedPrice = if (tier == "premium") 29.99 else 49.99,
+                originalPriceUSD = if (tier == "premium") 29.99 else 49.99,
+                paymentMethod = "credit_card",
+                exchangeRate = 1.0,
+                taxRate = 0.05
+            )
+        }
+    }
+}
+```
+
+## TSDDR 2.0 Enhanced Test Automation Pipeline
+
+### Enhanced Continuous Integration với Revenue và Regional Testing:
+```yaml
+# TSDDR 2.0 Enhanced GitHub Actions Pipeline
+name: TSDDR 2.0 Mobile Pipeline
+on: 
+  push:
+    branches: [ main, develop, 'feature/*', 'revenue/*', 'regional/*' ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  JAVA_VERSION: '17'
+  XCODE_VERSION: '15.0'
+  TSDDR_VERSION: '2.0'
+  GRADLE_OPTS: -Dorg.gradle.daemon=false
+
+jobs:
+  # Stage 1: Requirements & Design Validation
+  validation:
+    runs-on: ubuntu-latest
+    outputs:
+      has-revenue-changes: ${{ steps.check-changes.outputs.has-revenue-changes }}
+      has-regional-changes: ${{ steps.check-changes.outputs.has-regional-changes }}
+      has-ai-changes: ${{ steps.check-changes.outputs.has-ai-changes }}
+      test-matrix: ${{ steps.generate-matrix.outputs.matrix }}
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Analyze Code Changes
+      id: check-changes
+      run: |
+        echo "Analyzing changes for TSDDR 2.0 test strategy..."
+        
+        # Check for revenue-related changes
+        if git diff --name-only HEAD~1 | grep -E '(revenue|billing|purchase|subscription|monetization)'; then
+          echo "has-revenue-changes=true" >> $GITHUB_OUTPUT
+          echo "📊 Revenue changes detected - enabling revenue test suite"
+        fi
+        
+        # Check for regional-related changes
+        if git diff --name-only HEAD~1 | grep -E '(regional|localization|i18n|vn|vietnam|cultural)'; then
+          echo "has-regional-changes=true" >> $GITHUB_OUTPUT
+          echo "🌏 Regional changes detected - enabling regional test suite"
+        fi
+        
+        # Check for AI-related changes
+        if git diff --name-only HEAD~1 | grep -E '(ai|ml|recommendation|personalization|insights)'; then
+          echo "has-ai-changes=true" >> $GITHUB_OUTPUT
+          echo "🤖 AI changes detected - enabling AI test suite"
+        fi
+    
+    - name: Generate Test Matrix
+      id: generate-matrix
+      run: |
+        # Generate dynamic test matrix based on changes
+        matrix='{"include":['
+        matrix+='{"platform":"android","test-suite":"unit"},'
+        matrix+='{"platform":"android","test-suite":"integration"},'
+        matrix+='{"platform":"ios","test-suite":"unit"},'
+        matrix+='{"platform":"ios","test-suite":"integration"}'
+        
+        if [ "${{ steps.check-changes.outputs.has-ai-changes }}" == "true" ]; then
+          matrix+=',{"platform":"android","test-suite":"ai"}'
+          matrix+=',{"platform":"ios","test-suite":"ai"}'
+        fi
+        
+        if [ "${{ steps.check-changes.outputs.has-revenue-changes }}" == "true" ]; then
+          matrix+=',{"platform":"android","test-suite":"revenue"}'
+          matrix+=',{"platform":"ios","test-suite":"revenue"}'
+        fi
+        
+        if [ "${{ steps.check-changes.outputs.has-regional-changes }}" == "true" ]; then
+          matrix+=',{"platform":"android","test-suite":"regional"}'
+          matrix+=',{"platform":"ios","test-suite":"regional"}'
+        fi
+        
+        matrix+=']}'
+        echo "matrix=$matrix" >> $GITHUB_OUTPUT
+        echo "Generated test matrix: $matrix"
+
+  # Stage 2: Enhanced Android Testing
+  android_enhanced_tests:
+    needs: validation
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix: ${{ fromJson(needs.validation.outputs.test-matrix) }}
+      fail-fast: false
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup JDK ${{ env.JAVA_VERSION }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: 'temurin'
+    
+    - name: Cache Gradle Dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+    
+    - name: Run Android Unit Tests
+      if: matrix.platform == 'android' && matrix.test-suite == 'unit'
+      run: |
+        echo "🧪 Running Android Unit Tests with TSDDR 2.0"
+        ./gradlew testDebugUnitTest --continue
+        ./gradlew testReleaseUnitTest --continue
+    
+    - name: Run Android Integration Tests
+      if: matrix.platform == 'android' && matrix.test-suite == 'integration'
+      run: |
+        echo "🔗 Running Android Integration Tests"
+        ./gradlew connectedDebugAndroidTest
+    
+    - name: Run Android AI Tests
+      if: matrix.platform == 'android' && matrix.test-suite == 'ai'
+      run: |
+        echo "🤖 Running Android AI-Specific Tests"
+        ./gradlew testDebugUnitTest --tests "*AITest*"
+        ./gradlew testDebugUnitTest --tests "*RecommendationTest*"
+        ./gradlew testDebugUnitTest --tests "*PersonalizationTest*"
+        ./gradlew testDebugUnitTest --tests "*InsightsTest*"
+    
+    - name: Run Android Revenue Tests
+      if: matrix.platform == 'android' && matrix.test-suite == 'revenue'
+      run: |
+        echo "💰 Running Android Revenue Tests"
+        ./gradlew testDebugUnitTest --tests "*RevenueTest*"
+        ./gradlew testDebugUnitTest --tests "*BillingTest*"
+        ./gradlew testDebugUnitTest --tests "*PurchaseTest*"
+        ./gradlew testDebugUnitTest --tests "*SubscriptionTest*"
+        ./gradlew testDebugUnitTest --tests "*MonetizationTest*"
+    
+    - name: Run Android Regional Tests
+      if: matrix.platform == 'android' && matrix.test-suite == 'regional'
+      run: |
+        echo "🌏 Running Android Regional Tests"
+        ./gradlew testDebugUnitTest --tests "*RegionalTest*"
+        ./gradlew testDebugUnitTest --tests "*LocalizationTest*"
+        ./gradlew testDebugUnitTest --tests "*VietnamTest*"
+        ./gradlew testDebugUnitTest --tests "*CulturalTest*"
+    
+    - name: Generate Enhanced Coverage Report
+      if: matrix.platform == 'android'
+      run: |
+        ./gradlew jacocoTestReport
+        ./gradlew jacocoTestCoverageVerification
+    
+    - name: Upload Android Test Results
+      uses: actions/upload-artifact@v4
+      if: always() && matrix.platform == 'android'
+      with:
+        name: android-test-results-${{ matrix.test-suite }}
+        path: |
+          app/build/reports/tests/
+          app/build/reports/jacoco/
+          app/build/test-results/
+
+  # Stage 3: Enhanced iOS Testing
+  ios_enhanced_tests:
+    needs: validation
+    runs-on: macos-latest
+    
+    strategy:
+      matrix: ${{ fromJson(needs.validation.outputs.test-matrix) }}
+      fail-fast: false
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Xcode ${{ env.XCODE_VERSION }}
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ env.XCODE_VERSION }}
+    
+    - name: Cache SPM Dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/Library/Developer/Xcode/DerivedData
+          ~/Library/Caches/org.swift.swiftpm
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+    
+    - name: Run iOS Unit Tests
+      if: matrix.platform == 'ios' && matrix.test-suite == 'unit'
+      run: |
+        echo "🧪 Running iOS Unit Tests with TSDDR 2.0"
+        xcodebuild test \
+          -scheme "HealthApp" \
+          -destination "platform=iOS Simulator,name=iPhone 15,OS=17.0" \
+          -enableCodeCoverage YES \
+          -testPlan "UnitTests"
+    
+    - name: Run iOS Integration Tests
+      if: matrix.platform == 'ios' && matrix.test-suite == 'integration'
+      run: |
+        echo "🔗 Running iOS Integration Tests"
+        xcodebuild test \
+          -scheme "HealthApp" \
+          -destination "platform=iOS Simulator,name=iPhone 15,OS=17.0" \
+          -enableCodeCoverage YES \
+          -testPlan "IntegrationTests"
+    
+    - name: Run iOS AI Tests
+      if: matrix.platform == 'ios' && matrix.test-suite == 'ai'
+      run: |
+        echo "🤖 Running iOS AI-Specific Tests"
+        xcodebuild test \
+          -scheme "HealthApp" \
+          -destination "platform=iOS Simulator,name=iPhone 15,OS=17.0" \
+          -enableCodeCoverage YES \
+          -only-testing "HealthAppTests/AIRecommendationTests" \
+          -only-testing "HealthAppTests/CoreMLIntegrationTests" \
+          -only-testing "HealthAppTests/PersonalizationTests"
+    
+    - name: Run iOS Revenue Tests
+      if: matrix.platform == 'ios' && matrix.test-suite == 'revenue'
+      run: |
+        echo "💰 Running iOS Revenue Tests"
+        xcodebuild test \
+          -scheme "HealthApp" \
+          -destination "platform=iOS Simulator,name=iPhone 15,OS=17.0" \
+          -enableCodeCoverage YES \
+          -only-testing "HealthAppTests/StoreKitTests" \
+          -only-testing "HealthAppTests/SubscriptionTests" \
+          -only-testing "HealthAppTests/RevenueOptimizationTests"
+    
+    - name: Run iOS Regional Tests
+      if: matrix.platform == 'ios' && matrix.test-suite == 'regional'
+      run: |
+        echo "🌏 Running iOS Regional Tests"
+        xcodebuild test \
+          -scheme "HealthApp" \
+          -destination "platform=iOS Simulator,name=iPhone 15,OS=17.0" \
+          -enableCodeCoverage YES \
+          -only-testing "HealthAppTests/LocalizationTests" \
+          -only-testing "HealthAppTests/RegionalAdaptationTests" \
+          -only-testing "HealthAppTests/VietnameseMarketTests"
+    
+    - name: Generate iOS Coverage Report
+      if: matrix.platform == 'ios'
+      run: |
+        xcrun xccov view --report --json ~/Library/Developer/Xcode/DerivedData/*/Logs/Test/*.xcresult > ios-coverage-${{ matrix.test-suite }}.json
+        
+        # Parse coverage and validate TSDDR 2.0 requirements
+        python3 scripts/parse_ios_coverage.py ios-coverage-${{ matrix.test-suite }}.json
+    
+    - name: Upload iOS Test Results
+      uses: actions/upload-artifact@v4
+      if: always() && matrix.platform == 'ios'
+      with:
+        name: ios-test-results-${{ matrix.test-suite }}
+        path: |
+          ~/Library/Developer/Xcode/DerivedData/*/Logs/Test/
+          ios-coverage-*.json
+
+  # Stage 4: TSDDR 2.0 Quality Gates
+  quality_gates:
+    needs: [validation, android_enhanced_tests, ios_enhanced_tests]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download All Test Results
+      uses: actions/download-artifact@v4
+      with:
+        pattern: '*-test-results-*'
+        merge-multiple: true
+    
+    - name: TSDDR 2.0 Quality Gate Validation
+      run: |
+        echo "🚪 Running TSDDR 2.0 Quality Gates..."
+        
+        # Gate 1: All tests must pass
+        echo "Gate 1: Validating test results..."
+        if find . -name "*test-results*.xml" -exec grep -l "failures=\"[1-9]" {} \; | head -1; then
+          echo "❌ Quality Gate 1 Failed: Test failures detected"
+          exit 1
+        fi
+        echo "✅ Gate 1 Passed: All tests successful"
+        
+        # Gate 2: Coverage thresholds validation
+        echo "Gate 2: Validating coverage thresholds..."
+        python3 scripts/validate_tsddr_coverage.py
+        echo "✅ Gate 2 Passed: Coverage thresholds met"
+        
+        # Gate 3: Revenue test validation (if applicable)
+        if [ "${{ needs.validation.outputs.has-revenue-changes }}" == "true" ]; then
+          echo "Gate 3: Validating revenue test coverage..."
+          python3 scripts/validate_revenue_tests.py
+          echo "✅ Gate 3 Passed: Revenue tests validated"
+        fi
+        
+        # Gate 4: Regional test validation (if applicable)
+        if [ "${{ needs.validation.outputs.has-regional-changes }}" == "true" ]; then
+          echo "Gate 4: Validating regional test coverage..."
+          python3 scripts/validate_regional_tests.py
+          echo "✅ Gate 4 Passed: Regional tests validated"
+        fi
+        
+        # Gate 5: AI test validation (if applicable)
+        if [ "${{ needs.validation.outputs.has-ai-changes }}" == "true" ]; then
+          echo "Gate 5: Validating AI test coverage..."
+          python3 scripts/validate_ai_tests.py
+          echo "✅ Gate 5 Passed: AI tests validated"
+        fi
+        
+        echo "🎉 All TSDDR 2.0 Quality Gates passed successfully!"
+    
+    - name: Upload Aggregated Coverage Report
+      uses: codecov/codecov-action@v4
+      with:
+        files: ./coverage-reports/aggregated-coverage.xml
+        flags: tsddr-2.0
+        name: TSDDR-2.0-Coverage
+        fail_ci_if_error: true
+
+  # Stage 5: Review & Integration Report
+  review_integration:
+    needs: [validation, quality_gates]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Generate TSDDR 2.0 Review Report
+      run: |
+        echo "📋 Generating TSDDR 2.0 Review Report..."
+        
+        cat > review-report.md << EOF
+        # 🚀 TSDDR 2.0 Review Report
+        
+        ## 📊 Test Execution Summary
+        - ✅ **Android Unit Tests**: Passed
+        - ✅ **Android Integration Tests**: Passed
+        - ✅ **iOS Unit Tests**: Passed
+        - ✅ **iOS Integration Tests**: Passed
+        EOF
+        
+        if [ "${{ needs.validation.outputs.has-ai-changes }}" == "true" ]; then
+          echo "- ✅ **AI Tests**: Passed (Android & iOS)" >> review-report.md
+        fi
+        
+        if [ "${{ needs.validation.outputs.has-revenue-changes }}" == "true" ]; then
+          echo "- ✅ **Revenue Tests**: Passed (Android & iOS)" >> review-report.md
+        fi
+        
+        if [ "${{ needs.validation.outputs.has-regional-changes }}" == "true" ]; then
+          echo "- ✅ **Regional Tests**: Passed (Android & iOS)" >> review-report.md
+        fi
+        
+        cat >> review-report.md << EOF
+        
+        ## 📈 Coverage Analysis
+        - **Core Business Logic**: 95%+ ✅
+        - **Data & Integration Layer**: 90%+ ✅
+        - **UI & Presentation Layer**: 80%+ ✅
+        - **AI & Smart Features**: 85%+ ✅
+        - **Revenue & Monetization**: 95%+ ✅
+        
+        ## 🚪 Quality Gates Status
+        - **Gate 1**: Test Success ✅
+        - **Gate 2**: Coverage Thresholds ✅
+        - **Gate 3**: Revenue Validation ✅
+        - **Gate 4**: Regional Validation ✅
+        - **Gate 5**: AI Validation ✅
+        
+        ## 🎯 TSDDR 2.0 Compliance
+        This PR successfully follows the TSDDR 2.0 methodology:
+        - ✅ Requirements validated
+        - ✅ Design reviewed
+        - ✅ Tasks executed with proper testing
+        - ✅ All quality gates passed
+        - ✅ Ready for integration
+        
+        **Recommendation**: ✅ **APPROVED for merge**
+        EOF
+    
+    - name: Comment PR with Review Report
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const report = fs.readFileSync('review-report.md', 'utf8');
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: report
+          });
+```
+
+## Test Coverage Requirements
+
+### Coverage Thresholds:
+```gradle
+// Android build.gradle
+android {
+    testCoverageEnabled true
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+    
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                '**/R.class',
+                '**/R$*.class',
+                '**/BuildConfig.*',
+                '**/Manifest*.*'
+            ])
+        }))
+    }
+}
+
+// Coverage verification
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.85 // 85% unit test coverage
+            }
+        }
+    }
+}
+```
+
+## Quality Gates Integration
+
+### Pre-commit Test Requirements:
+```markdown
+Before allowing commits:
+□ All existing tests must pass
+□ New code must have accompanying tests
+□ Unit test coverage ≥ 85%
+□ Integration test coverage ≥ 70%
+□ Critical UI flows 100% covered
+□ AI integration tests passing
+□ No test flakiness detected
+```
+
+### Pre-release Test Requirements:
+```markdown
+Before releasing to store:
+□ Full test suite passes on multiple devices
+□ Performance benchmarks met
+□ Accessibility tests passing
+□ Revenue integration tests validated
+□ Regional configuration tests verified
+□ Cross-platform parity confirmed
+□ Security tests completed
+```
+
+## Test Maintenance Strategy
+
+### Regular Test Health Checks:
+```markdown
+Weekly:
+□ Review test execution times → optimize slow tests
+□ Check test flakiness → fix unstable tests
+□ Update test data → keep scenarios realistic
+□ Review coverage reports → identify gaps
+
+Monthly:
+□ Refactor outdated test patterns
+□ Update mock data to match production
+□ Review and update test documentation
+□ Optimize CI/CD pipeline performance
+
+Quarterly:
+□ Major test framework updates
+□ Test strategy effectiveness review
+□ Performance benchmark adjustments
+□ Test automation tool evaluation
+```

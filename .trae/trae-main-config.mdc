@@ -1,0 +1,354 @@
+# Trae AI Main Configuration - Enhanced Version
+
+*Cấu hình chính với các cải thiện dựa trên feedback nhân viên*
+
+## 🎯 Core Principles
+
+1. **Comprehensive Coverage First** - Luôn ưu tiên coverage đầy đủ hơn tốc độ
+2. **Reliable Execution** - Task execution phải đáng tin cậy 98%+
+3. **Pattern Recognition** - Học từ existing code để replicate chính xác
+4. **Bulletproof Logging** - Mọi action đều được log chi tiết
+
+## 🔧 Enhanced Workflow Integration
+
+### 1. Pre-Task Analysis (MANDATORY)
+
+```yaml
+pre_task_analysis:
+  enabled: true
+  timeout: 30000  # 30 seconds max
+  steps:
+    - comprehensive_file_discovery
+    - pattern_extraction
+    - similar_feature_analysis
+    - implementation_plan_generation
+  
+  failure_handling:
+    - continue_with_basic_analysis
+    - log_analysis_failure
+    - notify_reduced_coverage_risk
+```
+
+### 2. Agent Selection Override
+
+```yaml
+agent_selection:
+  strategy: "comprehensive_first"
+  
+  rules:
+    development_tasks:
+      keywords: ["implement", "create", "build", "develop", "code", "feature", "api", "function", "class"]
+      agent: "comprehensive-dev-agent"
+      confidence_threshold: 0.9
+      
+    task_update_workflow:
+      keywords: ["cập nhật task", "update task", "refresh task", "kiểm tra task", "check task status", "task progress", "I'll analyze the current codebase and update the task list"]
+      agent: "task-update-agent"
+      workflow: "task-update-workflow.mdc"
+      confidence_threshold: 0.95
+      auto_trigger: true
+      priority: "critical"
+      actions:
+        - scan_kiro_specs
+        - analyze_codebase_status
+        - update_task_progress
+        - generate_progress_report
+      
+    maintenance_tasks:
+      keywords: ["fix", "debug", "update", "refactor", "optimize"]
+      agent: "maintenance-agent"
+      confidence_threshold: 0.8
+      
+    analysis_tasks:
+      keywords: ["analyze", "review", "investigate", "explain"]
+      agent: "analysis-agent"
+      confidence_threshold: 0.7
+  
+  fallback:
+    agent: "comprehensive-dev-agent"
+    reason: "Default to comprehensive coverage for safety"
+```
+
+### 3. Task Execution Pipeline
+
+```yaml
+task_execution:
+  pipeline:
+    - name: "pre_execution_analysis"
+      timeout: 30000
+      required: true
+      
+    - name: "checkpoint_creation"
+      timeout: 5000
+      required: true
+      
+    - name: "step_by_step_execution"
+      timeout: 300000  # 5 minutes max
+      required: true
+      progress_tracking: true
+      
+    - name: "result_validation"
+      timeout: 15000
+      required: true
+      
+    - name: "status_update"
+      timeout: 10000
+      required: false  # Don't fail task if status update fails
+  
+  error_handling:
+    retry_attempts: 2
+    rollback_on_failure: true
+    log_detailed_errors: true
+    continue_on_info_hub_failure: true
+```
+
+### 4. Info-Hub Integration
+
+```yaml
+info_hub:
+  integration:
+    enabled: true
+    retry_attempts: 3
+    retry_delay: 1000  # 1 second
+    fail_silently: true  # Don't break execution if info-hub fails
+    
+  update_events:
+    - task_started
+    - task_progress
+    - task_completed
+    - task_failed
+    - analysis_completed
+    
+  backup_logging:
+    enabled: true
+    log_file: ".trae/logs/info-hub-backup.log"
+    failure_log: ".trae/logs/info-hub-failures.log"
+```
+
+## 📊 Enhanced Monitoring
+
+### 1. Execution Metrics
+
+```yaml
+metrics:
+  tracking:
+    enabled: true
+    log_file: ".trae/logs/execution-metrics.jsonl"
+    
+  tracked_metrics:
+    - execution_time
+    - success_rate
+    - coverage_completeness
+    - pattern_recognition_accuracy
+    - info_hub_sync_success
+    - user_satisfaction_indicators
+    
+  reporting:
+    daily_summary: true
+    weekly_analysis: true
+    performance_alerts: true
+```
+
+### 2. Quality Gates
+
+```yaml
+quality_gates:
+  pre_execution:
+    - codebase_analysis_completion: 80%
+    - pattern_extraction_success: true
+    - similar_features_found: ">= 1"
+    
+  post_execution:
+    - all_steps_completed: true
+    - validation_passed: true
+    - logging_successful: 90%
+    
+  coverage_requirements:
+    - function_coverage: 95%
+    - class_coverage: 90%
+    - api_endpoint_coverage: 100%
+    - error_handling_coverage: 85%
+```
+
+## 🚀 Implementation Rules
+
+### 1. Development Task Handling
+
+```markdown
+When handling development tasks:
+
+1. **ALWAYS** perform comprehensive codebase analysis first
+2. **MUST** find and analyze similar existing implementations
+3. **REQUIRED** to extract and follow existing patterns
+4. **MANDATORY** to implement ALL related functions/classes/methods
+5. **ESSENTIAL** to include proper error handling
+6. **CRITICAL** to maintain consistency with existing code style
+```
+
+### 2. Pattern Replication Rules
+
+```markdown
+For feature replication:
+
+1. **Identify Source Pattern**: Find the most similar existing feature
+2. **Extract Core Structure**: Analyze classes, functions, and data flow
+3. **Map Dependencies**: Understand all related files and imports
+4. **Replicate Architecture**: Follow the same structural patterns
+5. **Adapt for New Context**: Modify only what's necessary for the new API/feature
+6. **Validate Completeness**: Ensure all components are implemented
+```
+
+### 3. Error Recovery Protocols
+
+```yaml
+error_recovery:
+  analysis_failure:
+    - fallback_to_basic_search
+    - log_failure_reason
+    - continue_with_reduced_confidence
+    
+  execution_failure:
+    - attempt_rollback
+    - log_detailed_error
+    - retry_with_simpler_approach
+    
+  info_hub_failure:
+    - log_to_backup_file
+    - continue_execution
+    - retry_update_later
+    
+  validation_failure:
+    - identify_missing_components
+    - attempt_completion
+    - log_coverage_gaps
+```
+
+## 🔍 Debug and Troubleshooting
+
+### 1. Debug Mode Configuration
+
+```yaml
+debug:
+  enabled: false  # Set to true for detailed debugging
+  
+  when_enabled:
+    - log_all_file_discoveries
+    - trace_pattern_extraction
+    - detailed_execution_steps
+    - comprehensive_error_stacks
+    - timing_information
+    
+  output_locations:
+    - console
+    - ".trae/logs/debug.log"
+    - ".trae/logs/trace.log"
+```
+
+### 2. Performance Monitoring
+
+```yaml
+performance:
+  monitoring:
+    enabled: true
+    
+  thresholds:
+    analysis_time: 30000  # 30 seconds
+    execution_time: 300000  # 5 minutes
+    total_time: 600000  # 10 minutes
+    
+  alerts:
+    slow_analysis: true
+    long_execution: true
+    memory_usage: true
+    
+  optimization:
+    cache_analysis_results: true
+    parallel_file_processing: true
+    limit_file_scan_depth: 5
+```
+
+## 📋 Success Criteria
+
+### 1. Immediate Goals (Week 1)
+
+- [ ] Task execution success rate: 95%+
+- [ ] Info-hub sync reliability: 98%+
+- [ ] Comprehensive analysis completion: 90%+
+- [ ] Error logging coverage: 100%
+
+### 2. Short-term Goals (Month 1)
+
+- [ ] Feature coverage completeness: 90%+
+- [ ] Pattern recognition accuracy: 85%+
+- [ ] User satisfaction improvement: 60%+
+- [ ] Execution time optimization: 30% faster
+
+### 3. Long-term Goals (Quarter 1)
+
+- [ ] Match Cursor IDE's code understanding depth
+- [ ] Achieve 95%+ feature replication accuracy
+- [ ] Zero critical execution failures
+- [ ] Seamless multi-tool coordination
+
+## 🔧 Integration Commands
+
+### 1. Apply Enhancements
+
+```bash
+# Apply all enhancements
+node .trae/scripts/apply-enhancements.js
+
+# Test enhanced execution
+node .trae/scripts/apply-enhancements.js "Create a new user API endpoint"
+
+# Enable debug mode
+TRAE_DEBUG=true node .trae/scripts/apply-enhancements.js "Debug test task"
+```
+
+### 2. Monitor Performance
+
+```bash
+# View execution logs
+tail -f .trae/logs/execution.log
+
+# Check metrics
+cat .trae/logs/execution-metrics.jsonl | jq '.'
+
+# View info-hub failures
+cat .trae/logs/info-hub-failures.log
+```
+
+### 3. Validate Configuration
+
+```bash
+# Test configuration
+node -e "console.log('Trae enhanced config loaded successfully')"
+
+# Validate file structure
+ls -la .trae/
+ls -la .trae/logs/
+ls -la .trae/scripts/
+```
+
+---
+
+**🎯 Priority Implementation Order:**
+
+1. **Immediate (Today)**: Reliable task execution + Info-hub retry mechanism
+2. **This Week**: Comprehensive codebase analysis + Pattern extraction
+3. **Next Week**: Enhanced monitoring + Quality gates
+4. **Month 1**: Performance optimization + User experience improvements
+
+**📈 Expected Impact:**
+
+- **Coverage Issues**: Reduced by 80%
+- **Execution Failures**: Reduced by 90%
+- **User Satisfaction**: Increased by 60%
+- **Development Speed**: Maintained while improving quality
+
+**🔄 Continuous Improvement:**
+
+- Weekly performance reviews
+- Monthly configuration updates
+- Quarterly major enhancements
+- User feedback integration every 2 weeks

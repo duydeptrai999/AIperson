@@ -1,0 +1,450 @@
+---
+trae_context:
+  format: "native"
+  version: "1.0"
+  migrated_from: "cursor"
+  last_updated: "2025-08-18T07:00:32.164Z"
+---
+
+#task-creation-workflow
+# Task Creation Workflow - Optimized Implementation Engine
+
+## Overview
+
+This workflow converts approved design documents into detailed, actionable task lists ready for implementation in `.kiro/specs/{project}/tasks.md`. **CRITICAL**: This workflow can ONLY be used AFTER requirements and design documents are completed and approved.
+
+## 🚨 MANDATORY PREREQUISITES
+
+**BEFORE using this workflow**, the following MUST exist and be approved:
+1. **Requirements Document** - `.kiro/specs/{project}/requirements.md` (approved)
+2. **Design Document** - `.kiro/specs/{project}/design.md` (approved)
+3. **User Approval** - Explicit approval for both requirements and design
+
+**VIOLATION RULE**: If prerequisites are missing, MUST redirect to `spec-driven-development-workflow.md` to complete Requirements → Design → Tasks sequence.
+
+## 🎯 CORE OPTIMIZATION PRINCIPLES
+
+**TASK OPTIMIZATION MANDATE**: Every task creation follows these principles:
+1. **CODING-FOCUSED ACTIVITIES** - Only tasks involving writing, modifying, or testing code
+2. **INCREMENTAL PROGRESSION** - Each task builds on previous tasks systematically  
+3. **ACTIONABLE SPECIFICATIONS** - Tasks specific enough for immediate execution
+4. **REQUIREMENTS TRACEABILITY** - Clear connection to approved requirements
+5. **SINGLE TASK EXECUTION** - One task at a time, no parallel dependencies
+
+## Task Optimization Process
+
+When converting approved design to tasks, **MANDATORY** follow this 5-step optimization:
+1. **Analyze Approved Requirements** - Extract core technical objectives from requirements.md
+2. **Create Implementation Flow** - Service → UI → Integration → Testing
+3. **Build Incremental Sequence** - Each task builds on previous
+4. **Add Specific Details** - What files/components to create/modify
+5. **Validate Against Design** - Ensure all design components covered
+
+## Task Optimization Template
+
+### MANDATORY Task Creation Prompt
+
+When creating tasks, apply this systematic approach:
+
+```markdown
+TASK OPTIMIZATION PROMPT:
+
+Convert the feature design into a series of prompts for a code-generation LLM that will implement each step in a test-driven manner. 
+
+REQUIREMENTS:
+- Prioritize best practices, incremental progress, and early testing
+- Ensure no big jumps in complexity at any stage
+- Make sure each prompt builds on previous prompts
+- End with wiring things together
+- No hanging or orphaned code that isn't integrated
+- Focus ONLY on tasks involving writing, modifying, or testing code
+
+FORMAT:
+- [ ] X. Task Title
+  - Specific implementation detail 1
+  - Specific implementation detail 2
+  - File/component references
+  - _Requirements: Reference to design requirements_
+
+VALIDATION CRITERIA:
+- Each task must be executable by coding agent
+- Must specify what files/components to create/modify
+- Must be concrete enough without additional clarification
+- Must reference specific requirements from design
+```
+
+### Implementation Flow Pattern
+
+**MANDATORY** follow this sequence for any feature:
+
+1. **Service Layer First** - Core business logic and data operations
+2. **UI Components Second** - User interface and interaction components  
+3. **Integration Third** - Wiring services with UI components
+4. **Testing Throughout** - Unit, integration, and component tests
+
+### Task Structure Requirements
+
+**MANDATORY** each task must include:
+- **Clear Objective** - What specific coding outcome to achieve
+- **Implementation Details** - Bullet points with concrete steps
+- **File References** - Specific files to create or modify
+- **Requirements Link** - Reference to design requirements
+- **Success Criteria** - How to validate task completion
+
+### Incremental #complexity-rules
+
+**MANDATORY** task ordering principles:
+- Start with foundational components (services, models)
+- Build UI components that use the services
+- Add integration and error handling
+- Finish with comprehensive testing
+- Each task should be completable in 4-20 hours
+- No task should depend on more than 2 previous tasks
+
+## 🔍 STEP 1: ANALYZE APPROVED REQUIREMENTS
+
+### Prerequisites Validation
+**MANDATORY** verify before proceeding:
+
+- [ ] **Requirements Document Exists**
+  - Check `.kiro/specs/{project}/requirements.md` exists
+  - Verify requirements follow EARS format with user stories
+  - Confirm acceptance criteria are complete and testable
+  - Validate user approval was received via userInput tool
+
+- [ ] **Design Document Exists**
+  - Check `.kiro/specs/{project}/design.md` exists
+  - Verify architecture and technical specifications are complete
+  - Confirm all required sections (Overview, Architecture, Components, Data Models, Error Handling, Testing Strategy) are included
+  - Validate user approval was received via userInput tool
+
+### Requirements Analysis Checklist
+**MANDATORY** extract from approved documents:
+
+- [ ] **Extract Core Objectives**
+  - Identify main technical goals from requirements.md user stories
+  - Map acceptance criteria to technical implementation needs
+  - Separate coding activities from non-coding activities
+  - Document core functionality from requirements acceptance criteria
+
+- [ ] **Identify Implementation Components**
+  - List all services/classes specified in design.md
+  - Identify UI components and interfaces from design architecture
+  - Map data models and database changes from design data models
+  - Document API endpoints and integration points from design
+
+- [ ] **Assess Design Specifications**
+  - Review architecture patterns specified in design document
+  - Identify components and interfaces from design specifications
+  - Check data models and technical requirements from design
+  - Document constraints and technical limitations from design
+
+- [ ] **Define Success Criteria**
+  - Extract acceptance criteria from requirements document
+  - Map design specifications to measurable outcomes
+  - Define testing requirements from design testing strategy
+  - Document integration requirements from design architecture
+
+## 🧠 STEP 2: CREATE IMPLEMENTATION FLOW
+
+### Implementation Sequence Design
+**MANDATORY** follow this systematic approach:
+
+1. **Service Layer Foundation**
+   - Identify core business logic services needed
+   - Define data access and repository patterns
+   - Plan service interfaces and method signatures
+   - Map service dependencies and interactions
+
+2. **UI Component Architecture**
+   - List all user interface components required
+   - Define component hierarchy and data flow
+   - Plan state management and user interactions
+   - Design component props and event handling
+
+3. **Integration Strategy**
+   - Plan how services connect to UI components
+   - Define error handling and loading states
+   - Map data flow between different layers
+   - Plan testing strategy for each integration point
+
+### Feature #expansion-rules
+**MANDATORY** for any feature, automatically include:
+- **Core Service Implementation** - Business logic and data operations
+- **UI Components** - User interface and interaction elements
+- **Data Layer** - Models, validation, and persistence
+- **Error Handling** - Comprehensive error scenarios and recovery
+- **Progress Tracking** - Loading states and user feedback
+- **Testing Coverage** - Unit, integration, and component tests
+
+## 🏗️ STEP 3: BUILD INCREMENTAL SEQUENCE
+
+### Task #sequencing-rules
+**MANDATORY** follow this progression:
+
+1. **Foundation First**
+   - Core services and business logic
+   - Data models and validation
+   - Base classes and utilities
+   - Essential infrastructure components
+
+2. **UI Components Second**
+   - User interface components
+   - Forms and input handling
+   - Display and visualization components
+   - Navigation and routing updates
+
+3. **Integration Third**
+   - Connect services to UI components
+   - Error handling and loading states
+   - Progress tracking and user feedback
+   - End-to-end workflow testing
+
+### Task Detail Requirements
+**MANDATORY** each task must include:
+- **Specific Implementation Steps** - Concrete coding activities
+- **File References** - Exact files to create or modify
+- **Component Specifications** - What to build and how
+- **Requirements Traceability** - Link to design requirements
+- **Success Validation** - How to verify completion
+
+### Incremental #dependency-rules
+**MANDATORY** dependency management:
+- Each task builds on maximum 2 previous tasks
+- No circular dependencies between tasks
+- Clear progression from simple to complex
+- Each task completable in 4-20 hours
+- No orphaned code that isn't integrated
+
+## 🔗 STEP 4: ADD SPECIFIC DETAILS
+
+### Implementation Detail Requirements
+**MANDATORY** each task must specify:
+
+- [ ] **Exact Files to Modify/Create**
+  - Full file paths and names
+  - Whether file is new or being modified
+  - Key classes and methods to implement
+  - Import statements and dependencies
+
+- [ ] **Component Specifications**
+  - What UI components to build
+  - What services and methods to implement
+  - What data models and interfaces to create
+  - What tests to write and coverage expected
+
+- [ ] **Integration Points**
+  - How components connect to each other
+  - What APIs or services to call
+  - How data flows between components
+  - What error handling to implement
+
+### Task Quality Checklist
+**MANDATORY** validation before completion:
+- [ ] Task is executable by coding agent without clarification
+- [ ] All implementation steps are concrete and specific
+- [ ] File references are accurate and complete
+- [ ] Requirements are clearly linked and traceable
+- [ ] Success criteria are measurable and verifiable
+
+## 🔗 STEP 5: VALIDATE AGAINST DESIGN
+
+### Design Alignment Verification
+**MANDATORY** ensure complete coverage:
+
+- [ ] **Requirements Coverage**
+  - All design requirements have corresponding tasks
+  - No missing functionality or components
+  - All user stories are addressed in tasks
+  - All technical specifications are implemented
+
+- [ ] **Architecture Consistency**
+  - Tasks follow existing code patterns
+  - No conflicts with current architecture
+  - Proper separation of concerns maintained
+  - Integration points are well-defined
+
+- [ ] **Quality Standards**
+  - All tasks include testing requirements
+  - Error handling is comprehensive
+  - Performance considerations are included
+  - Security requirements are addressed
+
+## Optimized Task Format
+
+### Standard Task Template
+```markdown
+- [ ] X. Task Title
+  - Specific implementation detail 1
+  - Specific implementation detail 2  
+  - File/component references
+  - _Requirements: Reference to design requirements_
+```
+
+### Detailed Task Format (When Needed)
+```markdown
+- [ ] X. Task Title
+  - Create/modify specific files and components
+  - Implement specific methods and functionality
+  - Add specific UI elements and interactions
+  - Include specific validation and error handling
+  - Write specific tests and verification
+  - _Requirements: Specific design requirement reference_
+```
+
+### Task Quality Standards
+**MANDATORY** each task must include:
+- **Clear Objective** - What specific outcome to achieve
+- **Implementation Steps** - Concrete coding activities
+- **File References** - Specific files to create/modify
+- **Requirements Link** - Connection to design requirements
+- **Success Criteria** - How to validate completion
+
+### Example Optimized Task
+```markdown
+- [ ] 2. Implement Health Planning Service core functionality
+  - Create HealthPlanService class with CRUD operations
+  - Implement createHealthPlan, getHealthPlans, updateHealthPlan methods
+  - Add health-specific data validation and error handling
+  - Create TypeScript interfaces for HealthPlan and related types
+  - _Requirements: Health Domain Service, Type Safety_
+```
+
+## Critical Task #creation-rules
+
+### MANDATORY Task Standards
+1. **CODING ACTIVITIES ONLY** - Tasks must involve writing, modifying, or testing code
+2. **INCREMENTAL PROGRESSION** - Each task builds on previous tasks systematically
+3. **SPECIFIC IMPLEMENTATION** - Concrete steps that coding agent can execute
+4. **REQUIREMENTS TRACEABILITY** - Clear link to design requirements
+5. **REALISTIC SCOPE** - Tasks completable in 4-20 hours
+
+### Task Content Requirements
+- **Clear Objective** - What specific coding outcome to achieve
+- **Implementation Steps** - Bullet points with concrete actions
+- **File References** - Specific files to create or modify
+- **Requirements Link** - Reference to design requirements
+- **Success Criteria** - How to validate task completion
+
+### Quality Validation Checklist
+**MANDATORY** before task completion:
+- [ ] Task is executable by coding agent without clarification
+- [ ] All implementation steps are concrete and specific
+- [ ] File references are accurate and complete
+- [ ] Requirements are clearly linked and traceable
+- [ ] Success criteria are measurable and verifiable
+- [ ] Task builds incrementally on previous tasks
+- [ ] No non-coding activities included
+
+## Optimized Task File Structure
+
+### Standard Implementation Plan Format
+```markdown
+# Implementation Plan
+
+## Overview
+
+This implementation plan converts the [feature] design into actionable coding tasks that build incrementally on each other. Each task focuses on specific code implementation that can be executed by a coding agent.
+
+## Implementation Tasks
+
+- [ ] 1. Task Title
+  - Specific implementation detail 1
+  - Specific implementation detail 2
+  - File/component references
+  - _Requirements: Reference to design requirements_
+
+- [ ] 2. Task Title
+  - Specific implementation detail 1
+  - Specific implementation detail 2
+  - File/component references
+  - _Requirements: Reference to design requirements_
+
+[Continue with remaining tasks...]
+```
+
+### Task Organization Principles
+1. **Sequential Numbering** - Simple 1, 2, 3, 4... format
+2. **Incremental Dependencies** - Each task builds on previous
+3. **Clear Progression** - Foundation → UI → Integration → Testing
+4. **Manageable Scope** - 8-15 tasks total for most features
+5. **Coding Focus** - Only tasks involving code implementation
+
+## Implementation Examples
+
+### Example: "User Profile Feature"
+**Optimized Task Output:**
+
+```markdown
+# Implementation Plan
+
+## Overview
+
+This implementation plan converts the user profile design into actionable coding tasks that build incrementally on each other. Each task focuses on specific code implementation that can be executed by a coding agent.
+
+## Implementation Tasks
+
+- [ ] 1. Create User Profile Service
+  - Implement UserProfileService class with CRUD operations
+  - Add getUserProfile, updateProfile, deleteProfile methods
+  - Create TypeScript interfaces for UserProfile data types
+  - Add profile data validation and error handling
+  - _Requirements: User Profile Service, Data Management_
+
+- [ ] 2. Build Profile UI Components
+  - Create ProfileCard component for profile display
+  - Implement ProfileForm component for editing
+  - Add ProfileAvatar component with upload functionality
+  - Include proper TypeScript props and state management
+  - _Requirements: Profile UI Components, User Interface_
+
+- [ ] 3. Implement Profile Data Integration
+  - Connect ProfileService to UI components
+  - Add loading states and error handling
+  - Implement real-time profile updates
+  - Add profile validation and feedback
+  - _Requirements: Data Integration, User Experience_
+
+- [ ] 4. Add Profile Testing Suite
+  - Write unit tests for ProfileService methods
+  - Create component tests for UI elements
+  - Add integration tests for profile workflows
+  - Include accessibility and responsive design tests
+  - _Requirements: Testing Strategy, Quality Assurance_
+```
+
+## 🚨 WORKFLOW INTEGRATION ENFORCEMENT
+
+### Integration with Workflow Coordinator
+This workflow is **SUBORDINATE** to `workflow-coordinator.md`:
+
+- **Routing**: All requests route through workflow-coordinator.md first
+- **Prerequisites**: Coordinator validates requirements.md and design.md exist and are approved
+- **New Features**: Coordinator redirects to spec-driven-development-workflow.md for complete sequence
+- **Task Optimization**: This workflow used ONLY when coordinator confirms prerequisites met
+- **Execution Phase**: All task execution follows single-task rule enforced by coordinator
+
+### Mandatory Workflow Checks
+**BEFORE using this workflow**, verify:
+- [ ] `.kiro/specs/{project}/requirements.md` exists and is approved
+- [ ] `.kiro/specs/{project}/design.md` exists and is approved
+- [ ] User has explicitly approved both documents
+- [ ] No missing prerequisites from spec-driven-development workflow
+
+### Violation Handling
+**IF prerequisites are missing**:
+1. **STOP** current task creation process
+2. **REDIRECT** to spec-driven-development-workflow.md
+3. **COMPLETE** Requirements → Design → Tasks sequence
+4. **RETURN** to this workflow only after all approvals
+
+## Summary
+
+This optimized workflow focuses on:
+- **Converting approved designs** into actionable task lists
+- **Coding-only activities** that can be executed by development agents
+- **Incremental task progression** that builds systematically
+- **Requirements traceability** to approved requirements and design
+- **Integration with spec-driven development** workflow
+
+**CRITICAL**: This workflow can ONLY be used as part of the complete spec-driven development process, never as a standalone task creation tool.

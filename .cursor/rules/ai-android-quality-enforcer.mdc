@@ -1,0 +1,456 @@
+---
+description: AI Quality Enforcer cho Android Development - Tự động kiểm tra và sửa lỗi
+globs: *.kt,*.java,*.xml
+alwaysApply: true
+---
+
+# AI Android Quality Enforcer
+
+## 🤖 AI Mandatory Pre-Code Generation Protocol
+
+### **PHASE 1: Context Analysis (BẮT BUỘC)**
+```
+1. ANALYZE_PROJECT_STRUCTURE()
+   ├── Check build.gradle dependencies
+   ├── Verify package structure
+   ├── Identify existing base classes
+   └── Map available resources
+
+2. VALIDATE_REQUIREMENTS()
+   ├── Parse user request intent
+   ├── Identify required imports
+   ├── Determine data types needed
+   └── Check for potential null safety issues
+
+3. BLUEPRINT_VALIDATION()
+   ├── Verify feature blueprint exists
+   ├── Check module registry for duplicates
+   └── Validate against existing patterns
+```
+
+### **PHASE 2: Code Generation Rules (BẮT BUỘC)**
+```
+4. APPLY_ERROR_PREVENTION()
+   ├── Force explicit type declarations
+   ├── Add required imports automatically
+   ├── Implement null safety by default
+   ├── Generate complete method signatures
+   └── Add exhaustive when expressions
+
+5. TEMPLATE_SELECTION()
+   ├── Use proven error-free templates
+   ├── Apply consistent patterns
+   ├── Include error handling blocks
+   └── Add logging and monitoring
+```
+
+### **PHASE 3: Post-Generation Validation (BẮT BUỘC)**
+```
+6. COMPILE_CHECK_SIMULATION()
+   ├── Verify all imports resolve
+   ├── Check type compatibility
+   ├── Validate resource references
+   └── Ensure method signatures match
+
+7. QUALITY_GATES()
+   ├── Null safety compliance: 100%
+   ├── Error handling coverage: 100%
+   ├── Resource validation: 100%
+   └── Pattern consistency: 100%
+```
+
+## 🔧 AI Code Generation Templates
+
+### Template 1: Safe Fragment Generation
+```kotlin
+// AI MUST use this exact template for Fragment generation
+class {{FRAGMENT_NAME}} : Fragment() {
+    
+    // BẮT BUỘC: ViewBinding pattern
+    private var _binding: {{BINDING_CLASS}}? = null
+    private val binding get() = _binding!!
+    
+    // BẮT BUỘC: ViewModel injection with type safety
+    private val viewModel: {{VIEWMODEL_CLASS}} by viewModels()
+    
+    // BẮT BUỘC: Safe adapter initialization
+    private val adapter: {{ADAPTER_CLASS}} by lazy {
+        {{ADAPTER_CLASS}}(
+            onItemClick = { item -> handleItemClick(item) },
+            onItemLongClick = { item -> handleItemLongClick(item) }
+        )
+    }
+    
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = {{BINDING_CLASS}}.inflate(inflater, container, false)
+        return binding.root
+    }
+    
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        
+        // BẮT BUỘC: Safe initialization order
+        setupUI()
+        setupObservers()
+        loadInitialData()
+    }
+    
+    private fun setupUI() {
+        binding.apply {
+            // BẮT BUỘC: Safe UI setup with null checks
+            {{UI_SETUP_CODE}}
+        }
+    }
+    
+    private fun setupObservers() {
+        // BẮT BUỘC: Lifecycle-aware observation
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiState.collect { state ->
+                handleUiState(state)
+            }
+        }
+        
+        // BẮT BUỘC: Error state observation
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.errorState.collect { error ->
+                error?.let { handleError(it) }
+            }
+        }
+    }
+    
+    private fun handleUiState(state: {{UI_STATE_CLASS}}) {
+        when (state) {
+            is {{UI_STATE_CLASS}}.Loading -> showLoading()
+            is {{UI_STATE_CLASS}}.Success -> showSuccess(state.data)
+            is {{UI_STATE_CLASS}}.Error -> showError(state.message)
+            is {{UI_STATE_CLASS}}.Empty -> showEmpty()
+            // BẮT BUỘC: Always handle all states
+        }
+    }
+    
+    private fun handleItemClick(item: {{ITEM_CLASS}}) {
+        // BẮT BUỘC: Validate item before processing
+        if (item.id.isBlank()) {
+            showError("Invalid item selected")
+            return
+        }
+        
+        viewModel.handleItemClick(item)
+    }
+    
+    private fun handleError(error: String) {
+        // BẮT BUỘC: Safe error display
+        context?.let { ctx ->
+            Snackbar.make(binding.root, error, Snackbar.LENGTH_LONG)
+                .setAction("Retry") { loadInitialData() }
+                .show()
+        }
+    }
+    
+    private fun showLoading() {
+        binding.apply {
+            progressBar?.visibility = View.VISIBLE
+            recyclerView?.visibility = View.GONE
+            errorLayout?.visibility = View.GONE
+        }
+    }
+    
+    private fun showSuccess(data: List<{{ITEM_CLASS}}>) {
+        binding.apply {
+            progressBar?.visibility = View.GONE
+            recyclerView?.visibility = View.VISIBLE
+            errorLayout?.visibility = View.GONE
+        }
+        
+        adapter.submitList(data)
+    }
+    
+    private fun showError(message: String) {
+        binding.apply {
+            progressBar?.visibility = View.GONE
+            recyclerView?.visibility = View.GONE
+            errorLayout?.visibility = View.VISIBLE
+            errorText?.text = message
+        }
+    }
+    
+    private fun showEmpty() {
+        binding.apply {
+            progressBar?.visibility = View.GONE
+            recyclerView?.visibility = View.GONE
+            emptyLayout?.visibility = View.VISIBLE
+        }
+    }
+    
+    private fun loadInitialData() {
+        viewModel.loadData()
+    }
+    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // BẮT BUỘC: Prevent memory leaks
+    }
+}
+```
+
+### Template 2: Safe ViewModel Generation
+```kotlin
+// AI MUST use this exact template for ViewModel generation
+class {{VIEWMODEL_NAME}} @Inject constructor(
+    private val {{REPOSITORY_NAME}}: {{REPOSITORY_CLASS}}
+) : ViewModel() {
+    
+    // BẮT BUỘC: State management with sealed classes
+    private val _uiState = MutableStateFlow<{{UI_STATE_CLASS}}>({{UI_STATE_CLASS}}.Loading)
+    val uiState: StateFlow<{{UI_STATE_CLASS}}> = _uiState.asStateFlow()
+    
+    private val _errorState = MutableStateFlow<String?>(null)
+    val errorState: StateFlow<String?> = _errorState.asStateFlow()
+    
+    // BẮT BUỘC: Loading state management
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+    
+    fun loadData() {
+        viewModelScope.launch {
+            try {
+                _isLoading.value = true
+                _uiState.value = {{UI_STATE_CLASS}}.Loading
+                _errorState.value = null
+                
+                val result = {{REPOSITORY_NAME}}.getData()
+                
+                result.fold(
+                    onSuccess = { data ->
+                        if (data.isEmpty()) {
+                            _uiState.value = {{UI_STATE_CLASS}}.Empty
+                        } else {
+                            _uiState.value = {{UI_STATE_CLASS}}.Success(data)
+                        }
+                    },
+                    onFailure = { error ->
+                        val errorMessage = error.message ?: "Unknown error occurred"
+                        _uiState.value = {{UI_STATE_CLASS}}.Error(errorMessage)
+                        _errorState.value = errorMessage
+                        Timber.e(error, "Failed to load data")
+                    }
+                )
+            } catch (e: Exception) {
+                val errorMessage = e.message ?: "Unexpected error occurred"
+                _uiState.value = {{UI_STATE_CLASS}}.Error(errorMessage)
+                _errorState.value = errorMessage
+                Timber.e(e, "Exception in loadData")
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+    
+    fun handleItemClick(item: {{ITEM_CLASS}}) {
+        // BẮT BUỘC: Validate input parameters
+        if (item.id.isBlank()) {
+            _errorState.value = "Invalid item selected"
+            return
+        }
+        
+        viewModelScope.launch {
+            try {
+                val result = {{REPOSITORY_NAME}}.processItem(item)
+                result.fold(
+                    onSuccess = { 
+                        // Handle success
+                        Timber.d("Item processed successfully: ${item.id}")
+                    },
+                    onFailure = { error ->
+                        _errorState.value = error.message ?: "Failed to process item"
+                        Timber.e(error, "Failed to process item: ${item.id}")
+                    }
+                )
+            } catch (e: Exception) {
+                _errorState.value = e.message ?: "Unexpected error"
+                Timber.e(e, "Exception in handleItemClick")
+            }
+        }
+    }
+    
+    fun clearError() {
+        _errorState.value = null
+    }
+    
+    fun retry() {
+        loadData()
+    }
+}
+
+// BẮT BUỘC: Sealed class for type safety
+sealed class {{UI_STATE_CLASS}} {
+    object Loading : {{UI_STATE_CLASS}}()
+    data class Success(val data: List<{{ITEM_CLASS}}>) : {{UI_STATE_CLASS}}()
+    data class Error(val message: String) : {{UI_STATE_CLASS}}()
+    object Empty : {{UI_STATE_CLASS}}()
+}
+```
+
+### Template 3: Safe Repository Generation
+```kotlin
+// AI MUST use this exact template for Repository generation
+class {{REPOSITORY_NAME}} @Inject constructor(
+    private val remoteDataSource: {{REMOTE_DATASOURCE_CLASS}},
+    private val localDataSource: {{LOCAL_DATASOURCE_CLASS}}
+) : {{REPOSITORY_INTERFACE}} {
+    
+    override suspend fun getData(): Result<List<{{ITEM_CLASS}}>> = withContext(Dispatchers.IO) {
+        try {
+            // BẮT BUỘC: Try remote first, fallback to local
+            val remoteResult = remoteDataSource.getData()
+            
+            remoteResult.fold(
+                onSuccess = { remoteData ->
+                    // Cache successful remote data
+                    localDataSource.saveData(remoteData)
+                    Result.success(remoteData)
+                },
+                onFailure = { remoteError ->
+                    Timber.w(remoteError, "Remote fetch failed, trying local")
+                    
+                    // Fallback to local data
+                    val localResult = localDataSource.getData()
+                    localResult.fold(
+                        onSuccess = { localData ->
+                            if (localData.isNotEmpty()) {
+                                Result.success(localData)
+                            } else {
+                                Result.failure(remoteError) // Return original remote error
+                            }
+                        },
+                        onFailure = { localError ->
+                            Timber.e(localError, "Local fetch also failed")
+                            Result.failure(remoteError) // Return original remote error
+                        }
+                    )
+                }
+            )
+        } catch (e: Exception) {
+            Timber.e(e, "Unexpected error in getData")
+            Result.failure(e)
+        }
+    }
+    
+    override suspend fun processItem(item: {{ITEM_CLASS}}): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            // BẮT BUỘC: Validate input
+            if (item.id.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("Item ID cannot be blank"))
+            }
+            
+            val result = remoteDataSource.processItem(item)
+            
+            result.fold(
+                onSuccess = {
+                    // Update local cache
+                    localDataSource.updateItem(item)
+                    Result.success(Unit)
+                },
+                onFailure = { error ->
+                    Timber.e(error, "Failed to process item: ${item.id}")
+                    Result.failure(error)
+                }
+            )
+        } catch (e: Exception) {
+            Timber.e(e, "Unexpected error in processItem")
+            Result.failure(e)
+        }
+    }
+}
+```
+
+## 🔍 AI Self-Validation Protocol
+
+### Mandatory Checks Before Code Output
+```
+✅ IMPORT_VALIDATION:
+   - All imports are available in dependencies
+   - No unused imports
+   - Correct package paths
+
+✅ TYPE_SAFETY_VALIDATION:
+   - No implicit type inference for complex types
+   - All nullable types handled with safe calls
+   - Generic types specified explicitly
+
+✅ RESOURCE_VALIDATION:
+   - All R.* references exist
+   - String resources defined
+   - Layout IDs are valid
+
+✅ METHOD_SIGNATURE_VALIDATION:
+   - All required parameters provided
+   - Return types match expectations
+   - Parameter types are compatible
+
+✅ ERROR_HANDLING_VALIDATION:
+   - Try-catch blocks for risky operations
+   - Proper error logging
+   - User-friendly error messages
+
+✅ LIFECYCLE_VALIDATION:
+   - ViewBinding properly cleaned up
+   - Coroutines use appropriate scope
+   - Observers use viewLifecycleOwner
+```
+
+## 🚨 AI Error Recovery Protocols
+
+### When AI Detects Potential Issues
+```
+IF (unresolved_reference_detected) {
+    1. Check if import is missing
+    2. Verify dependency in build.gradle
+    3. Add import statement
+    4. Regenerate code with import
+}
+
+IF (type_inference_error_detected) {
+    1. Identify the ambiguous type
+    2. Add explicit type declaration
+    3. Use generic type parameters if needed
+    4. Regenerate with explicit types
+}
+
+IF (null_safety_violation_detected) {
+    1. Identify nullable receiver
+    2. Add safe call operator (?.)
+    3. Provide default value with elvis (?:)
+    4. Regenerate with null safety
+}
+
+IF (method_signature_mismatch_detected) {
+    1. Check method definition
+    2. Verify parameter types and count
+    3. Add missing parameters
+    4. Regenerate with correct signature
+}
+```
+
+## 📊 AI Quality Metrics
+
+### Success Criteria (BẮT BUỘC đạt 100%)
+- **Compilation Success Rate**: 100%
+- **Null Safety Compliance**: 100%
+- **Error Handling Coverage**: 100%
+- **Resource Validation**: 100%
+- **Template Adherence**: 100%
+
+### Performance Targets
+- **Code Generation Time**: < 30 seconds
+- **Template Application**: < 5 seconds
+- **Validation Checks**: < 10 seconds
+- **Error Recovery**: < 15 seconds
+
+---
+
+**🔴 CRITICAL**: AI MUST NOT output any Android code that doesn't pass ALL validation checks. Better to ask for clarification than generate broken code.

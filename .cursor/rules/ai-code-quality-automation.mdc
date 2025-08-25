@@ -1,0 +1,368 @@
+# AI Code Quality Automation - Manual Workflow
+
+## 🎯 Core Purpose
+
+**_BẮT BUỘC_** manual workflow cho AI assistants (TRAE, KIRO, Claude, Gemini) để tự động thực hiện code quality checks mà không dựa vào IDE auto-tools.
+
+## 🔧 MANDATORY AI Execution Rules
+
+### Before Writing Any Code
+
+**_BẮT BUỘC_** AI phải thực hiện checklist này trước khi viết bất kỳ dòng code nào:
+
+```markdown
+☐ 1. SCAN existing file structure và imports
+☐ 2. IDENTIFY required dependencies và packages  
+☐ 3. PREDICT potential import conflicts
+☐ 4. VALIDATE target file syntax structure
+☐ 5. PREPARE import statements list
+☐ 6. CHECK for existing naming conventions
+☐ 7. VERIFY package declarations match directory
+```
+
+### During Code Writing
+
+**_BẮT BUỘC_** AI phải thực hiện real-time validation:
+
+```markdown
+☐ 1. ADD import statements ngay khi sử dụng class mới
+☐ 2. VALIDATE type compatibility trước khi assignment
+☐ 3. CHECK null safety cho tất cả nullable operations
+☐ 4. ENSURE proper bracket matching trong real-time
+☐ 5. VALIDATE function signatures match usage
+☐ 6. CHECK variable naming conventions
+☐ 7. VERIFY proper indentation và formatting
+```
+
+### After Code Completion
+
+**_BẮT BUỘC_** AI phải thực hiện final validation:
+
+```markdown
+☐ 1. SCAN for any missing imports
+☐ 2. OPTIMIZE import statements (remove unused)
+☐ 3. FINAL type safety validation
+☐ 4. COMPLETE syntax error check
+☐ 5. VALIDATE code style consistency
+☐ 6. CHECK for potential performance issues
+☐ 7. ENSURE proper error handling patterns
+```
+
+## 🤖 AI-Specific Implementation Rules
+
+### For TRAE AI
+
+```markdown
+**MANDATORY CHECKS:**
+
+- Android imports: androidx._, android._
+- Fragment lifecycle methods signature
+- ViewModel integration patterns
+- RecyclerView adapter implementations
+- Compose annotations (@Composable, @Preview)
+
+**AUTO-FIX PATTERNS:**
+
+- Missing androidx imports → Add standard imports
+- Unsafe nullable calls → Add safe call operators (?.)
+- Missing Context parameters → Add context parameter
+- Incorrect lifecycle methods → Fix method signatures
+```
+
+### For KIRO System
+
+```markdown
+**MANDATORY CHECKS:**
+
+- Task configuration syntax
+- YAML/JSON format validation
+- File path references
+- Dependency declarations
+- Module registration syntax
+
+**AUTO-FIX PATTERNS:**
+
+- YAML syntax errors → Fix indentation và quoting
+- Missing dependencies → Add required dependencies
+- Incorrect file paths → Correct path references
+- Missing error handling → Add try-catch blocks
+```
+
+### For Claude Integration
+
+```markdown
+**MANDATORY CHECKS:**
+
+- API call error handling
+- Async/await pattern correctness
+- JSON parsing safety
+- HTTP timeout configuration
+- Network permission declarations
+
+**AUTO-FIX PATTERNS:**
+
+- Missing try-catch → Add error handling
+- Unsafe JSON parsing → Add null checks
+- Missing timeouts → Add timeout config
+- Callback hell → Convert to coroutines
+```
+
+### For Gemini Integration
+
+```markdown
+**MANDATORY CHECKS:**
+
+- ML model initialization safety
+- Input validation for model calls
+- Tensor dimension compatibility
+- Resource cleanup for models
+- ML Kit API usage patterns
+
+**AUTO-FIX PATTERNS:**
+
+- Unsafe model loading → Add error handling
+- Missing input validation → Add validation
+- Resource leaks → Add proper cleanup
+- Deprecated APIs → Update to current APIs
+```
+
+## 🔍 Manual Code Quality Checklist
+
+### Critical Issues (Must Fix Immediately)
+
+```markdown
+Priority: CRITICAL - Block execution until fixed
+
+☐ Missing import statements → AUTO-ADD appropriate imports
+☐ Syntax errors (brackets, semicolons) → AUTO-FIX basic syntax
+☐ Type mismatches → AUTO-CONVERT with safety checks
+☐ Null pointer risks → AUTO-ADD safe call operators
+☐ Unresolved references → AUTO-RESOLVE or flag for manual review
+```
+
+### High Priority Issues (Fix Before Proceeding)
+
+```markdown
+Priority: HIGH - Fix immediately after critical issues
+
+☐ Unused imports → AUTO-REMOVE unused imports
+☐ Incorrect naming conventions → SUGGEST corrections
+☐ Missing error handling → AUTO-ADD basic try-catch
+☐ Performance anti-patterns → FLAG for review
+☐ Security vulnerabilities → FLAG for immediate review
+```
+
+### Medium Priority Issues (Fix When Possible)
+
+```markdown
+Priority: MEDIUM - Address in current session
+
+☐ Code style inconsistencies → AUTO-FORMAT when confident
+☐ Missing documentation → SUGGEST adding comments
+☐ Optimization opportunities → FLAG for consideration
+☐ Redundant code patterns → SUGGEST refactoring
+☐ Accessibility concerns → FLAG for review
+```
+
+## 📋 Step-by-Step Execution Workflow
+
+### Phase 1: Pre-Code Analysis (30 seconds)
+
+```markdown
+1. **File Structure Scan**
+
+   - Read package declaration
+   - List existing imports
+   - Identify class/interface structure
+   - Map existing dependencies
+
+2. **Context Understanding**
+
+   - Determine project type (Android, Web, etc.)
+   - Identify coding patterns in use
+   - Check for framework-specific requirements
+   - Analyze existing code style
+
+3. **Preparation**
+   - Prepare common import list
+   - Set up auto-fix templates
+   - Configure validation rules
+   - Ready error handling patterns
+```
+
+### Phase 2: Real-Time Code Generation (Continuous)
+
+```markdown
+1. **Import Management**
+
+   - Add imports as classes are used
+   - Check for import conflicts
+   - Validate import paths
+   - Remove redundant imports
+
+2. **Type Safety Enforcement**
+
+   - Validate assignments in real-time
+   - Add null safety operators when needed
+   - Check generic type compatibility
+   - Ensure proper casting
+
+3. **Syntax Validation**
+   - Match brackets in real-time
+   - Complete statements properly
+   - Maintain proper indentation
+   - Follow naming conventions
+```
+
+### Phase 3: Post-Code Validation (60 seconds)
+
+```markdown
+1. **Final Import Optimization**
+
+   - Remove all unused imports
+   - Sort imports by category
+   - Check for circular dependencies
+   - Validate import organization
+
+2. **Complete Quality Check**
+
+   - Full syntax validation
+   - Type safety final check
+   - Code style consistency
+   - Performance quick scan
+
+3. **Error Prevention**
+   - Null pointer prevention
+   - Resource leak prevention
+   - Security vulnerability scan
+   - Performance anti-pattern detection
+```
+
+## 🛠️ Common Fix Templates
+
+### Android Import Fixes
+
+```kotlin
+// AUTO-FIX TEMPLATE: Add standard Android imports
+when (detectedClass) {
+    "Fragment" -> "import androidx.fragment.app.Fragment"
+    "ViewModel" -> "import androidx.lifecycle.ViewModel"
+    "LiveData" -> "import androidx.lifecycle.LiveData"
+    "RecyclerView" -> "import androidx.recyclerview.widget.RecyclerView"
+    "Context" -> "import android.content.Context"
+    "Intent" -> "import android.content.Intent"
+    "Bundle" -> "import android.os.Bundle"
+    "Log" -> "import android.util.Log"
+    "Toast" -> "import android.widget.Toast"
+    // Jetpack Compose
+    "Composable" -> "import androidx.compose.runtime.Composable"
+    "remember" -> "import androidx.compose.runtime.remember"
+    "Text" -> "import androidx.compose.material3.Text"
+    "Button" -> "import androidx.compose.material3.Button"
+}
+```
+
+### Type Safety Fixes
+
+```kotlin
+// AUTO-FIX TEMPLATE: Null safety
+// BEFORE: user.name
+// AFTER: user?.name
+
+// AUTO-FIX TEMPLATE: Type conversion
+// BEFORE: val age: Int = "25"
+// AFTER: val age: Int = "25".toIntOrNull() ?: 0
+
+// AUTO-FIX TEMPLATE: Safe casting
+// BEFORE: view as TextView
+// AFTER: view as? TextView ?: return
+```
+
+### Syntax Fixes
+
+```kotlin
+// AUTO-FIX TEMPLATE: Missing brackets
+// BEFORE: if (condition) doSomething()
+// AFTER: if (condition) { doSomething() }
+
+// AUTO-FIX TEMPLATE: Incomplete statements
+// BEFORE: fun myFunction(
+// AFTER: fun myFunction() { /* TODO: Implement */ }
+```
+
+## ⚡ Performance Optimization Rules
+
+### Quick Checks (< 5 seconds each)
+
+```markdown
+☐ Import statement validation
+☐ Basic syntax error detection  
+☐ Simple type mismatch checking
+☐ Null safety operator validation
+☐ Common pattern recognition
+```
+
+### Detailed Analysis (< 30 seconds total)
+
+```markdown
+☐ Complex type relationship validation
+☐ Code style consistency checking
+☐ Performance anti-pattern detection
+☐ Security vulnerability scanning
+☐ Resource management validation
+```
+
+## 🎯 Success Metrics & Validation
+
+### Immediate Success Indicators
+
+```markdown
+✅ Zero import errors
+✅ Zero syntax errors  
+✅ Zero type safety warnings
+✅ All references resolved
+✅ Consistent code style
+```
+
+### Quality Indicators
+
+```markdown
+📊 Import efficiency: > 95% correct imports
+📊 Type safety: > 98% null-safe operations
+📊 Syntax accuracy: > 99% error-free
+📊 Code consistency: > 90% style compliance
+📊 Performance: No obvious anti-patterns
+```
+
+### AI Assistant Performance Tracking
+
+```markdown
+🤖 TRAE AI: Android-specific accuracy
+🤖 KIRO: Configuration file handling
+🤖 Claude: API integration reliability  
+🤖 Gemini: ML model integration safety
+```
+
+## 🔄 Continuous Learning & Adaptation
+
+### Pattern Recognition
+
+```markdown
+- Track common error patterns per AI assistant
+- Learn from successful auto-fixes
+- Identify frequently missed issues
+- Adapt rules based on project patterns
+```
+
+### Rule Updates
+
+```markdown
+- Weekly: Review auto-fix success rates
+- Monthly: Update common import mappings
+- Quarterly: Refine validation algorithms
+- Annually: Major rule framework updates
+```
+
+---
+
+**Implementation Note**: This workflow is designed to be executed manually by AI assistants without relying on IDE automation. Each AI should internalize these patterns and execute them consistently to maintain high code quality across different development environments.

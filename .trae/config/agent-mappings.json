@@ -1,0 +1,65 @@
+{
+  "mobile_android": {
+    "primary_rules": [
+      "#android-workflow",
+      "#mobile-utility-workflow",
+      "#android-project-template"
+    ],
+    "secondary_rules": [
+      "#tdd-mobile-workflow",
+      "#android-error-prevention"
+    ]
+  },
+  "mobile_ios": {
+    "primary_rules": [
+      "#ios-workflow",
+      "#mobile-utility-workflow",
+      "#ios-project-template"
+    ],
+    "secondary_rules": [
+      "#tdd-mobile-workflow",
+      "#test-spec-driven-development-review"
+    ]
+  },
+  "web_frontend": {
+    "primary_rules": [
+      "#frontend-rules",
+      "#nodejs-project-creation"
+    ],
+    "secondary_rules": [
+      "#shadcn-ui-rules",
+      "#i18n-rules"
+    ]
+  },
+  "web_backend": {
+    "primary_rules": [
+      "#backend-rules-optimized",
+      "#api-integration-rules"
+    ],
+    "secondary_rules": [
+      "#database-management",
+      "#nodejs-project-creation"
+    ]
+  },
+  "planning": {
+    "primary_rules": [
+      "#planning-workflow",
+      "#planning-enforcement"
+    ],
+    "secondary_rules": [
+      "#logic-reasoning-workflow",
+      "#brainstorm-workflow"
+    ]
+  },
+  "kiro_system": {
+    "primary_rules": [
+      "#kiro-config",
+      "#kiro-system-overview",
+      "#kiro-task-execution"
+    ],
+    "secondary_rules": [
+      "#kiro-fallback-workflow",
+      "#gemini-config"
+    ]
+  }
+}

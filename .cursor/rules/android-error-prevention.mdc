@@ -1,0 +1,354 @@
+---
+description: Quy tắc phòng tránh và xử lý lỗi Android phổ biến dựa trên phân tích log thực tế
+globs: *.kt,*.java,*.xml
+alwaysApply: true
+---
+
+# Android Error Prevention & Resolution Rules
+
+## 🔴 CRITICAL: Mandatory Error Prevention Checklist
+
+### **BẮT BUỘC** - Pre-Code Analysis
+Trước khi viết bất kỳ dòng code Android nào, AI PHẢI:
+1. **Kiểm tra imports**: Đảm bảo tất cả dependencies được khai báo
+2. **Xác định kiểu dữ liệu**: Không để Kotlin suy luận kiểu khi không chắc chắn
+3. **Validate null safety**: Xử lý nullable types một cách rõ ràng
+4. **Kiểm tra method signatures**: Đảm bảo tham số và return types khớp
+5. **Verify resource references**: Kiểm tra R.id, R.string, R.drawable tồn tại
+
+## 📋 Common Android Errors & Solutions
+
+### 1. Type Inference Errors
+**Lỗi**: `Cannot infer type for this parameter. Specify it explicitly.`
+
+**❌ WRONG:**
+```kotlin
+val items = listOf() // Không rõ kiểu
+val callback = { } // Không rõ signature
+```
+
+**✅ CORRECT:**
+```kotlin
+val items: List<String> = listOf() // Hoặc listOf<String>()
+val callback: (String) -> Unit = { item -> 
+    // Handle item
+}
+```
+
+**🔧 AI Rules:**
+- **BẮT BUỘC** khai báo kiểu rõ ràng cho collections rỗng
+- **BẮT BUỘC** định nghĩa signature cho lambda expressions
+- **BẮT BUỘC** sử dụng generic types khi tạo instances
+
+### 2. Unresolved Reference Errors
+**Lỗi**: `Unresolved reference: [ComponentName]`
+
+**🔧 AI Prevention Rules:**
+```kotlin
+// BẮT BUỘC: Kiểm tra imports trước khi sử dụng
+import androidx.fragment.app.viewModels
+import androidx.databinding.DataBindingUtil
+import com.bumptech.glide.Glide
+
+// BẮT BUỘC: Verify R class references
+if (resourceExists(R.id.componentId)) {
+    findViewById<View>(R.id.componentId)
+}
+
+// BẮT BUỘC: Check ViewBinding/DataBinding setup
+class MyFragment : Fragment() {
+    private var _binding: FragmentMyBinding? = null
+    private val binding get() = _binding!!
+    
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentMyBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}
+```
+
+### 3. Null Safety Violations
+**Lỗi**: `Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver`
+
+**❌ WRONG:**
+```kotlin
+val user: User? = getUser()
+val name = user.name // Compile error
+```
+
+**✅ CORRECT:**
+```kotlin
+val user: User? = getUser()
+val name = user?.name ?: "Unknown" // Safe call with default
+// Hoặc
+user?.let { safeUser ->
+    val name = safeUser.name
+    // Use name safely
+}
+```
+
+**🔧 AI Rules:**
+- **BẮT BUỘC** sử dụng safe call operator (?.) cho nullable types
+- **BẮT BUỘC** cung cấp default values với elvis operator (?: )
+- **NGHIÊM CẤM** sử dụng !! operator trừ khi 100% chắc chắn
+- **BẮT BUỘC** sử dụng let/run/apply cho null checks phức tạp
+
+### 4. Method Signature Mismatches
+**Lỗi**: `Argument type mismatch`, `No value passed for parameter`
+
+**🔧 AI Prevention Template:**
+```kotlin
+// BẮT BUỘC: Kiểm tra method signature trước khi gọi
+fun logFoodConsumption(
+    foodId: String,
+    quantity: Double,
+    mealType: MealType,
+    date: LocalDate = LocalDate.now(), // Default parameter
+    notes: String? = null // Optional parameter
+) {
+    // Implementation
+}
+
+// BẮT BUỘC: Gọi với đầy đủ required parameters
+logFoodConsumption(
+    foodId = "food123",
+    quantity = 1.5,
+    mealType = MealType.BREAKFAST
+)
+```
+
+### 5. When Expression Completeness
+**Lỗi**: `'when' expression must be exhaustive`
+
+**✅ CORRECT Pattern:**
+```kotlin
+fun handleStatus(status: ApiStatus): String = when (status) {
+    ApiStatus.LOADING -> "Loading..."
+    ApiStatus.SUCCESS -> "Success"
+    ApiStatus.ERROR -> "Error occurred"
+    ApiStatus.IDLE -> "Ready"
+    // BẮT BUỘC: Luôn có else cho sealed classes mở rộng trong tương lai
+    else -> "Unknown status"
+}
+
+// Hoặc cho enum classes
+fun handleMealType(mealType: MealType): String = when (mealType) {
+    MealType.BREAKFAST -> "Breakfast"
+    MealType.LUNCH -> "Lunch"
+    MealType.DINNER -> "Dinner"
+    MealType.SNACK -> "Snack"
+    // Không cần else cho enum đã cover hết
+}
+```
+
+### 6. Resource Management Errors
+**Lỗi**: Resource not found, `Cannot access 'val File.root: File'`
+
+**🔧 AI Prevention Rules:**
+```kotlin
+// BẮT BUỘC: Kiểm tra resource tồn tại
+fun loadImage(imageRes: Int) {
+    try {
+        val drawable = ContextCompat.getDrawable(context, imageRes)
+        if (drawable != null) {
+            imageView.setImageDrawable(drawable)
+        } else {
+            // Handle missing resource
+            imageView.setImageResource(R.drawable.placeholder)
+        }
+    } catch (e: Resources.NotFoundException) {
+        Timber.e(e, "Resource not found: $imageRes")
+        imageView.setImageResource(R.drawable.error_placeholder)
+    }
+}
+
+// BẮT BUỘC: Safe file operations
+fun readFile(file: File): String? {
+    return try {
+        if (file.exists() && file.canRead()) {
+            file.readText()
+        } else {
+            null
+        }
+    } catch (e: Exception) {
+        Timber.e(e, "Failed to read file: ${file.path}")
+        null
+    }
+}
+```
+
+## 🛠️ AI Code Generation Templates
+
+### Fragment Template with Error Prevention
+```kotlin
+class SafeFragment : Fragment() {
+    private var _binding: FragmentSafeBinding? = null
+    private val binding get() = _binding!!
+    
+    private val viewModel: SafeViewModel by viewModels()
+    
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSafeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+    
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupUI()
+        observeViewModel()
+    }
+    
+    private fun setupUI() {
+        // BẮT BUỘC: Safe UI setup với null checks
+        binding.apply {
+            button.setOnClickListener {
+                handleButtonClick()
+            }
+        }
+    }
+    
+    private fun observeViewModel() {
+        // BẮT BUỘC: Safe state observation
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiState.collect { state ->
+                when (state) {
+                    is UiState.Loading -> showLoading()
+                    is UiState.Success -> showSuccess(state.data)
+                    is UiState.Error -> showError(state.message)
+                }
+            }
+        }
+    }
+    
+    private fun handleButtonClick() {
+        // BẮT BUỘC: Validate input trước khi xử lý
+        val input = binding.editText.text?.toString()?.trim()
+        if (input.isNullOrBlank()) {
+            showError("Input cannot be empty")
+            return
+        }
+        
+        viewModel.processInput(input)
+    }
+    
+    private fun showError(message: String) {
+        // BẮT BUỘC: Safe error display
+        context?.let { ctx ->
+            Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
+        }
+    }
+    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}
+```
+
+### ViewModel Template with Error Prevention
+```kotlin
+class SafeViewModel @Inject constructor(
+    private val repository: Repository
+) : ViewModel() {
+    
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+    
+    fun processInput(input: String) {
+        // BẮT BUỘC: Validate parameters
+        if (input.isBlank()) {
+            _uiState.value = UiState.Error("Invalid input")
+            return
+        }
+        
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading
+            
+            try {
+                val result = repository.processData(input)
+                _uiState.value = UiState.Success(result)
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to process input: $input")
+                _uiState.value = UiState.Error(
+                    e.message ?: "Unknown error occurred"
+                )
+            }
+        }
+    }
+}
+
+// BẮT BUỘC: Sealed class cho type safety
+sealed class UiState {
+    object Loading : UiState()
+    data class Success(val data: String) : UiState()
+    data class Error(val message: String) : UiState()
+}
+```
+
+## 🔍 AI Code Review Checklist
+
+### Pre-Generation Checks
+- [ ] **Import Analysis**: Tất cả dependencies có trong build.gradle?
+- [ ] **Type Safety**: Có nullable types nào cần xử lý?
+- [ ] **Resource Validation**: Tất cả R.* references có tồn tại?
+- [ ] **Method Signatures**: Parameters và return types có khớp?
+
+### Post-Generation Validation
+- [ ] **Null Safety**: Không có unsafe null operations
+- [ ] **Exception Handling**: Try-catch cho operations có thể fail
+- [ ] **Resource Cleanup**: ViewBinding được null trong onDestroyView
+- [ ] **Lifecycle Awareness**: Coroutines sử dụng viewLifecycleOwner
+- [ ] **When Exhaustiveness**: Tất cả when expressions có else hoặc cover hết cases
+
+## 🚨 Emergency Error Resolution
+
+### Quick Fix Commands
+```kotlin
+// 1. Missing import quick fix
+// BẮT BUỘC: Add import khi gặp unresolved reference
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+
+// 2. Type inference quick fix
+// BẮT BUỘC: Specify type khi compiler không thể infer
+val items: List<String> = emptyList()
+val callback: (String) -> Unit = { /* handle */ }
+
+// 3. Null safety quick fix
+// BẮT BUỘC: Use safe calls
+obj?.method() ?: defaultValue
+
+// 4. When expression quick fix
+// BẮT BUỘC: Add missing branches
+when (value) {
+    // existing branches
+    else -> { /* handle unknown case */ }
+}
+```
+
+## 📊 Error Prevention Metrics
+
+### AI Performance Targets
+- **Type Inference Errors**: 0% (BẮT BUỘC specify types)
+- **Unresolved References**: 0% (BẮT BUỘC validate imports)
+- **Null Safety Violations**: 0% (BẮT BUỘC use safe calls)
+- **Method Signature Mismatches**: 0% (BẮT BUỘC validate parameters)
+- **Resource Errors**: < 1% (BẮT BUỘC validate resources)
+
+### Quality Gates
+1. **Pre-commit**: Code compiles without errors
+2. **Pre-merge**: All tests pass
+3. **Pre-release**: No critical issues in static analysis
+
+---
+
+**🔴 CRITICAL REMINDER**: Mọi lỗi trong log_example.txt đều có thể tránh được bằng cách tuân thủ các rules trên. AI PHẢI áp dụng 100% các quy tắc này khi generate Android code.

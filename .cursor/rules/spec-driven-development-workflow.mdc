@@ -1,0 +1,323 @@
+# Spec-Driven Development Workflow - Complete Requirements to Implementation
+
+## Overview
+
+This workflow enforces a systematic approach to feature development through three mandatory sequential phases: Requirements → Design → Tasks. No phase can be skipped, and each phase must be completed and approved before proceeding to the next.
+
+## 🔴 MANDATORY SEQUENTIAL ENFORCEMENT
+
+**CRITICAL RULE**: The workflow MUST follow this exact sequence:
+1. **Requirements Phase** - Create comprehensive requirements document
+2. **Design Phase** - Create detailed technical design document  
+3. **Tasks Phase** - Create actionable implementation tasks
+4. **Execution Phase** - Execute tasks one by one
+
+**VIOLATION CONSEQUENCES**: Any attempt to skip phases or proceed without completion results in **IMMEDIATE WORKFLOW RESTART**.
+
+## Phase 1: Requirements Creation
+
+### MANDATORY Requirements Process
+
+**BEFORE creating ANY design or tasks**, MUST complete requirements document:
+
+#### Requirements Document Structure
+```markdown
+# Requirements Document
+
+## Introduction
+
+[Clear summary of the feature and its purpose]
+
+## Requirements
+
+### Requirement 1
+
+**User Story:** As a [role], I want [feature], so that [benefit]
+
+#### Acceptance Criteria
+1. WHEN [event] THEN [system] SHALL [response]
+2. IF [precondition] THEN [system] SHALL [response]
+3. GIVEN [context] WHEN [action] THEN [outcome]
+
+### Requirement 2
+
+**User Story:** As a [role], I want [feature], so that [benefit]
+
+#### Acceptance Criteria
+1. WHEN [event] THEN [system] SHALL [response]
+2. WHEN [event] AND [condition] THEN [system] SHALL [response]
+
+[Continue with all requirements...]
+```
+
+#### Requirements Quality Standards
+**MANDATORY** each requirement must include:
+- **User Story** in proper format: As a [role], I want [feature], so that [benefit]
+- **Acceptance Criteria** in EARS format (Easy Approach to Requirements Syntax)
+- **Clear Success Metrics** that can be measured and validated
+- **Edge Cases** and error scenarios consideration
+- **User Experience** considerations and constraints
+
+#### Requirements Validation Checklist
+**MANDATORY** before proceeding to design:
+- [ ] All user stories follow proper format
+- [ ] Acceptance criteria use EARS syntax (WHEN/IF/GIVEN/THEN/SHALL)
+- [ ] Requirements are specific, measurable, and testable
+- [ ] Edge cases and error scenarios are covered
+- [ ] User experience considerations are included
+- [ ] Requirements are complete and cover all functionality
+
+### Requirements Approval Gate
+**MANDATORY**: Must receive explicit user approval before proceeding to design phase.
+
+**Approval Question**: "Do the requirements look good? If so, we can move on to the design."
+
+## Phase 2: Design Creation
+
+### MANDATORY Design Process
+
+**BEFORE creating ANY tasks**, MUST complete design document:
+
+#### Design Document Structure
+```markdown
+# Design Document
+
+## Overview
+
+[Comprehensive feature overview and architectural approach]
+
+## Architecture
+
+[High-level architecture with diagrams if needed]
+
+## Components and Interfaces
+
+[Detailed component specifications and interfaces]
+
+## Data Models
+
+[Database schemas, data structures, and relationships]
+
+## Error Handling
+
+[Comprehensive error handling strategy]
+
+## Testing Strategy
+
+[Testing approach and coverage requirements]
+```
+
+#### Design Quality Standards
+**MANDATORY** design document must include:
+- **Architecture Overview** with clear component relationships
+- **Technical Specifications** for all major components
+- **Data Models** with complete schemas and relationships
+- **API Interfaces** with request/response formats
+- **Error Handling** strategy for all failure scenarios
+- **Testing Strategy** with coverage requirements
+- **Integration Points** with existing systems
+
+#### Design Research Requirements
+**MANDATORY** conduct research during design:
+- **Technology Investigation** - Research best practices and patterns
+- **Integration Analysis** - Understand existing system constraints
+- **Performance Considerations** - Plan for scalability and efficiency
+- **Security Requirements** - Address security and privacy concerns
+
+#### Design Validation Checklist
+**MANDATORY** before proceeding to tasks:
+- [ ] Architecture addresses all requirements from Phase 1
+- [ ] Technical specifications are complete and detailed
+- [ ] Data models support all required functionality
+- [ ] Error handling covers all failure scenarios
+- [ ] Testing strategy ensures quality and reliability
+- [ ] Integration points are clearly defined
+- [ ] Research findings are incorporated into design
+
+### Design Approval Gate
+**MANDATORY**: Must receive explicit user approval before proceeding to tasks phase.
+
+**Approval Question**: "Does the design look good? If so, we can move on to the implementation plan."
+
+## Phase 3: Tasks Creation
+
+### MANDATORY Tasks Process
+
+**ONLY AFTER** requirements and design are approved, create implementation tasks:
+
+#### Tasks Document Structure
+```markdown
+# Implementation Plan
+
+## Overview
+
+This implementation plan converts the [feature] design into actionable coding tasks that build incrementally on each other. Each task focuses on specific code implementation that can be executed by a coding agent.
+
+## Implementation Tasks
+
+- [ ] 1. Task Title
+  - Specific implementation detail 1
+  - Specific implementation detail 2
+  - File/component references
+  - _Requirements: Reference to specific requirements_
+
+- [ ] 2. Task Title
+  - Specific implementation detail 1
+  - Specific implementation detail 2
+  - File/component references
+  - _Requirements: Reference to specific requirements_
+
+[Continue with all tasks...]
+```
+
+#### Tasks Quality Standards
+**MANDATORY** each task must include:
+- **Coding Activities Only** - Tasks involving writing, modifying, or testing code
+- **Incremental Progression** - Each task builds on previous tasks
+- **Specific Implementation** - Concrete steps for coding agent
+- **Requirements Traceability** - Clear link to requirements document
+- **File References** - Specific files to create or modify
+
+#### Tasks Validation Checklist
+**MANDATORY** before task execution:
+- [ ] All tasks involve coding activities only
+- [ ] Tasks build incrementally on each other
+- [ ] Each task references specific requirements
+- [ ] Implementation details are concrete and actionable
+- [ ] File references are accurate and complete
+- [ ] All design components are covered by tasks
+
+### Tasks Approval Gate
+**MANDATORY**: Must receive explicit user approval before task execution.
+
+**Approval Question**: "Do the tasks look good?"
+
+## Phase 4: Task Execution
+
+### MANDATORY Execution Process
+
+**ONLY AFTER** all three documents are approved, begin task execution:
+
+#### Pre-Execution Validation
+**MANDATORY** before executing any task:
+- [ ] Requirements document exists and is approved
+- [ ] Design document exists and is approved
+- [ ] Tasks document exists and is approved
+- [ ] Current task references valid requirements
+- [ ] All prerequisite tasks are completed
+
+#### Single Task Execution Rule
+**MANDATORY** execution constraints:
+- **Execute ONE task at a time** - No parallel task execution
+- **Complete before proceeding** - Finish current task before starting next
+- **Validate against requirements** - Ensure implementation meets requirements
+- **Update task status** - Mark as in-progress, then completed
+- **Stop for user review** - Let user review before next task
+
+#### Task Status Management
+**MANDATORY** status updates:
+- **Before starting**: Update task status to 'in_progress'
+- **During execution**: Reference requirements and design documents
+- **After completion**: Update task status to 'completed'
+- **Between tasks**: Stop and wait for user direction
+
+## 🚨 ENFORCEMENT MECHANISMS
+
+### Phase Gate Enforcement
+**AUTOMATIC BLOCKING** if:
+- Attempting to create design without approved requirements
+- Attempting to create tasks without approved design
+- Attempting to execute tasks without approved documents
+- Skipping any phase in the sequence
+
+### Document Validation
+**MANDATORY CHECKS** at each phase:
+- **Requirements Phase**: EARS format, user stories, acceptance criteria
+- **Design Phase**: Architecture, components, data models, testing strategy
+- **Tasks Phase**: Coding activities, incremental progression, requirements traceability
+- **Execution Phase**: Document existence, task status, requirements validation
+
+### User Approval Requirements
+**MANDATORY** user approval using userInput tool:
+- **Requirements Review**: reason='spec-requirements-review'
+- **Design Review**: reason='spec-design-review'  
+- **Tasks Review**: reason='spec-tasks-review'
+- **Explicit Approval Required**: Clear "yes", "approved", "looks good" responses
+
+## 🔧 File Structure Requirements
+
+### Mandatory Spec Directory Structure
+```
+.kiro/specs/{feature-name}/
+├── requirements.md    # Phase 1 - EARS format requirements
+├── design.md         # Phase 2 - Technical design document
+└── tasks.md          # Phase 3 - Implementation task list
+```
+
+### File Creation Rules
+**MANDATORY** file management:
+- **Create if missing**: Auto-create spec directory and files
+- **Validate existence**: Check for required files before proceeding
+- **Maintain consistency**: Ensure all files reference same feature
+- **Update traceability**: Maintain links between requirements, design, and tasks
+
+## 🎯 Quality Gates Summary
+
+### Gate 1: Requirements Completion
+- [ ] Requirements document created in proper format
+- [ ] All user stories and acceptance criteria complete
+- [ ] User approval received via userInput tool
+- [ ] Ready to proceed to design phase
+
+### Gate 2: Design Completion
+- [ ] Design document created with all required sections
+- [ ] Architecture and technical specifications complete
+- [ ] Research conducted and findings incorporated
+- [ ] User approval received via userInput tool
+- [ ] Ready to proceed to tasks phase
+
+### Gate 3: Tasks Completion
+- [ ] Tasks document created with actionable coding tasks
+- [ ] All tasks reference specific requirements
+- [ ] Incremental progression and dependencies mapped
+- [ ] User approval received via userInput tool
+- [ ] Ready to begin task execution
+
+### Gate 4: Execution Readiness
+- [ ] All three documents exist and are approved
+- [ ] Current task has clear requirements traceability
+- [ ] Task status management system active
+- [ ] Single task execution rule enforced
+
+## 🔄 Workflow Integration
+
+### Integration with Task Creation Workflow
+This workflow **SUPERSEDES** the task-creation-workflow.mdc when creating new specs:
+- **New Features**: Must follow Requirements → Design → Tasks sequence
+- **Existing Specs**: Can use task-creation-workflow for task optimization
+- **Task Execution**: Always requires complete spec documents
+
+### Integration with Development Rules
+All development activities must:
+- **Reference Requirements**: Every implementation must trace to requirements
+- **Follow Design**: Code must implement the approved design
+- **Complete Tasks**: Execute tasks in approved sequence
+- **Maintain Quality**: Meet all quality gates and standards
+
+## 🚨 CRITICAL COMPLIANCE RULES
+
+### Non-Negotiable Requirements
+1. **SEQUENTIAL PHASES**: Requirements → Design → Tasks → Execution (NO EXCEPTIONS)
+2. **USER APPROVAL**: Each phase requires explicit user approval
+3. **DOCUMENT COMPLETENESS**: All documents must meet quality standards
+4. **SINGLE TASK EXECUTION**: One task at a time, complete before proceeding
+5. **REQUIREMENTS TRACEABILITY**: All work must trace back to requirements
+
+### Violation Consequences
+- **Phase Skipping**: Immediate workflow restart from Phase 1
+- **Missing Approval**: Block progression until approval received
+- **Incomplete Documents**: Force completion before proceeding
+- **Parallel Execution**: Stop and enforce single task rule
+- **Missing Traceability**: Require requirements reference before proceeding
+
+This workflow ensures systematic, quality-driven development with complete traceability from requirements through implementation.

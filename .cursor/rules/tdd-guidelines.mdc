@@ -1,0 +1,1188 @@
+# Test Driven Development (TDD) Guidelines
+
+## 🎯 Nguyên Tắc TDD Cốt Lõi
+
+### Red-Green-Refactor Cycle
+
+```
+🔴 RED    → Viết test thất bại đầu tiên
+🟢 GREEN  → Viết code tối thiểu để test pass
+🔵 REFACTOR → Cải thiện code giữ nguyên test
+```
+
+**BẮT BUỘC tuân thủ nguyên tắc:**
+
+- **_BẮT BUỘC_** viết test TRƯỚC khi viết production code
+- **_BẮT BUỘC_** chỉ viết đủ code để test pass
+- **_BẮT BUỘC_** refactor sau khi test green
+- **_BẮT BUỘC_** commit sau mỗi complete cycle
+- **_NGHIÊM CẤM_** viết production code mà không có test cover
+
+📋 **Platform-Specific TDD**: Xem [project-setup.md](setup/project-setup.md#8-test-driven-development-tdd-setup---bắt-buộc) cho workflow cụ thể của từng platform
+
+## 🔴 Red Phase - Write Failing Test
+
+### Quy Tắc Red Phase
+
+- **Viết test nhỏ nhất có thể** cho một behavior cụ thể
+- **Test PHẢI fail** với lý do đúng (not implemented yet)
+- **Tập trung vào 1 behavior** trong 1 test
+- **Sử dụng naming convention rõ ràng**
+
+#### TSDDR 2.0 Test Naming Convention
+
+```kotlin
+// Android/Kotlin - TSDDR 2.0 Enhanced
+@Test
+fun `GIVEN userHasHealthData WHEN generateAIInsights THEN returnsPersonalizedRecommendations`()
+
+@Test  
+fun `GIVEN aiServiceFails WHEN generateInsights THEN fallbackToCachedRecommendations`()
+
+// iOS/Swift - TSDDR 2.0 Enhanced
+func testGenerateAIInsights_UserHasHealthData_ReturnsPersonalizedRecommendations()
+
+func testGenerateInsights_AIServiceFails_FallbackToCachedRecommendations()
+
+// JavaScript/TypeScript - TSDDR 2.0 Enhanced
+test('GIVEN user has health data WHEN generating AI insights THEN returns personalized recommendations')
+
+test('GIVEN AI service fails WHEN generating insights THEN fallback to cached recommendations')
+```
+
+### TSDDR 2.0 Test Structure Template
+
+```kotlin
+@Test
+fun `GIVEN [precondition] WHEN [action] THEN [expected result]`() {
+    // Arrange - Based on test specifications
+    val testData = createTestDataBuilder()
+        .withRequiredFields()
+        .build()
+    
+    // Act - Execute the behavior under test
+    val result = systemUnderTest.performAction(testData)
+    
+    // Assert - Verify against acceptance criteria
+    assertThat(result).meetsAcceptanceCriteria()
+    verify(dependencies).wereCalledCorrectly()
+}
+```
+
+#### Mobile-Specific Test Examples
+
+```kotlin
+// Android Health App Example
+@Test
+fun `GIVEN userCompletesHealthTracking WHEN requestingPremiumInsights THEN showsRewardedAdOpportunity`() {
+    // Arrange - Health tracking completion
+    val healthData = HealthDataBuilder()
+        .withSteps(10000)
+        .withHeartRate(listOf(70, 75, 72))
+        .withSleepHours(8.0)
+        .build()
+    
+    every { healthRepository.getTodayData() } returns flowOf(healthData)
+    every { adService.isRewardedAdAvailable() } returns true
+    
+    // Act - Request premium insights
+    viewModel.requestPremiumInsights()
+    
+    // Assert - Ad opportunity shown
+    verify { adService.showRewardedAdOpportunity("premium_insights") }
+    assertThat(viewModel.uiState.value.showAdOpportunity).isTrue()
+}
+
+@Test
+fun `GIVEN vietnameseUser WHEN openingApp THEN usesMaxRevenueAdStrategy`() {
+    // Arrange - Vietnamese user context
+    every { locationService.getCurrentCountry() } returns "VN"
+    every { remoteConfig.getString("ad_strategy_VN") } returns "max_revenue"
+    
+    // Act - Initialize ad strategy
+    adManager.initializeForUser()
+    
+    // Assert - Max revenue strategy applied
+    verify { adService.setStrategy(AdStrategy.MAX_REVENUE) }
+    assertThat(adManager.currentStrategy).isEqualTo(AdStrategy.MAX_REVENUE)
+}
+```
+
+```swift
+// iOS Health App Example
+func testGeneratePremiumInsights_UserHasSubscription_ReturnsAdvancedRecommendations() {
+    // Arrange - User with active subscription
+    let healthData = HealthDataBuilder()
+        .withHeartRate([70, 75, 72])
+        .withSteps([8000, 9000, 8500])
+        .withSleep([7.5, 8.0, 7.0])
+        .build()
+    
+    mockIAPService.hasActiveSubscriptionResult = true
+    mockAIService.generatePremiumInsightsResult = .success(premiumInsights)
+    
+    let expectation = XCTestExpectation(description: "Premium insights generated")
+    
+    // Act - Generate premium insights
+    viewModel.generatePremiumInsights { result in
+        // Assert - Advanced recommendations provided
+        switch result {
+        case .success(let insights):
+            XCTAssertTrue(insights.isPremium)
+            XCTAssertGreaterThan(insights.recommendations.count, 3)
+            XCTAssertGreaterThan(insights.confidence, 0.8)
+            expectation.fulfill()
+        case .failure:
+            XCTFail("Should succeed with valid subscription")
+        }
+    }
+    
+    wait(for: [expectation], timeout: 1.0)
+}
+```
+```
+
+## 🟢 Green Phase - Make Test Pass
+
+### GREEN Phase - Enhanced Implementation
+
+#### Implementation Priority Order
+1. **Business Logic**: Core algorithms và domain logic
+2. **Data Layer**: Repository patterns và data access
+3. **UI Layer**: ViewModels và UI components
+4. **AI Features**: ML integrations và smart features
+
+#### GREEN Phase Rules
+
+- **Implement based on test specifications** từ requirements stage
+- **Follow minimal implementation principle** để test pass
+- **Use dependency injection** for testability
+- **Implement error handling** as specified in test cases
+- **Add logging và monitoring** for debugging
+
+### GREEN Phase Enhanced Examples
+
+```kotlin
+// ❌ WRONG - Over-engineering in Green phase
+class HealthInsightService {
+    fun generateInsights(healthData: HealthData): InsightResult {
+        // Complex ML pipeline with multiple models
+        val heartRateModel = HeartRateAnalysisModel()
+        val sleepModel = SleepPatternModel()
+        val activityModel = ActivityAnalysisModel()
+        val nutritionModel = NutritionModel()
+        
+        return InsightResult(
+            heartRateModel.analyze(healthData.heartRate),
+            sleepModel.analyze(healthData.sleep),
+            activityModel.analyze(healthData.activity),
+            nutritionModel.analyze(healthData.nutrition)
+        )
+    }
+}
+
+// ✅ CORRECT - Minimal implementation for Green phase
+class HealthInsightService(
+    private val aiService: AIService,
+    private val cacheRepository: CacheRepository
+) {
+    suspend fun generateInsights(healthData: HealthData): InsightResult {
+        return try {
+            // Minimal implementation to pass test
+            val insights = aiService.generateBasicInsights(healthData)
+            InsightResult.Success(insights)
+        } catch (e: Exception) {
+            // Fallback as specified in test
+            val cachedInsights = cacheRepository.getCachedInsights()
+            InsightResult.Success(cachedInsights)
+        }
+    }
+}
+```
+
+```swift
+// iOS GREEN Phase Example
+class HealthInsightService {
+    private let aiService: AIService
+    private let cacheService: CacheService
+    
+    init(aiService: AIService, cacheService: CacheService) {
+        self.aiService = aiService
+        self.cacheService = cacheService
+    }
+    
+    func generatePremiumInsights(healthData: HealthData, completion: @escaping (Result<PremiumInsights, Error>) -> Void) {
+        // Minimal implementation to pass test
+        aiService.generatePremiumInsights(from: healthData) { [weak self] result in
+            switch result {
+            case .success(let insights):
+                completion(.success(insights))
+            case .failure:
+                // Fallback as specified in test
+                if let cachedInsights = self?.cacheService.getCachedPremiumInsights() {
+                    completion(.success(cachedInsights))
+                } else {
+                    completion(.failure(AIServiceError.unavailable))
+                }
+            }
+        }
+    }
+}
+```
+
+## 🔵 Refactor Phase - Improve Code
+
+### REFACTOR Phase - Three-Level Improvements
+
+#### Refactor Categories (Priority Order)
+1. **Code Quality**: Structure, readability, maintainability
+2. **Test Quality**: Coverage, clarity, maintainability
+3. **Architecture**: Design patterns, scalability, performance
+
+#### REFACTOR Phase Rules
+
+- **Only refactor when all tests are GREEN**
+- **Maintain behavior compatibility** - no functional changes
+- **Improve based on design specifications** từ design stage
+- **Apply SOLID principles** và design patterns
+- **Optimize performance** based on requirements
+- **Enhance error handling** và logging
+
+### Three-Level Refactor Strategy
+
+#### Level 1: Code Quality Refactor
+
+```kotlin
+// BEFORE Refactor - Code duplication và poor structure
+class HealthInsightService {
+    fun generateBasicInsights(healthData: HealthData): InsightResult {
+        if (healthData.heartRate.isEmpty()) return InsightResult.Error("No heart rate data")
+        if (healthData.steps < 0) return InsightResult.Error("Invalid steps data")
+        if (healthData.sleepHours < 0) return InsightResult.Error("Invalid sleep data")
+        
+        val heartRateInsight = "Your average heart rate is ${healthData.heartRate.average()}"
+        val stepsInsight = "You walked ${healthData.steps} steps today"
+        val sleepInsight = "You slept ${healthData.sleepHours} hours"
+        
+        return InsightResult.Success(listOf(heartRateInsight, stepsInsight, sleepInsight))
+    }
+    
+    fun generatePremiumInsights(healthData: HealthData): InsightResult {
+        if (healthData.heartRate.isEmpty()) return InsightResult.Error("No heart rate data")
+        if (healthData.steps < 0) return InsightResult.Error("Invalid steps data")
+        if (healthData.sleepHours < 0) return InsightResult.Error("Invalid sleep data")
+        
+        // Premium logic here...
+        return InsightResult.Success(emptyList())
+    }
+}
+
+// AFTER Level 1 Refactor - Extracted validation và improved structure
+class HealthInsightService(
+    private val validator: HealthDataValidator,
+    private val insightGenerator: InsightGenerator
+) {
+    fun generateBasicInsights(healthData: HealthData): InsightResult {
+        return validator.validate(healthData)
+            .fold(
+                onSuccess = { validData -> 
+                    insightGenerator.generateBasicInsights(validData)
+                },
+                onFailure = { error -> 
+                    InsightResult.Error(error.message ?: "Validation failed")
+                }
+            )
+    }
+    
+    fun generatePremiumInsights(healthData: HealthData): InsightResult {
+        return validator.validate(healthData)
+            .fold(
+                onSuccess = { validData -> 
+                    insightGenerator.generatePremiumInsights(validData)
+                },
+                onFailure = { error -> 
+                    InsightResult.Error(error.message ?: "Validation failed")
+                }
+            )
+    }
+}
+```
+
+#### Level 2: Test Quality Refactor
+
+```kotlin
+// BEFORE - Repetitive test setup
+@Test
+fun `test basic insights generation`() {
+    val healthData = HealthData(
+        heartRate = listOf(70, 75, 72),
+        steps = 8000,
+        sleepHours = 7.5
+    )
+    every { validator.validate(any()) } returns Result.success(healthData)
+    every { insightGenerator.generateBasicInsights(any()) } returns basicInsights
+    
+    val result = service.generateBasicInsights(healthData)
+    
+    assertThat(result).isInstanceOf(InsightResult.Success::class.java)
+}
+
+// AFTER Level 2 Refactor - Test Data Builders và shared setup
+class HealthInsightServiceTest {
+    private val healthDataBuilder = HealthDataTestBuilder()
+    private val mockValidator = mockk<HealthDataValidator>()
+    private val mockInsightGenerator = mockk<InsightGenerator>()
+    private val service = HealthInsightService(mockValidator, mockInsightGenerator)
+    
+    @Test
+    fun `GIVEN validHealthData WHEN generateBasicInsights THEN returnsSuccessWithInsights`() {
+        // Arrange
+        val healthData = healthDataBuilder.withValidData().build()
+        val expectedInsights = InsightTestDataBuilder().withBasicInsights().build()
+        
+        every { mockValidator.validate(healthData) } returns Result.success(healthData)
+        every { mockInsightGenerator.generateBasicInsights(healthData) } returns expectedInsights
+        
+        // Act
+        val result = service.generateBasicInsights(healthData)
+        
+        // Assert
+        assertThat(result).isEqualTo(InsightResult.Success(expectedInsights))
+        verify { mockValidator.validate(healthData) }
+        verify { mockInsightGenerator.generateBasicInsights(healthData) }
+    }
+}
+```
+
+#### Level 3: Architecture Refactor
+
+```kotlin
+// AFTER Level 3 Refactor - Clean Architecture với Use Cases
+class GenerateHealthInsightsUseCase(
+    private val healthRepository: HealthRepository,
+    private val aiService: AIService,
+    private val cacheRepository: CacheRepository,
+    private val logger: Logger
+) {
+    suspend fun execute(request: GenerateInsightsRequest): Flow<InsightResult> = flow {
+        emit(InsightResult.Loading)
+        
+        try {
+            val healthData = healthRepository.getHealthData(request.userId, request.dateRange)
+            
+            if (healthData.isEmpty()) {
+                emit(InsightResult.Error("No health data available"))
+                return@flow
+            }
+            
+            val insights = when (request.type) {
+                InsightType.BASIC -> generateBasicInsights(healthData)
+                InsightType.PREMIUM -> generatePremiumInsights(healthData)
+            }
+            
+            cacheRepository.cacheInsights(request.userId, insights)
+            emit(InsightResult.Success(insights))
+            
+        } catch (e: Exception) {
+            logger.error("Failed to generate insights", e)
+            val cachedInsights = cacheRepository.getCachedInsights(request.userId)
+            
+            if (cachedInsights != null) {
+                emit(InsightResult.Success(cachedInsights))
+            } else {
+                emit(InsightResult.Error("Unable to generate insights: ${e.message}"))
+            }
+        }
+    }
+    
+    private suspend fun generateBasicInsights(healthData: HealthData): List<Insight> {
+        return aiService.generateBasicInsights(healthData)
+    }
+    
+    private suspend fun generatePremiumInsights(healthData: HealthData): List<Insight> {
+        return aiService.generatePremiumInsights(healthData)
+    }
+}
+```
+
+### Refactor Safety Rules
+
+- **Run tests BEFORE refactor** để đảm bảo green
+- **Run tests AFTER each change** trong quá trình refactor
+- **Commit after successful refactor** để có safe point
+- **Revert nếu tests fail** và thử approach khác
+
+## Stage 5: ✅ TEST - Validation & Coverage
+
+**Branch**: `test/[feature-name]`
+
+### Test Stage Rules
+
+- **Validate all acceptance criteria** từ requirements stage
+- **Achieve coverage targets** theo từng component type
+- **Run comprehensive test suites** (Unit, Integration, E2E)
+- **Validate performance requirements** và benchmarks
+- **Test error scenarios** và edge cases thoroughly
+- **Get test validation approval** trước khi review stage
+
+## 📊 TSDDR 2.0 Test Coverage Guidelines
+
+### Enhanced Coverage Targets by Component Type
+
+#### Core Business Logic
+- **Domain Models**: 98%+ coverage
+- **Use Cases**: 95%+ coverage  
+- **Business Rules**: 100% coverage
+- **Algorithms**: 95%+ coverage
+
+#### Data & Integration Layer
+- **Repositories**: 90%+ coverage
+- **API Clients**: 85%+ coverage
+- **Database Operations**: 90%+ coverage
+- **External Service Integration**: 80%+ coverage
+
+#### UI & Presentation Layer
+- **ViewModels**: 90%+ coverage
+- **UI Components**: 75%+ coverage
+- **Navigation Logic**: 85%+ coverage
+- **User Interactions**: 80%+ coverage
+
+#### AI & Smart Features
+- **AI Service Integration**: 85%+ coverage
+- **ML Model Wrappers**: 80%+ coverage
+- **Recommendation Engines**: 90%+ coverage
+- **Fallback Mechanisms**: 95%+ coverage
+
+#### Revenue & Monetization
+- **Ad Integration**: 90%+ coverage
+- **IAP Logic**: 95%+ coverage
+- **Revenue Analytics**: 85%+ coverage
+- **Regional Strategies**: 90%+ coverage
+
+### TSDDR 2.0 Coverage Quality Rules
+
+- **Branch coverage** minimum 85% across all components
+- **Mutation testing** for critical business logic
+- **Property-based testing** for algorithms
+- **Contract testing** for external integrations
+- **Visual regression testing** for UI components
+- **Performance testing** for AI features
+
+### Stage-Based Coverage Monitoring
+
+```bash
+# Android - Enhanced Jacoco with TSDDR stages
+./gradlew jacocoTestReport -PtsddrStage=execution
+./gradlew jacocoTestReport -PtsddrStage=test
+open build/reports/jacoco/tsddr-test/html/index.html
+
+# iOS - Xcode with TSDDR integration
+# Enable Code Coverage in Scheme -> Test -> Options -> TSDDR Mode
+# View detailed reports in Xcode -> Report Navigator -> TSDDR Coverage
+
+# Flutter - TSDDR coverage tracking
+flutter test --coverage --tsddr-stage=test
+genhtml coverage/lcov.info -o coverage/tsddr-html
+```
+
+## Stage 6: 🔍 REVIEW - Final Integration
+
+**Branch**: `review/[feature-name]`
+
+### Review Stage Rules
+
+- **Comprehensive code review** của tất cả stages
+- **Validate integration** với existing codebase
+- **Performance review** và optimization opportunities
+- **Security review** cho sensitive features
+- **Documentation review** và completeness check
+- **Final approval** trước khi merge to main
+
+## 🏗️ TSDDR 2.0 Test Strategies
+
+### Enhanced Test Pyramid for AI Mobile Apps
+
+```
+           /\     E2E Tests (10%)
+          /  \    - Complete user journeys
+         /    \   - AI-powered workflows
+        /______\  - Cross-platform scenarios
+       /        \
+      /          \ Integration Tests (25%)
+     /            \ - AI service integration
+    /              \ - Revenue feature flows
+   /________________\ - Regional strategy testing
+  /                  \
+ /                    \ Unit Tests (65%)
+/______________________\ - Business logic
+                         - AI model wrappers
+                         - Revenue algorithms
+```
+
+### TSDDR 2.0 Test Categories
+
+#### 1. Unit Tests (65%) - Enhanced Coverage
+
+**Core Business Logic**
+- **Domain Models**: Health data, user profiles, insights
+- **Use Cases**: Generate insights, process health data
+- **Business Rules**: Premium features, subscription logic
+- **Algorithms**: Health scoring, recommendation engines
+
+**AI & Smart Features**
+- **AI Service Wrappers**: Model input/output handling
+- **Recommendation Engines**: Personalization logic
+- **Fallback Mechanisms**: Offline capabilities
+- **Data Processing**: Health data analysis
+
+**Revenue & Monetization**
+- **Ad Logic**: Ad placement, timing, targeting
+- **IAP Management**: Subscription validation, feature unlocking
+- **Revenue Analytics**: Tracking, reporting, optimization
+- **Regional Strategies**: Country-specific monetization
+
+#### 2. Integration Tests (25%) - AI-Enhanced
+
+**AI Service Integration**
+- **ML Model Integration**: Input preprocessing, output handling
+- **AI API Communication**: Request/response validation
+- **Model Performance**: Latency, accuracy benchmarks
+- **Fallback Testing**: Service unavailability scenarios
+
+**Revenue Integration**
+- **Ad Network Integration**: AdMob, Facebook Ads, Unity Ads
+- **IAP Platform Integration**: Google Play, App Store
+- **Analytics Integration**: Firebase, custom analytics
+- **A/B Testing Integration**: Feature flags, experiments
+
+**Data & Platform Integration**
+- **Health Data APIs**: HealthKit, Google Fit integration
+- **Cloud Services**: Firebase, AWS, custom backends
+- **Device Integration**: Sensors, notifications, background tasks
+- **Third-party Services**: Authentication, crash reporting
+
+#### 3. E2E Tests (10%) - User Journey Focus
+
+**AI-Powered User Journeys**
+- **Health Tracking → AI Insights**: Complete flow from data input to personalized recommendations
+- **Premium Upgrade Journey**: Free user → premium features → subscription
+- **Ad-Supported Flow**: Free user → ad interactions → premium conversion
+
+**Regional Strategy Validation**
+- **Vietnamese Market**: Max revenue strategy, local payment methods
+- **Global Markets**: Freemium strategy, international payments
+- **Feature Flag Testing**: Different strategies per region
+
+**Cross-Platform Scenarios**
+- **Data Synchronization**: Health data across devices
+- **Account Management**: Login, profile sync, preferences
+- **Offline/Online Transitions**: Data persistence, sync conflicts
+
+### TSDDR 2.0 Specialized Test Patterns
+
+#### AI Testing Patterns
+
+```kotlin
+// AI Model Integration Test
+@Test
+fun `GIVEN healthDataWithTrends WHEN generateAIInsights THEN returnsAccurateRecommendations`() {
+    // Arrange - Historical health data with patterns
+    val healthHistory = HealthHistoryBuilder()
+        .withWeeklyTrend(steps = listOf(8000, 8500, 9000, 9500, 10000))
+        .withSleepPattern(hours = listOf(7.0, 7.5, 8.0, 7.5, 8.0))
+        .withHeartRateVariability(resting = listOf(65, 63, 62, 64, 63))
+        .build()
+    
+    every { aiService.analyzeHealthTrends(healthHistory) } returns AIInsights(
+        recommendations = listOf(
+            "Your step count is improving! Try to maintain 10,000+ steps",
+            "Your sleep quality is excellent. Keep your 7.5-8 hour routine",
+            "Your resting heart rate is decreasing - great cardiovascular improvement!"
+        ),
+        confidence = 0.92,
+        personalizedTips = listOf("Based on your progress, try adding 15-minute morning walks")
+    )
+    
+    // Act
+    val result = healthInsightUseCase.generatePersonalizedInsights(healthHistory)
+    
+    // Assert - Verify AI insights quality
+    assertThat(result.recommendations).hasSize(3)
+    assertThat(result.confidence).isGreaterThan(0.9)
+    assertThat(result.personalizedTips).isNotEmpty()
+    verify { aiService.analyzeHealthTrends(healthHistory) }
+}
+```
+
+#### Revenue Testing Patterns
+
+```kotlin
+// Revenue Strategy Integration Test
+@Test
+fun `GIVEN vietnameseUserWithHighEngagement WHEN triggeringMonetization THEN showsMaxRevenueStrategy`() {
+    // Arrange - High-engagement Vietnamese user
+    val user = UserBuilder()
+        .withCountry("VN")
+        .withEngagementScore(0.85) // High engagement
+        .withDailyActiveStreak(30)
+        .withFeatureUsage(premium = false, ads = true)
+        .build()
+    
+    every { remoteConfig.getString("monetization_strategy_VN") } returns "max_revenue"
+    every { adService.getOptimalAdTiming(user) } returns AdTiming.AFTER_INSIGHT_GENERATION
+    every { iapService.getOptimalUpgradePrompt(user) } returns UpgradePrompt.FEATURE_LIMIT_REACHED
+    
+    // Act
+    val monetizationPlan = revenueOptimizer.createMonetizationPlan(user)
+    
+    // Assert - Max revenue strategy applied
+    assertThat(monetizationPlan.strategy).isEqualTo(MonetizationStrategy.MAX_REVENUE)
+    assertThat(monetizationPlan.adFrequency).isEqualTo(AdFrequency.HIGH)
+    assertThat(monetizationPlan.upgradePromptTiming).isEqualTo(UpgradePrompt.FEATURE_LIMIT_REACHED)
+    verify { remoteConfig.getString("monetization_strategy_VN") }
+}
+```
+
+## 🎭 TSDDR 2.0 Advanced Mocking Strategies
+
+### Enhanced Mock Types for AI Mobile Apps
+
+1. **Smart Stubs**: AI-aware predefined responses with fallbacks
+2. **Behavioral Mocks**: Verify complex interaction patterns
+3. **Performance Spies**: Monitor AI service performance
+4. **Intelligent Fakes**: Simplified AI implementations for testing
+5. **Contract Doubles**: API contract validation
+
+### AI Service Mocking Patterns
+
+#### Android AI Mocking (MockK Enhanced)
+
+```kotlin
+// Smart Stub - AI Service with fallback behavior
+class AIServiceStub : AIService {
+    private val responses = mutableMapOf<HealthData, AIInsights>()
+    private val fallbackInsights = AIInsights(
+        recommendations = listOf("Stay hydrated", "Get enough sleep"),
+        confidence = 0.7,
+        personalizedTips = listOf("Based on general health guidelines")
+    )
+    
+    fun stubResponse(input: HealthData, output: AIInsights) {
+        responses[input] = output
+    }
+    
+    override suspend fun generateInsights(healthData: HealthData): AIInsights {
+        return responses[healthData] ?: fallbackInsights
+    }
+    
+    override suspend fun analyzeHealthTrends(history: HealthHistory): AIInsights {
+        // Simulate AI processing delay
+        delay(100)
+        return AIInsights(
+            recommendations = listOf("Your trends show improvement"),
+            confidence = 0.85,
+            personalizedTips = listOf("Continue your current routine")
+        )
+    }
+}
+
+// Behavioral Mock - Revenue optimization verification
+@Test
+fun `GIVEN highEngagementUser WHEN optimizingRevenue THEN callsCorrectAdStrategy`() {
+    val mockAdService = mockk<AdService>()
+    val mockIAPService = mockk<IAPService>()
+    val mockAnalytics = mockk<AnalyticsService>()
+    
+    val user = UserBuilder().withHighEngagement().build()
+    
+    every { mockAdService.getOptimalStrategy(user) } returns AdStrategy.MAX_REVENUE
+    every { mockIAPService.shouldShowUpgradePrompt(user) } returns true
+    every { mockAnalytics.trackRevenueOptimization(any()) } just Runs
+    
+    val revenueOptimizer = RevenueOptimizer(mockAdService, mockIAPService, mockAnalytics)
+    revenueOptimizer.optimizeForUser(user)
+    
+    verifySequence {
+        mockAdService.getOptimalStrategy(user)
+        mockIAPService.shouldShowUpgradePrompt(user)
+        mockAnalytics.trackRevenueOptimization(match { it.strategy == AdStrategy.MAX_REVENUE })
+    }
+}
+
+// Performance Spy - AI service latency monitoring
+class AIServiceSpy(private val realService: AIService) : AIService {
+    var lastCallDuration: Long = 0
+    var totalCalls: Int = 0
+    var averageLatency: Double = 0.0
+    
+    override suspend fun generateInsights(healthData: HealthData): AIInsights {
+        val startTime = System.currentTimeMillis()
+        val result = realService.generateInsights(healthData)
+        lastCallDuration = System.currentTimeMillis() - startTime
+        totalCalls++
+        averageLatency = (averageLatency * (totalCalls - 1) + lastCallDuration) / totalCalls
+        return result
+    }
+}
+```
+
+#### iOS AI Mocking (Protocol-Enhanced)
+
+```swift
+// Smart AI Service Mock with realistic behavior
+class MockAIService: AIServiceProtocol {
+    var generateInsightsResult: Result<AIInsights, Error>?
+    var generateInsightsCallCount = 0
+    var lastHealthData: HealthData?
+    var simulateLatency: TimeInterval = 0.1
+    
+    // Predefined responses for different health patterns
+    private let responsePatterns: [HealthPattern: AIInsights] = [
+        .improving: AIInsights(
+            recommendations: ["Great progress! Keep it up"],
+            confidence: 0.9,
+            personalizedTips: ["Try increasing your daily steps by 500"]
+        ),
+        .declining: AIInsights(
+            recommendations: ["Consider consulting a healthcare provider"],
+            confidence: 0.8,
+            personalizedTips: ["Focus on getting 7-8 hours of sleep"]
+        )
+    ]
+    
+    func generateInsights(from healthData: HealthData, completion: @escaping (Result<AIInsights, Error>) -> Void) {
+        generateInsightsCallCount += 1
+        lastHealthData = healthData
+        
+        // Simulate AI processing time
+        DispatchQueue.global().asyncAfter(deadline: .now() + simulateLatency) {
+            if let result = self.generateInsightsResult {
+                completion(result)
+            } else {
+                // Smart fallback based on health data pattern
+                let pattern = self.analyzeHealthPattern(healthData)
+                let insights = self.responsePatterns[pattern] ?? self.defaultInsights
+                completion(.success(insights))
+            }
+        }
+    }
+    
+    private func analyzeHealthPattern(_ data: HealthData) -> HealthPattern {
+        // Simple pattern analysis for testing
+        if data.steps.last ?? 0 > data.steps.first ?? 0 {
+            return .improving
+        } else {
+            return .declining
+        }
+    }
+    
+    private var defaultInsights: AIInsights {
+        return AIInsights(
+            recommendations: ["Maintain your current routine"],
+            confidence: 0.75,
+            personalizedTips: ["Stay consistent with your health tracking"]
+        )
+    }
+}
+
+// Revenue Strategy Mock with regional behavior
+class MockRevenueService: RevenueServiceProtocol {
+    var userCountry: String = "US"
+    var engagementScore: Double = 0.5
+    var getStrategyCallCount = 0
+    
+    func getOptimalStrategy(for user: User) -> MonetizationStrategy {
+        getStrategyCallCount += 1
+        
+        switch userCountry {
+        case "VN":
+            return engagementScore > 0.7 ? .maxRevenue : .balanced
+        case "US", "CA", "AU":
+            return .freemium
+        default:
+            return .adSupported
+        }
+    }
+    
+    func trackRevenueEvent(_ event: RevenueEvent) {
+        // Mock implementation for testing
+        print("Tracked revenue event: \(event)")
+    }
+}
+```
+
+### Contract Testing for External APIs
+
+```kotlin
+// API Contract Mock - Ensures API compatibility
+class AIServiceContractMock : AIService {
+    override suspend fun generateInsights(healthData: HealthData): AIInsights {
+        // Validate input contract
+        require(healthData.heartRate.isNotEmpty()) { "Heart rate data required" }
+        require(healthData.steps >= 0) { "Steps must be non-negative" }
+        require(healthData.sleepHours in 0.0..24.0) { "Sleep hours must be 0-24" }
+        
+        // Return contract-compliant response
+        return AIInsights(
+            recommendations = listOf("Contract-validated recommendation"),
+            confidence = 0.8,
+            personalizedTips = listOf("Contract-validated tip")
+        ).also {
+            // Validate output contract
+            require(it.confidence in 0.0..1.0) { "Confidence must be 0-1" }
+            require(it.recommendations.isNotEmpty()) { "Must have at least one recommendation" }
+        }
+    }
+}
+```
+
+## ✅ TSDDR 2.0 Best Practices
+
+### Enhanced Do's ✅
+
+**Stage-Based Development**
+- **Follow TSDDR 2.0 workflow** - Complete each stage before proceeding
+- **Create comprehensive test specifications** - Document all scenarios upfront
+- **Design test architecture first** - Plan your testing strategy
+- **Use Git branching per stage** - Maintain clear separation of concerns
+- **Get stage approvals** - Ensure quality gates are met
+- **Track coverage by component type** - Meet specific targets for each layer
+
+**AI-Enhanced Testing**
+- **Test AI service integration thoroughly** - Include fallback scenarios
+- **Mock AI responses realistically** - Use confidence scores and realistic data
+- **Test performance requirements** - AI calls can be slow, plan accordingly
+- **Validate AI output quality** - Don't just test for non-null responses
+- **Test offline AI capabilities** - Ensure graceful degradation
+
+**Revenue-Focused Testing**
+- **Test monetization flows end-to-end** - From free to premium conversion
+- **Validate regional strategies** - Different approaches per market
+- **Test ad integration thoroughly** - Timing, placement, user experience
+- **Mock IAP scenarios** - Purchase success, failure, restoration
+- **Track revenue metrics in tests** - Ensure analytics are captured
+
+### Enhanced Don'ts ❌
+
+**TSDDR 2.0 Violations**
+- **Don't skip stages** - Each stage builds on the previous
+- **Don't merge without stage completion** - Maintain workflow integrity
+- **Don't ignore coverage targets** - Each component type has specific requirements
+- **Don't bypass Git branching strategy** - Use designated branches per stage
+- **Don't skip stage reviews** - Quality gates prevent technical debt
+
+**AI Testing Mistakes**
+- **Don't test AI as a black box** - Validate input/output contracts
+- **Don't ignore AI service failures** - Always test fallback mechanisms
+- **Don't use unrealistic AI responses** - Mock with domain-appropriate data
+- **Don't skip performance testing** - AI calls affect user experience
+- **Don't forget edge cases** - Invalid input, service timeouts, rate limits
+
+**Revenue Testing Pitfalls**
+- **Don't test with fake payment methods** - Use sandbox environments
+- **Don't ignore regional differences** - Test country-specific strategies
+- **Don't skip ad integration edge cases** - Network failures, no ads available
+- **Don't forget GDPR/privacy compliance** - Test consent flows
+- **Don't ignore revenue analytics** - Ensure tracking is comprehensive
+
+### TSDDR 2.0 Anti-Patterns 🚫
+
+#### 1. Stage Skipping Anti-Pattern
+```kotlin
+// ❌ BAD - Jumping directly to implementation without specifications
+class HealthInsightService {
+    fun generateInsights(data: HealthData): List<String> {
+        // Implementation without test specifications
+        return listOf("Generic advice")
+    }
+}
+
+// ✅ GOOD - Following TSDDR 2.0 stages
+// Stage 1: Requirements - Test Specification created
+// Stage 2: Design - Test architecture planned
+// Stage 3: Tasks - Implementation broken down
+// Stage 4: Execution - TDD implementation
+class HealthInsightService(
+    private val aiService: AIService,
+    private val fallbackService: FallbackInsightService
+) {
+    suspend fun generatePersonalizedInsights(data: HealthData): InsightResult {
+        return try {
+            val insights = aiService.generateInsights(data)
+            InsightResult.Success(insights)
+        } catch (e: AIServiceException) {
+            val fallbackInsights = fallbackService.getBasicInsights(data)
+            InsightResult.Fallback(fallbackInsights)
+        }
+    }
+}
+```
+
+#### 2. AI Service Over-Mocking
+```kotlin
+// ❌ BAD - Unrealistic AI mocking
+@Test
+fun `test AI insights`() {
+    every { aiService.generateInsights(any()) } returns listOf("Advice")
+    // Too simplistic, doesn't reflect real AI behavior
+}
+
+// ✅ GOOD - Realistic AI service mocking
+@Test
+fun `GIVEN healthDataWithTrends WHEN generateInsights THEN returnsPersonalizedRecommendations`() {
+    val healthData = HealthDataBuilder()
+        .withImprovingTrends()
+        .build()
+    
+    every { aiService.generateInsights(healthData) } returns AIInsights(
+        recommendations = listOf(
+            "Your step count increased 15% this week - excellent progress!",
+            "Your sleep quality improved. Try maintaining 7.5-8 hours nightly."
+        ),
+        confidence = 0.87,
+        personalizedTips = listOf(
+            "Based on your activity pattern, try morning walks for consistency"
+        ),
+        dataQuality = DataQuality.HIGH
+    )
+    
+    val result = service.generatePersonalizedInsights(healthData)
+    
+    assertThat(result.recommendations).hasSize(2)
+    assertThat(result.confidence).isGreaterThan(0.8)
+    assertThat(result.personalizedTips).isNotEmpty()
+}
+```
+
+#### 3. Revenue Testing Without Regional Context
+```kotlin
+// ❌ BAD - Generic revenue testing
+@Test
+fun `test shows ads`() {
+    service.showAd()
+    verify { adService.displayAd() }
+}
+
+// ✅ GOOD - Regional revenue strategy testing
+@Test
+fun `GIVEN vietnameseUserWithHighEngagement WHEN triggeringAd THEN usesMaxRevenueStrategy`() {
+    val user = UserBuilder()
+        .withCountry("VN")
+        .withEngagementScore(0.85)
+        .withSessionLength(Duration.ofMinutes(15))
+        .build()
+    
+    every { remoteConfig.getString("ad_strategy_VN") } returns "max_revenue"
+    every { adService.isRewardedAdAvailable() } returns true
+    
+    val adTiming = revenueOptimizer.getOptimalAdTiming(user)
+    
+    assertThat(adTiming.strategy).isEqualTo(AdStrategy.MAX_REVENUE)
+    assertThat(adTiming.placement).isEqualTo(AdPlacement.AFTER_INSIGHT)
+    assertThat(adTiming.type).isEqualTo(AdType.REWARDED)
+    verify { remoteConfig.getString("ad_strategy_VN") }
+}
+```
+
+#### 4. Insufficient AI Fallback Testing
+```kotlin
+// ❌ BAD - Not testing AI service failures
+@Test
+fun `test generates insights`() {
+    val result = service.generateInsights(healthData)
+    assertThat(result).isNotNull()
+}
+
+// ✅ GOOD - Comprehensive AI fallback testing
+@Test
+fun `GIVEN aiServiceUnavailable WHEN generateInsights THEN fallbackToCachedRecommendations`() {
+    val healthData = HealthDataBuilder().withValidData().build()
+    val cachedInsights = listOf("Stay hydrated", "Get enough sleep")
+    
+    every { aiService.generateInsights(healthData) } throws AIServiceUnavailableException()
+    every { cacheRepository.getCachedInsights(any()) } returns cachedInsights
+    
+    val result = service.generateInsights(healthData)
+    
+    assertThat(result.isSuccess).isTrue()
+    assertThat(result.insights).isEqualTo(cachedInsights)
+    assertThat(result.source).isEqualTo(InsightSource.CACHE)
+    verify { cacheRepository.getCachedInsights(healthData.userId) }
+}
+
+@Test
+fun `GIVEN aiServiceTimeout WHEN generateInsights THEN fallbackWithinTimeLimit`() {
+    val healthData = HealthDataBuilder().withValidData().build()
+    
+    every { aiService.generateInsights(healthData) } throws TimeoutException()
+    every { fallbackService.getQuickInsights(healthData) } returns basicInsights
+    
+    val startTime = System.currentTimeMillis()
+    val result = service.generateInsights(healthData)
+    val duration = System.currentTimeMillis() - startTime
+    
+    assertThat(duration).isLessThan(2000) // Fallback within 2 seconds
+    assertThat(result.insights).isEqualTo(basicInsights)
+    assertThat(result.source).isEqualTo(InsightSource.FALLBACK)
+}
+```
+
+## 🔧 TDD Tools Setup
+
+### Android TDD Tools
+
+```kotlin
+// build.gradle
+dependencies {
+    // Unit Testing
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'io.mockk:mockk:1.13.4'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
+    testImplementation 'androidx.arch.core:core-testing:2.2.0'
+    testImplementation 'app.cash.turbine:turbine:0.12.1' // Flow testing
+
+    // UI Testing
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:$compose_version'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
+```
+
+### iOS TDD Tools
+
+```swift
+// Package.swift
+.testTarget(
+    name: "YourAppTests",
+    dependencies: [
+        "YourApp",
+        .product(name: "Quick", package: "Quick"),
+        .product(name: "Nimble", package: "Nimble")
+    ]
+)
+```
+
+### Flutter TDD Tools
+
+```yaml
+# pubspec.yaml
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mockito: ^5.4.2
+  build_runner: ^2.3.3
+  bloc_test: ^9.1.0 # Bloc testing
+  golden_toolkit: ^0.13.0 # Widget golden tests
+```
+
+## 📈 TDD Metrics & Monitoring
+
+### Key Metrics to Track
+
+- **Test Coverage %** (aim for >80% on core logic)
+- **Test Execution Time** (keep fast for quick feedback)
+- **Test Reliability** (no flaky tests)
+- **Red-Green-Refactor Cycle Time** (aim for <10 minutes)
+
+### Coverage Reports
+
+```bash
+# Generate coverage reports
+npm run test:coverage        # Web/Node.js
+flutter test --coverage     # Flutter
+./gradlew testCoverage      # Android
+xcodebuild test -enableCodeCoverage YES # iOS
+```
+
+## 🎯 TDD Integration với Development Workflow
+
+### Daily TDD Workflow
+
+1. **Start with failing test** cho feature mới
+2. **Make it pass** với minimal code
+3. **Refactor** để improve design
+4. **Commit** sau mỗi complete cycle
+5. **Push** khi feature hoàn thành
+
+### Team TDD Practices
+
+- **Pair programming** on complex logic
+- **Code review** focus on test quality
+- **Daily standup** mention TDD progress
+- **Retrospective** discuss TDD improvements
+
+### TDD trong CI/CD
+
+```yaml
+# GitHub Actions workflow
+name: TDD Pipeline
+on: [push, pull_request]
+
+jobs:
+  test:
+    steps:
+      - name: Run Unit Tests
+        run: npm test
+      - name: Check Coverage
+        run: npm run test:coverage -- --threshold=80
+      - name: Integration Tests
+        run: npm run test:integration
+      - name: E2E Tests
+        run: npm run test:e2e
+```
+
+## 🚨 Common TDD Anti-Patterns
+
+### ❌ Testing Implementation Details
+
+```kotlin
+// BAD - Testing private method
+@Test
+fun `test private calculation method`() {
+    val result = calculator.invokePrivate("calculateInternal", 5, 3)
+    assertEquals(8, result)
+}
+
+// GOOD - Testing public behavior
+@Test
+fun `GIVEN two numbers WHEN adding THEN returns sum`() {
+    val result = calculator.add(5, 3)
+    assertEquals(8, result)
+}
+```
+
+### ❌ Too Many Mocks
+
+```kotlin
+// BAD - Mocking everything
+@Mock private lateinit var service1: Service1
+@Mock private lateinit var service2: Service2
+@Mock private lateinit var service3: Service3
+@Mock private lateinit var util1: Util1
+@Mock private lateinit var util2: Util2
+
+// GOOD - Only mock external dependencies
+@Mock private lateinit var apiService: ApiService // External
+// Use real objects for internal logic
+```
+
+### ❌ Slow Tests
+
+```kotlin
+// BAD - Testing with Thread.sleep
+@Test
+fun `test async operation`() {
+    service.startAsyncOperation()
+    Thread.sleep(5000) // ❌ Slow and unreliable
+    assertTrue(service.isCompleted())
+}
+
+// GOOD - Using proper async testing
+@Test
+fun `test async operation`() = runTest {
+    service.startAsyncOperation()
+    advanceUntilIdle() // ✅ Fast and deterministic
+    assertTrue(service.isCompleted())
+}
+```
+
+Quy tắc này áp dụng cho TẤT CẢ loại dự án: Android, iOS, Flutter, Web, Backend! 🎯

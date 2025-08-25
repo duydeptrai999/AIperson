@@ -1,0 +1,92 @@
+---
+description: Agent-Workflow Mapping for IDE Integration
+globs:
+  - "**/*.md"
+  - "**/*.mdc"
+alwaysApply: false
+---
+
+# Agent-Workflow Mapping
+
+> **🔄 Compact mapping between Claude Agents and Workflows**
+
+## 🎯 Agent Selection Rules
+
+### Engineering Agents
+
+**mobile-app-builder** → `mobile-utility-workflow.mdc`, `android-workflow.mdc`, `ios-workflow.mdc`
+- Keywords: android, ios, mobile, app, flutter, react native, kotlin, swift
+
+**rapid-prototyper** → `development-rules.mdc`, `api-integration-rules.mdc`, `frontend-rules.mdc`
+- Keywords: prototype, mvp, poc, quick, fast, demo, rapid
+
+**frontend-developer** → `frontend-rules.mdc`, `shadcn-ui-rules.mdc`
+- Keywords: react, vue, angular, frontend, ui, web, css, javascript
+
+**backend-architect** → `backend-rules-optimized.mdc`, `database-management.mdc`, `api-integration-rules.mdc`
+- Keywords: backend, api, database, server, microservices, architecture
+
+**ai-engineer** → `ai-execution-templates.mdc`, `ai-code-quality-automation.mdc`
+- Keywords: ai, ml, machine learning, neural network, tensorflow, pytorch
+
+**devops-automator** → `infrastructure-rules.mdc`, `git-workflow.mdc`
+- Keywords: devops, ci/cd, deployment, docker, kubernetes, aws, terraform
+
+### Product Management Agents
+
+**sprint-prioritizer** → `task-creation-workflow.mdc`, `planning-enforcement.mdc`
+- Keywords: sprint, planning, prioritization, task, agile, scrum
+
+**feedback-synthesizer** → `user-intent-analysis-workflow.mdc`, `kiro-dynamic-workflow.mdc`
+- Keywords: feedback, user, requirements, analysis, user story
+
+**trend-researcher** → `brainstorm-overview.mdc`, `expert-brainstorm-workflow.mdc`
+- Keywords: research, market, trend, analysis, competitor
+
+### Marketing Agents
+
+**content-creator** → `markdown-unified-rules.mdc`
+- Keywords: content, blog, article, documentation, writing, marketing
+
+**app-store-optimizer** → `android-aso-package-workflow.mdc`
+- Keywords: aso, app store, play store, optimization, keywords
+
+**growth-hacker** → `feature-suggestion-engine.mdc`
+- Keywords: growth, acquisition, viral, retention, conversion
+
+### Design & Testing Agents
+
+**ui-designer** → `frontend-rules.mdc`, `shadcn-ui-rules.mdc`
+- Keywords: ui, design, interface, component, figma
+
+**api-tester** → `api-integration-rules.mdc`, `backend-rules-optimized.mdc`
+- Keywords: api, testing, integration, endpoint, postman
+
+**performance-benchmarker** → `development-rules.mdc`
+- Keywords: performance, benchmark, optimization, speed, load test
+
+## 🔄 Selection Algorithm
+
+```yaml
+Selection Process:
+  1. Analyze keywords in user request
+  2. Calculate confidence scores for each agent
+  3. Select highest scoring agent (threshold: 0.7)
+  4. Load corresponding workflows
+  5. Execute with agent-specific context
+
+Fallback:
+  - If no agent scores > 0.7 → Use general development rules
+  - If multiple agents tie → Use most specific agent
+```
+
+## 🎯 IDE Integration
+
+- **Cursor**: Uses this mapping via `.cursor/rules/`
+- **Trae**: References via `.trae/rules/`
+- **Gemini**: Aliases via `GEMINI.md`
+- **Claude**: Direct agent selection
+
+---
+
+**Compact Design**: Keeps context usage minimal while maintaining functionality.

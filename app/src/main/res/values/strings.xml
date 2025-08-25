@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">BaseAndroidCompose</string>
+    <string name="app_display_name">Base Android Compose</string>
+    <string name="loading">Loading...</string>
+    <string name="ads_disclaimer">This action may contain ads</string>
+
+    <string name="please_watch_ad_to_get_result">Please watch ad to get result!</string>
+    <string name="please_select_language">Please select a language to continue</string>
+
+    <string name="intro_title_1">Sử dụng máy ảnh để vẽ</string>
+    <string name="intro_description_1">Vẽ như một chuyên gia với máy ảnh điện thoại của bạn</string>
+    <string name="intro_title_2">Phong cách đa dạng</string>
+    <string name="intro_description_2">Thỏa thích lựa chọn hình ảnh từ nhiều style với các độ khó khác nhau</string>
+    <string name="intro_title_3">Thêm ảnh từ bộ sưu tập</string>
+    <string name="intro_description_3">Vẽ bức tranh đầu tiên của bạn ngay hôm nay</string>
+
+    <string name="error_title">Error</string>
+    <string name="server_error_message">An error occurred from the server. Would you like to try again?</string>
+    <string name="retry">Retry</string>
+    <string name="processing">Processing...</string>
+    <string name="coming_soon">Coming soon!</string>
+    <string name="camera_permission_is_needed_to_take_photos">Camera permission is needed to take photos</string>
+    <string name="no_internet_title">No Internet Connection</string>
+    <string name="no_internet_message">This app requires an internet connection. Please check your internet connection and try again.</string>
+    <string name="exit">Exit</string>
+</resources>

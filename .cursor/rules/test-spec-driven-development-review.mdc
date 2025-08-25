@@ -1,0 +1,265 @@
+# Test Spec Driven Development Review Workflow
+
+> **🚀 AI-Powered Code Review với Vibe Coding Methodology**  
+> Tích hợp kinh nghiệm thực tế từ founder Design+Code (Aura app - 15k MRR) và phân tích lỗi iOS từ dự án thực tế
+
+## 🎯 Overview
+
+Quy trình Test Spec Driven Development Review mở rộng từ Spec-Driven Development Workflow với 2 phase bổ sung:
+- **Test Phase**: AI-powered testing với pattern detection
+- **Review Phase**: Multi-AI code review với vibe coding approach
+
+## 📋 Workflow Phases
+
+### Phase 1: Requirements (Existing)
+- User story và acceptance criteria theo chuẩn EARS
+- **BẮT BUỘC**: Hoàn thành 100% trước khi chuyển phase
+
+### Phase 2: Design (Existing + Vibe Enhancement)
+- Thiết kế chi tiết architecture và UI/UX
+- **🎨 VIBE DESIGN FIRST**: Tạo template Figma/URL trước khi code
+- **BẮT BUỘC**: Design approval trước khi chuyển phase
+
+### Phase 3: Tasks (Existing)
+- Phân tích design và tạo task list cụ thể
+- **BẮT BUỘC**: Task breakdown hoàn chỉnh
+
+### Phase 4: Execution (Existing + Vibe Coding)
+- Implementation với vibe coding methodology
+- **🔄 INCREMENTAL ITERATION**: Không expect one-shot, iterate từng bước nhỏ
+- **🤖 MULTI-AI SWITCHING**: Claude 4 ↔ Gemini ↔ o3 tùy context
+- **📁 SMALL FILE ATTACHMENT**: Attach file nhỏ để AI không confuse
+
+### Phase 5: Test (NEW) 🧪
+
+#### 5.1 AI-Powered Error Pattern Detection
+
+**Dựa trên phân tích lỗi iOS thực tế:**
+
+1. **Type Resolution Errors** (40% lỗi phổ biến)
+   ```swift
+   // Test Cases
+   - Kiểm tra type ambiguity
+   - Validate protocol conformance
+   - Test dependency injection types
+   ```
+
+2. **Declaration Conflicts** (25% lỗi)
+   ```swift
+   // Test Cases
+   - Detect redeclaration patterns
+   - Check self-referencing types
+   - Validate Core Data model consistency
+   ```
+
+3. **Swift Concurrency Issues** (20% lỗi)
+   ```swift
+   // Test Cases
+   - Main actor isolation compliance
+   - Async/await pattern validation
+   - Sendable protocol conformance
+   ```
+
+4. **Protocol Conformance Failures** (10% lỗi)
+   ```swift
+   // Test Cases
+   - Decodable/Encodable implementation
+   - Custom protocol requirements
+   - Generic constraints validation
+   ```
+
+5. **Structural Syntax Errors** (5% lỗi)
+   ```swift
+   // Test Cases
+   - Bracket matching
+   - Deinitializer syntax
+   - Access control validation
+   ```
+
+#### 5.2 Test Strategy Framework
+
+**🎯 3-Layer Testing Approach:**
+
+1. **Compilation Tests** (Automated)
+   - Swift compiler validation
+   - Type safety checks
+   - Dependency resolution
+
+2. **Unit Tests** (AI-Generated)
+   - Business logic validation
+   - Edge case coverage
+   - Mock data testing
+
+3. **Integration Tests** (Hybrid)
+   - API integration
+   - Database operations
+   - UI flow testing
+
+#### 5.3 AI Test Generation
+
+**🤖 Multi-AI Test Creation:**
+
+```markdown
+**Claude 4**: Complex logic tests, edge cases
+**Gemini**: UI/UX testing scenarios
+**o3**: Performance và optimization tests
+```
+
+**📋 Test Generation Process:**
+1. Analyze code patterns từ execution phase
+2. Generate test cases based on iOS error patterns
+3. Create mock data và test fixtures
+4. Validate test coverage (minimum 80%)
+
+#### 5.4 Quality Gates
+
+**🚪 Test Phase Gates:**
+- ✅ Compilation Gate: 100% compile success
+- ✅ Unit Test Gate: 80% coverage minimum
+- ✅ Integration Gate: Critical paths tested
+- ✅ Performance Gate: Memory/CPU thresholds
+
+### Phase 6: Review (NEW) 🔍
+
+#### 6.1 AI-Powered Code Review
+
+**🎯 Multi-AI Review Strategy:**
+
+1. **Claude 4 Review Focus:**
+   - Architecture patterns
+   - Code complexity analysis
+   - Security vulnerabilities
+
+2. **Gemini Review Focus:**
+   - Code readability
+   - Documentation quality
+   - Best practices compliance
+
+3. **o3 Review Focus:**
+   - Performance optimization
+   - Memory management
+   - Algorithm efficiency
+
+#### 6.2 iOS-Specific Review Checklist
+
+**📱 iOS Code Review Points:**
+
+```swift
+// 1. Type Safety & Resolution
+☐ No ambiguous type lookups
+☐ Proper protocol conformance
+☐ DI container type validation
+
+// 2. Swift Concurrency
+☐ Main actor isolation compliance
+☐ Proper async/await usage
+☐ Sendable protocol implementation
+
+// 3. Core Data Consistency
+☐ No property redeclaration
+☐ Proper override keywords
+☐ Model relationship validation
+
+// 4. Architecture Compliance
+☐ Layer separation maintained
+☐ Dependency injection patterns
+☐ SOLID principles adherence
+
+// 5. Performance Considerations
+☐ Memory leak prevention
+☐ Efficient data structures
+☐ Lazy loading implementation
+```
+
+#### 6.3 Vibe Coding Review Integration
+
+**🎨 Design-Code Alignment:**
+- Verify implementation matches Figma/URL design
+- Check incremental iteration quality
+- Validate small file approach effectiveness
+
+**🔄 Iterative Review Process:**
+1. **Quick Review**: Basic syntax và compilation
+2. **Deep Review**: Architecture và patterns
+3. **Final Review**: Performance và optimization
+
+#### 6.4 Automated Review Tools
+
+**🛠️ Tool Integration:**
+- **SwiftLint**: Code style enforcement
+- **Periphery**: Dead code detection
+- **SonarQube**: Code quality metrics
+- **Xcode Analyzer**: Static analysis
+
+#### 6.5 Review Quality Gates
+
+**🚪 Review Phase Gates:**
+- ✅ Code Style Gate: SwiftLint compliance
+- ✅ Architecture Gate: Pattern adherence
+- ✅ Security Gate: Vulnerability scan
+- ✅ Performance Gate: Profiling results
+
+## 🔄 Enforcement Mechanisms
+
+### Strict Phase Progression
+- **BẮT BUỘC**: Hoàn thành 100% phase trước khi chuyển tiếp
+- **NGHIÊM CẤM**: Skip hoặc parallel execution phases
+- **VI PHẠM**: Restart từ phase bị vi phạm
+
+### Quality Assurance
+- Mỗi phase có quality gates riêng
+- AI-powered validation tại mỗi checkpoint
+- Automated rollback khi detect issues
+
+### Vibe Coding Compliance
+- **Design First**: Không code without design approval
+- **Incremental Only**: Không big-bang implementation
+- **Multi-AI Required**: Sử dụng ít nhất 2 AI models
+- **Small Files**: Maximum 500 lines per attachment
+
+## 📊 Success Metrics
+
+### Code Quality KPIs
+- **Bug Reduction**: 90% giảm production bugs
+- **Review Efficiency**: 50% faster review cycles
+- **Test Coverage**: 80% minimum coverage
+- **Performance**: 95% pass performance gates
+
+### Vibe Coding KPIs
+- **Design Alignment**: 95% match với Figma/URL
+- **Iteration Speed**: 3x faster incremental updates
+- **AI Effectiveness**: 80% successful multi-AI switching
+- **File Management**: 90% compliance với small file rule
+
+## 🚀 Implementation Roadmap
+
+### Phase 1: Foundation (Week 1-2)
+- Setup AI-powered test generation
+- Configure multi-AI review system
+- Implement quality gates
+
+### Phase 2: Integration (Week 3-4)
+- Integrate với existing Spec-Driven workflow
+- Setup automated tools (SwiftLint, SonarQube)
+- Train team on vibe coding methodology
+
+### Phase 3: Optimization (Week 5-6)
+- Fine-tune AI models cho iOS patterns
+- Optimize review processes
+- Implement success metrics tracking
+
+## 💡 Innovation Opportunities
+
+### AI-Powered Enhancements
+1. **Predictive Error Detection**: AI dự đoán lỗi từ code patterns
+2. **Smart Test Generation**: Tự động tạo tests từ requirements
+3. **Continuous Quality Monitoring**: Real-time dashboard
+
+### Vibe Coding Evolution
+1. **AI Design Assistant**: Tự động suggest design improvements
+2. **Smart File Splitting**: AI recommend optimal file sizes
+3. **Context-Aware AI Switching**: Tự động chọn AI model phù hợp
+
+---
+
+> **📝 Note**: Workflow này được thiết kế dựa trên kinh nghiệm thực tế từ Aura app (15k MRR) và phân tích 118k lines codebase. Không expect one-shot success - iterate và improve liên tục!

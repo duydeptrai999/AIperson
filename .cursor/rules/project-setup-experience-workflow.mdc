@@ -1,0 +1,317 @@
+# Project Setup Experience Workflow
+
+## Mục Đích
+
+Quy trình tự động thu thập kinh nghiệm và vấn đề thường gặp từ Context7 dựa trên ngôn ngữ/platform đã chọn để bổ sung vào `.project-identity` khi setup dự án mới.
+
+## Khi Nào Kích Hoạt
+
+- **BẮT BUỘC** kích hoạt khi tạo `.project-identity` cho dự án mới
+- **BẮT BUỘC** kích hoạt khi thay đổi tech stack chính của dự án
+- **TÙY CHỌN** kích hoạt định kỳ để cập nhật kinh nghiệm mới
+
+## Workflow Steps
+
+### 1. Language/Platform Detection
+
+```markdown
+**Phát hiện ngôn ngữ/platform từ:**
+- File `.project-identity` hiện tại
+- Cấu trúc thư mục dự án
+- Package files (package.json, build.gradle, etc.)
+- Yêu cầu của người dùng
+```
+
+### 2. Context7 Experience Collection
+
+#### 2.1 Tìm Kiếm Kinh Nghiệm Chung
+
+```markdown
+**Query patterns cho Context7:**
+- "[LANGUAGE] development best practices"
+- "[LANGUAGE] common issues and solutions"
+- "[LANGUAGE] project structure patterns"
+- "[LANGUAGE] performance optimization"
+- "[LANGUAGE] security considerations"
+```
+
+#### 2.2 Tìm Kiếm Kinh Nghiệm Cụ Thể Theo Platform
+
+**Android Kotlin:**
+```markdown
+- "Android Kotlin development experience"
+- "Android Kotlin common problems"
+- "Android Kotlin architecture patterns"
+- "Android Kotlin performance issues"
+- "Android Kotlin memory leaks"
+- "Android Kotlin lifecycle management"
+```
+
+**iOS Swift:**
+```markdown
+- "iOS Swift development experience"
+- "iOS Swift common issues"
+- "iOS Swift memory management"
+- "iOS Swift UI patterns"
+- "iOS Swift performance optimization"
+```
+
+**React Native:**
+```markdown
+- "React Native development experience"
+- "React Native common problems"
+- "React Native performance issues"
+- "React Native platform differences"
+```
+
+**Flutter:**
+```markdown
+- "Flutter development experience"
+- "Flutter common issues"
+- "Flutter performance optimization"
+- "Flutter state management"
+```
+
+**Web Frontend (React/Vue/Angular):**
+```markdown
+- "[FRAMEWORK] development experience"
+- "[FRAMEWORK] common issues"
+- "[FRAMEWORK] performance optimization"
+- "[FRAMEWORK] state management"
+```
+
+**Backend (Node.js/Python/Java):**
+```markdown
+- "[LANGUAGE] backend development experience"
+- "[LANGUAGE] API development issues"
+- "[LANGUAGE] database integration problems"
+- "[LANGUAGE] scalability considerations"
+```
+
+### 3. Experience Processing & Categorization
+
+#### 3.1 Phân Loại Kinh Nghiệm
+
+```markdown
+**Categories:**
+- 🏗️ **Architecture & Design Patterns**
+- 🐛 **Common Bugs & Issues**
+- ⚡ **Performance Optimization**
+- 🔒 **Security Considerations**
+- 🧪 **Testing Strategies**
+- 📦 **Dependencies & Libraries**
+- 🚀 **Deployment & CI/CD**
+- 🔧 **Development Tools & Setup**
+```
+
+#### 3.2 Ưu Tiên Thông Tin
+
+```markdown
+**Priority Levels:**
+1. **CRITICAL** - Vấn đề gây crash hoặc security vulnerabilities
+2. **HIGH** - Performance issues, memory leaks
+3. **MEDIUM** - Best practices, code quality
+4. **LOW** - Nice-to-have optimizations
+```
+
+### 4. Project Identity Enhancement
+
+#### 4.1 Cập Nhật .project-identity
+
+```markdown
+**Thêm sections mới:**
+
+## 🎯 Development Experience & Guidelines
+
+### Common Issues to Avoid
+[Danh sách các vấn đề thường gặp từ Context7]
+
+### Best Practices
+[Các best practices được khuyến nghị]
+
+### Performance Considerations
+[Các điểm cần lưu ý về performance]
+
+### Security Guidelines
+[Hướng dẫn bảo mật cụ thể cho platform]
+
+### Recommended Libraries & Tools
+[Danh sách thư viện và công cụ được khuyến nghị]
+
+### Testing Strategy
+[Chiến lược testing phù hợp]
+
+## 🚨 Critical Warnings
+[Các cảnh báo quan trọng cần tránh]
+
+## 📚 Learning Resources
+[Tài liệu tham khảo từ Context7]
+```
+
+#### 4.2 Tạo Development Checklist
+
+```markdown
+**File: `.project-checklist.md`**
+
+# Development Checklist for [PROJECT_NAME]
+
+## Setup Phase
+- [ ] Verify all recommended dependencies are installed
+- [ ] Configure development environment according to best practices
+- [ ] Setup linting and formatting tools
+- [ ] Configure testing framework
+
+## Development Phase
+- [ ] Follow architecture patterns outlined in project identity
+- [ ] Implement security measures from guidelines
+- [ ] Apply performance optimizations
+- [ ] Write tests according to testing strategy
+
+## Pre-deployment Phase
+- [ ] Run security audit
+- [ ] Performance testing
+- [ ] Code quality checks
+- [ ] Documentation review
+```
+
+### 5. Continuous Learning Integration
+
+#### 5.1 Experience Updates
+
+```markdown
+**Định kỳ cập nhật:**
+- Mỗi sprint/iteration: Cập nhật lessons learned
+- Mỗi tháng: Thu thập kinh nghiệm mới từ Context7
+- Khi gặp issue mới: Ghi lại và chia sẻ
+```
+
+#### 5.2 Team Knowledge Sharing
+
+```markdown
+**Chia sẻ kiến thức:**
+- Tạo wiki entries cho common issues
+- Code review checklist dựa trên experience
+- Onboarding guide cho team members mới
+```
+
+## Implementation Commands
+
+### Automatic Trigger
+
+```bash
+# Khi tạo .project-identity mới
+if [ ! -f ".project-identity" ] || [ "$FORCE_UPDATE" = "true" ]; then
+    echo "🔍 Collecting development experience from Context7..."
+    # Trigger Context7 experience collection
+    # Update .project-identity with findings
+    # Create .project-checklist.md
+fi
+```
+
+### Manual Trigger
+
+```bash
+# Command để cập nhật experience manually
+./scripts/update-project-experience.sh [LANGUAGE/PLATFORM]
+```
+
+## Quality Gates
+
+### Validation Checks
+
+```markdown
+**Kiểm tra chất lượng:**
+- ✅ Experience data được phân loại đúng
+- ✅ Critical warnings được highlight
+- ✅ Best practices được áp dụng
+- ✅ Checklist được tạo đầy đủ
+- ✅ Documentation được cập nhật
+```
+
+### Success Criteria
+
+```markdown
+**Tiêu chí thành công:**
+- Giảm 70% common issues trong development
+- Tăng code quality score
+- Giảm thời gian debug và troubleshooting
+- Tăng team productivity
+```
+
+## Integration với Existing Workflows
+
+### Kết hợp với Planning Workflow
+
+```markdown
+- Planning phase: Sử dụng experience để estimate effort
+- Risk assessment: Dựa trên common issues
+- Technology selection: Dựa trên lessons learned
+```
+
+### Kết hợp với Development Workflow
+
+```markdown
+- Code review: Sử dụng checklist từ experience
+- Testing: Áp dụng testing strategies
+- Deployment: Follow deployment best practices
+```
+
+## Error Handling
+
+### Context7 Unavailable
+
+```markdown
+**Fallback strategies:**
+- Sử dụng cached experience data
+- Load từ backup knowledge base
+- Prompt user để input manual experience
+```
+
+### Incomplete Data
+
+```markdown
+**Handling incomplete data:**
+- Mark sections as "needs review"
+- Schedule follow-up collection
+- Use generic best practices as fallback
+```
+
+## Monitoring & Analytics
+
+### Metrics to Track
+
+```markdown
+**Theo dõi hiệu quả:**
+- Bug reduction rate
+- Development velocity
+- Code quality metrics
+- Team satisfaction scores
+```
+
+### Feedback Loop
+
+```markdown
+**Cải thiện liên tục:**
+- Collect feedback từ developers
+- Analyze project outcomes
+- Update experience database
+- Refine collection algorithms
+```
+
+---
+
+## 🎯 Key Benefits
+
+- **Proactive Problem Prevention**: Tránh được các vấn đề thường gặp
+- **Faster Onboarding**: Team members mới học nhanh hơn
+- **Consistent Quality**: Đảm bảo chất lượng code đồng nhất
+- **Reduced Technical Debt**: Áp dụng best practices từ đầu
+- **Knowledge Preservation**: Lưu trữ và chia sẻ kinh nghiệm
+
+## 🚀 Next Steps
+
+1. Implement Context7 integration script
+2. Create experience collection templates
+3. Setup automated triggers
+4. Train team on new workflow
+5. Monitor and iterate based on feedback

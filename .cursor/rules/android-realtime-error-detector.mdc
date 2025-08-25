@@ -1,0 +1,373 @@
+---
+description: Real-time Android Error Detection & Auto-Fix Workflow
+globs: *.kt,*.java,*.xml
+alwaysApply: true
+---
+
+# Android Real-time Error Detector & Auto-Fix
+
+## 🔍 Real-time Error Detection Engine
+
+### **CONTINUOUS_MONITORING_PROTOCOL**
+```
+WHILE (user_is_coding) {
+    SCAN_CODE_CHANGES()
+    DETECT_POTENTIAL_ERRORS()
+    SUGGEST_AUTO_FIXES()
+    APPLY_PREVENTIVE_MEASURES()
+}
+```
+
+### **ERROR_PATTERN_RECOGNITION**
+```javascript
+// AI Error Detection Patterns
+const ERROR_PATTERNS = {
+    TYPE_INFERENCE: {
+        pattern: /val\s+\w+\s*=\s*(listOf\(\)|emptyList\(\)|mutableListOf\(\))/g,
+        severity: 'HIGH',
+        autoFix: true,
+        solution: 'Add explicit type declaration'
+    },
+    
+    UNRESOLVED_REFERENCE: {
+        pattern: /import\s+([\w\.]+)\s*$/gm,
+        severity: 'CRITICAL',
+        autoFix: true,
+        solution: 'Add missing import or dependency'
+    },
+    
+    NULL_SAFETY_VIOLATION: {
+        pattern: /\w+\.\w+(?!\?)/g,
+        severity: 'HIGH',
+        autoFix: true,
+        solution: 'Use safe call operator (?.)'
+    },
+    
+    INCOMPLETE_WHEN: {
+        pattern: /when\s*\([^)]+\)\s*\{[^}]*\}/g,
+        severity: 'MEDIUM',
+        autoFix: true,
+        solution: 'Add missing branches or else clause'
+    }
+};
+```
+
+## 🛠️ Auto-Fix Engine
+
+### **Fix Strategy 1: Type Inference Issues**
+```kotlin
+// BEFORE (Error-prone)
+val items = listOf()
+val callback = { }
+
+// AFTER (Auto-fixed by AI)
+val items: List<String> = listOf()
+val callback: (String) -> Unit = { item ->
+    // Handle item
+}
+
+// AI Auto-Fix Logic
+fun autoFixTypeInference(code: String): String {
+    return code
+        .replace(Regex("val\\s+(\\w+)\\s*=\\s*listOf\\(\\)")) { match ->
+            val varName = match.groupValues[1]
+            "val $varName: List<String> = listOf() // TODO: Specify correct type"
+        }
+        .replace(Regex("val\\s+(\\w+)\\s*=\\s*\\{\\s*\\}")) { match ->
+            val varName = match.groupValues[1]
+            "val $varName: () -> Unit = { } // TODO: Specify correct signature"
+        }
+}
+```
+
+### **Fix Strategy 2: Missing Imports**
+```kotlin
+// AI Import Resolution Database
+val COMMON_IMPORTS = mapOf(
+    "viewModels" to "androidx.fragment.app.viewModels",
+    "lifecycleScope" to "androidx.lifecycle.lifecycleScope",
+    "Glide" to "com.bumptech.glide.Glide",
+    "Timber" to "timber.log.Timber",
+    "Toast" to "android.widget.Toast",
+    "Snackbar" to "com.google.android.material.snackbar.Snackbar",
+    "ContextCompat" to "androidx.core.content.ContextCompat",
+    "ViewCompat" to "androidx.core.view.ViewCompat",
+    "Fragment" to "androidx.fragment.app.Fragment",
+    "AppCompatActivity" to "androidx.appcompat.app.AppCompatActivity",
+    "ViewModel" to "androidx.lifecycle.ViewModel",
+    "LiveData" to "androidx.lifecycle.LiveData",
+    "MutableLiveData" to "androidx.lifecycle.MutableLiveData",
+    "StateFlow" to "kotlinx.coroutines.flow.StateFlow",
+    "MutableStateFlow" to "kotlinx.coroutines.flow.MutableStateFlow",
+    "launch" to "kotlinx.coroutines.launch",
+    "async" to "kotlinx.coroutines.async",
+    "withContext" to "kotlinx.coroutines.withContext",
+    "Dispatchers" to "kotlinx.coroutines.Dispatchers"
+)
+
+fun autoAddImports(code: String): String {
+    val missingImports = mutableSetOf<String>()
+    
+    COMMON_IMPORTS.forEach { (symbol, import) ->
+        if (code.contains(symbol) && !code.contains("import $import")) {
+            missingImports.add(import)
+        }
+    }
+    
+    val importsSection = missingImports.joinToString("\n") { "import $it" }
+    return if (importsSection.isNotEmpty()) {
+        "$importsSection\n\n$code"
+    } else {
+        code
+    }
+}
+```
+
+### **Fix Strategy 3: Null Safety Auto-Fix**
+```kotlin
+// AI Null Safety Patterns
+val NULL_SAFETY_FIXES = mapOf(
+    // Pattern: object.method() -> object?.method()
+    Regex("(\\w+)\\.(\\w+)\\(") to "$1?.$2(",
+    
+    // Pattern: object.property -> object?.property
+    Regex("(\\w+)\\.(\\w+)(?!\\()") to "$1?.$2",
+    
+    // Pattern: Add elvis operator for assignments
+    Regex("val\\s+(\\w+)\\s*=\\s*(\\w+\\?\\.\\w+)") to "val $1 = $2 ?: defaultValue"
+)
+
+fun autoFixNullSafety(code: String): String {
+    var fixedCode = code
+    
+    NULL_SAFETY_FIXES.forEach { (pattern, replacement) ->
+        fixedCode = fixedCode.replace(pattern, replacement)
+    }
+    
+    return fixedCode
+}
+```
+
+### **Fix Strategy 4: When Expression Completion**
+```kotlin
+fun autoCompleteWhenExpression(code: String): String {
+    val whenPattern = Regex("when\\s*\\(([^)]+)\\)\\s*\\{([^}]*)\\}")
+    
+    return whenPattern.replace(code) { matchResult ->
+        val expression = matchResult.groupValues[1]
+        val existingBranches = matchResult.groupValues[2]
+        
+        // Check if else branch exists
+        if (!existingBranches.contains("else")) {
+            "when ($expression) {$existingBranches\n    else -> { /* Handle unknown case */ }\n}"
+        } else {
+            matchResult.value
+        }
+    }
+}
+```
+
+## 🔄 Real-time Workflow Integration
+
+### **AI Code Generation with Auto-Fix**
+```kotlin
+class AndroidCodeGenerator {
+    
+    fun generateSafeCode(userRequest: String): String {
+        // Phase 1: Generate initial code
+        var generatedCode = generateInitialCode(userRequest)
+        
+        // Phase 2: Apply auto-fixes
+        generatedCode = applyAutoFixes(generatedCode)
+        
+        // Phase 3: Validate and refine
+        generatedCode = validateAndRefine(generatedCode)
+        
+        return generatedCode
+    }
+    
+    private fun applyAutoFixes(code: String): String {
+        var fixedCode = code
+        
+        // Apply all auto-fix strategies
+        fixedCode = autoAddImports(fixedCode)
+        fixedCode = autoFixTypeInference(fixedCode)
+        fixedCode = autoFixNullSafety(fixedCode)
+        fixedCode = autoCompleteWhenExpression(fixedCode)
+        fixedCode = addErrorHandling(fixedCode)
+        
+        return fixedCode
+    }
+    
+    private fun validateAndRefine(code: String): String {
+        val issues = detectRemainingIssues(code)
+        
+        if (issues.isNotEmpty()) {
+            // Apply additional fixes or request clarification
+            return refineCodeWithIssues(code, issues)
+        }
+        
+        return code
+    }
+}
+```
+
+## 📋 Smart Code Templates with Auto-Fix
+
+### **Template: Safe Fragment with Auto-Fix**
+```kotlin
+// AI generates this template and auto-applies fixes
+fun generateSafeFragment(fragmentName: String, features: List<String>): String {
+    val template = """
+        class ${fragmentName}Fragment : Fragment() {
+            
+            private var _binding: Fragment${fragmentName}Binding? = null
+            private val binding get() = _binding!!
+            
+            private val viewModel: ${fragmentName}ViewModel by viewModels()
+            
+            override fun onCreateView(
+                inflater: LayoutInflater,
+                container: ViewGroup?,
+                savedInstanceState: Bundle?
+            ): View {
+                _binding = Fragment${fragmentName}Binding.inflate(inflater, container, false)
+                return binding.root
+            }
+            
+            override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+                super.onViewCreated(view, savedInstanceState)
+                setupUI()
+                observeViewModel()
+            }
+            
+            private fun setupUI() {
+                binding.apply {
+                    ${generateUISetupCode(features)}
+                }
+            }
+            
+            private fun observeViewModel() {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.uiState.collect { state ->
+                        when (state) {
+                            is UiState.Loading -> showLoading()
+                            is UiState.Success -> showSuccess(state.data)
+                            is UiState.Error -> showError(state.message)
+                            else -> { /* Handle unknown state */ }
+                        }
+                    }
+                }
+            }
+            
+            private fun showError(message: String) {
+                context?.let { ctx ->
+                    Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                }
+            }
+            
+            override fun onDestroyView() {
+                super.onDestroyView()
+                _binding = null
+            }
+        }
+    """.trimIndent()
+    
+    // Auto-apply fixes
+    return applyAutoFixes(template)
+}
+```
+
+## 🚨 Error Prevention Checklist
+
+### **Pre-Generation Validation**
+```
+☐ Check project dependencies in build.gradle
+☐ Verify package structure exists
+☐ Validate resource files are available
+☐ Confirm base classes are accessible
+☐ Check for existing similar implementations
+```
+
+### **Post-Generation Validation**
+```
+☐ All imports are resolved
+☐ No type inference ambiguities
+☐ Null safety is properly handled
+☐ When expressions are exhaustive
+☐ Error handling is implemented
+☐ Resource references are valid
+☐ Method signatures are correct
+☐ Lifecycle methods are properly overridden
+```
+
+## 🔧 Integration with Development Workflow
+
+### **Real-time Assistance Protocol**
+```
+1. USER_TYPES_CODE:
+   ├── Monitor for error patterns
+   ├── Suggest fixes in real-time
+   └── Auto-apply safe fixes
+
+2. USER_REQUESTS_FEATURE:
+   ├── Generate error-free code
+   ├── Apply all auto-fixes
+   ├── Validate before output
+   └── Provide implementation notes
+
+3. USER_ENCOUNTERS_ERROR:
+   ├── Analyze error message
+   ├── Identify root cause
+   ├── Suggest specific fix
+   └── Apply fix if safe
+```
+
+### **Quality Assurance Metrics**
+```
+TARGET_METRICS = {
+    compilation_success_rate: 100%,
+    null_safety_compliance: 100%,
+    import_resolution_rate: 100%,
+    when_expression_completeness: 100%,
+    error_handling_coverage: 95%,
+    template_adherence: 100%
+}
+```
+
+## 📊 Monitoring & Feedback Loop
+
+### **Error Tracking**
+```kotlin
+class ErrorTracker {
+    private val errorStats = mutableMapOf<String, Int>()
+    
+    fun trackError(errorType: String, context: String) {
+        errorStats[errorType] = errorStats.getOrDefault(errorType, 0) + 1
+        
+        // Log for analysis
+        Timber.w("Error tracked: $errorType in $context")
+        
+        // Update prevention strategies
+        updatePreventionRules(errorType)
+    }
+    
+    fun getTopErrors(): List<Pair<String, Int>> {
+        return errorStats.toList().sortedByDescending { it.second }
+    }
+}
+```
+
+### **Continuous Improvement**
+```
+EVERY_WEEK {
+    ANALYZE_ERROR_PATTERNS()
+    UPDATE_AUTO_FIX_RULES()
+    REFINE_TEMPLATES()
+    IMPROVE_DETECTION_ACCURACY()
+}
+```
+
+---
+
+**🎯 GOAL**: Zero compilation errors, zero runtime crashes, 100% code quality compliance through intelligent auto-fixing and real-time error prevention.

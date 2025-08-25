@@ -1,0 +1,242 @@
+---
+trae_context:
+  format: "native"
+  version: "1.0"
+  migrated_from: "cursor"
+  last_updated: "2025-08-18T07:00:32.122Z"
+---
+
+#cross-ide-compatibility
+# Cross-IDE #compatibility-rules
+
+## 🎯 Mục Tiêu
+
+Đảm bảo quy trình làm việc hoạt động nhất quán trên tất cả các IDE thông qua hệ thống alias layer.
+
+## 🏗️ Kiến Trúc Hệ Thống
+
+### Hierarchy Cấu Hình
+
+```
+.trae/rules/     ← PRIMARY SOURCE (Cursor IDE)
+├── Tất cả rule definitions
+├── Workflow implementations  
+└── Enforcement logic
+
+.trae/rules/       ← ALIAS LAYER (Trae AI)
+├── Alias links đến .trae/rules/
+├── Trae-specific configurations
+└── Synchronization documentation
+
+.kiro/steering/    ← ALIAS LAYER (Kiro AI)
+├── File references đến .trae/rules/
+├── Kiro-specific configurations
+└── Spec-driven workflow aliases
+```
+
+## 📋 Quy Trình Đồng Bộ
+
+### Bước 1: Context7 Auto-Check (BẮT BUỘC)
+
+- **Kích hoạt**: Tự động cho mọi task
+- **Thực hiện**: Thu thập best practices từ Context7
+- **Áp dụng**: Cho tất cả IDE configurations
+
+### Bước 2: IDE Detection & Configuration
+
+```bash
+# Detect current IDE environment
+if [ -d ".cursor" ]; then
+    IDE_TYPE="cursor"
+    CONFIG_PATH=".cursor/rules"
+elif [ -d ".trae" ]; then
+    IDE_TYPE="trae"
+    CONFIG_PATH=".trae/rules"
+elif [ -d ".kiro" ]; then
+    IDE_TYPE="kiro"
+    CONFIG_PATH=".kiro/steering"
+fi
+```
+
+### Bước 3: Rule Synchronization
+
+#### Cho Trae AI (.trae/rules/)
+
+- **Format**: Markdown links `[Rule Name](./rule-file.md)`
+- **Cập nhật**: Tự động sync khi .trae/rules/ thay đổi
+- **Validation**: Kiểm tra relative paths
+
+#### Cho Kiro AI (.kiro/steering/)
+
+- **Format**: File references `#[[file:../../.trae/rules/rule-file.md]]`
+- **Cập nhật**: Tự động sync khi .trae/rules/ thay đổi
+- **Validation**: Kiểm tra file references
+
+## 🔧 Implementation Scripts
+
+### Auto-Sync Script
+
+```bash
+#!/bin/bash
+# sync-ide-rules.sh
+
+SOURCE_DIR=".cursor/rules"
+TRAE_DIR=".trae/rules"
+KIRO_DIR=".kiro/steering"
+
+# Function to update Trae aliases
+update_trae_aliases() {
+    echo "Updating Trae AI aliases..."
+    for file in "$SOURCE_DIR"/*.md; do
+        filename=$(basename "$file")
+        echo "[${filename%.*}](../../.trae/rules/$filename)" >> "$TRAE_DIR/project_rules.md"
+    done
+}
+
+# Function to update Kiro aliases
+update_kiro_aliases() {
+    echo "Updating Kiro AI aliases..."
+    for file in "$SOURCE_DIR"/*.md; do
+        filename=$(basename "$file")
+        echo "#[[file:../../.trae/rules/$filename]]" >> "$KIRO_DIR/project-rules.md"
+    done
+}
+
+# Execute updates
+update_trae_aliases
+update_kiro_aliases
+
+echo "Cross-IDE synchronization completed!"
+```
+
+### Validation Script
+
+```bash
+#!/bin/bash
+# validate-ide-links.sh
+
+# Validate Trae links
+echo "Validating Trae AI links..."
+find .trae/rules -name "*.md" -exec grep -l "\[.*\](../../\.trae/rules/" {} \;
+
+# Validate Kiro references
+echo "Validating Kiro AI references..."
+find .kiro/steering -name "*.md" -exec grep -l "#\[\[file:.*\.trae/rules/" {} \;
+
+# Check for broken links
+echo "Checking for broken references..."
+for link in $(grep -r "../../.trae/rules/" .trae/rules/ | cut -d':' -f2 | grep -o '../../.trae/rules/[^)]*'); do
+    if [ ! -f "$link" ]; then
+        echo "BROKEN LINK: $link"
+    fi
+done
+```
+
+## 🚨 #enforcement-rules
+
+### Mandatory Compliance
+
+1. **BẮT BUỘC** - Mọi rule modification phải thực hiện trong `.trae/rules/` trước
+2. **NGHIÊM CẤM** - Tạo independent rules trong alias layers
+3. **BẮT BUỘC** - Cập nhật alias links khi `.trae/rules/` thay đổi
+4. **BẮT BUỘC** - Chạy Context7 Auto-Check trước mọi task
+5. **BẮT BUỘC** - Validate links sau mỗi lần sync
+
+### Auto-Enforcement Triggers
+
+```bash
+# Git pre-commit hook
+#!/bin/bash
+# .git/hooks/pre-commit
+
+# Run validation before commit
+./scripts/validate-ide-links.sh
+
+if [ $? -ne 0 ]; then
+    echo "ERROR: IDE link validation failed!"
+    echo "Please fix broken links before committing."
+    exit 1
+fi
+
+# Run auto-sync if needed
+./scripts/sync-ide-rules.sh
+```
+
+## 📊 Monitoring & Maintenance
+
+### Health Check Commands
+
+```bash
+# Check all IDE configurations
+make check-ide-health
+
+# Sync all IDE configurations
+make sync-ide-configs
+
+# Validate all links
+make validate-ide-links
+
+# Generate IDE compatibility report
+make ide-compatibility-report
+```
+
+### Makefile Integration
+
+```makefile
+# Makefile
+.PHONY: check-ide-health sync-ide-configs validate-ide-links
+
+check-ide-health:
+	@echo "Checking IDE configuration health..."
+	@./scripts/validate-ide-links.sh
+	@./scripts/check-ide-compatibility.sh
+
+sync-ide-configs:
+	@echo "Synchronizing IDE configurations..."
+	@./scripts/sync-ide-rules.sh
+
+validate-ide-links:
+	@echo "Validating IDE links..."
+	@./scripts/validate-ide-links.sh
+
+ide-compatibility-report:
+	@echo "Generating IDE compatibility report..."
+	@./scripts/generate-ide-report.sh
+```
+
+## 🎯 Best Practices
+
+### Development Workflow
+
+1. **Luôn bắt đầu với Context7 Auto-Check**
+2. **Modify rules trong .trae/rules/ trước**
+3. **Chạy sync script sau mỗi thay đổi**
+4. **Validate links trước khi commit**
+5. **Test trên multiple IDEs nếu có thể**
+
+### Troubleshooting
+
+```bash
+# Common issues and solutions
+
+# Issue: Broken links in Trae
+find .trae/rules -name "*.md" -exec sed -i 's|../../.trae/rules/|../../.trae/rules/|g' {} \;
+
+# Issue: Missing Kiro references
+grep -r "#\[\[file:" .kiro/steering/ || echo "No file references found"
+
+# Issue: Outdated aliases
+./scripts/sync-ide-rules.sh --force-update
+```
+
+## 📈 Success Metrics
+
+- ✅ 100% link validation success rate
+- ✅ Zero broken references across all IDEs
+- ✅ Automatic sync completion within 5 seconds
+- ✅ Context7 Auto-Check execution rate: 100%
+- ✅ Cross-IDE workflow consistency: 100%
+
+---
+
+**Lưu ý**: File này là PRIMARY SOURCE trong .trae/rules/. Tất cả IDE khác sẽ reference đến file này thông qua alias layers.

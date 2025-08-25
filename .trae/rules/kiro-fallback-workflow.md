@@ -1,0 +1,557 @@
+---
+trae_context:
+  format: "native"
+  version: "1.0"
+  migrated_from: "cursor"
+  last_updated: "2025-08-18T07:00:32.182Z"
+---
+
+#kiro-fallback-workflow
+---
+description: Quy trình tạo và cập nhật requirements/design/tasks cho Kiro system
+globs: *.*
+alwaysApply: true
+---
+# Kiro Dynamic Workflow - Quy Trình Tạo và Cập Nhật Động
+
+## Mục Đích
+Quy trình này được kích hoạt trong các trường hợp sau:
+1. **Tạo mới**: Khi hệ thống Kiro chưa có đầy đủ các file cần thiết (requirements, design, tasks)
+2. **Cập nhật**: Khi người dùng yêu cầu cập nhật hoặc bổ sung dữ liệu mới vào các file hiện có
+3. **Bổ sung**: Khi phát hiện thiếu thông tin quan trọng trong quá trình phát triển
+4. **Tái cấu trúc**: Khi cần điều chỉnh requirements/design/tasks theo yêu cầu mới
+
+## Điều Kiện Kích Hoạt Mở Rộng
+
+### Kích Hoạt Tự Động
+- ***BẮT BUỘC*** kiểm tra sự tồn tại của `.kiro/specs/{project}/` directory
+- ***BẮT BUỘC*** kiểm tra các file: `requirements.md`, `design.md`, `tasks.md`
+- ***BẮT BUỘC*** kích hoạt khi thiếu bất kỳ file nào trong 3 file trên
+- ***BẮT BUỘC*** kích hoạt khi phát hiện file rỗng hoặc không đầy đủ thông tin
+
+### Kích Hoạt Theo Yêu Cầu
+- ***BẮT BUỘC*** kích hoạt khi người dùng yêu cầu tạo/cập nhật requirements
+- ***BẮT BUỘC*** kích hoạt khi người dùng yêu cầu tạo/cập nhật design
+- ***BẮT BUỘC*** kích hoạt khi người dùng yêu cầu tạo/cập nhật tasks
+- ***BẮT BUỘC*** kích hoạt khi cần bổ sung thông tin mới vào dự án
+- ***BẮT BUỘC*** kích hoạt khi cần điều chỉnh scope hoặc requirements
+
+### Kích Hoạt Thông Minh
+- ***BẮT BUỘC*** phân tích context hiện tại để xác định loại cập nhật cần thiết
+- ***BẮT BUỘC*** detect changes trong codebase và đề xuất cập nhật tương ứng
+- ***BẮT BUỘC*** monitor user feedback và đề xuất improvements
+- ***KHUYẾN NGHỊ*** ưu tiên việc tạo bằng Kiro tool trước khi sử dụng workflow này
+
+## Quy Trình Động: Phân Tích → Brainstorm/Update → Requirements → Design → Tasks
+
+### Phase 0: Context Analysis (Phân Tích Ngữ Cảnh)
+- ***BẮT BUỘC*** phân tích trạng thái hiện tại của dự án
+- ***BẮT BUỘC*** xác định loại operation: CREATE_NEW, UPDATE_EXISTING, SUPPLEMENT_DATA, RESTRUCTURE
+- ***BẮT BUỘC*** đánh giá chất lượng và đầy đủ của các file hiện có
+- ***BẮT BUỘC*** identify gaps và areas cần improvement
+- ***BẮT BUỘC*** xác định scope của changes cần thực hiện
+
+#### Context Analysis Decision Tree
+```
+IF (no files exist) → CREATE_NEW mode
+ELSE IF (user requests update) → UPDATE_EXISTING mode  
+ELSE IF (files incomplete/outdated) → SUPPLEMENT_DATA mode
+ELSE IF (major changes needed) → RESTRUCTURE mode
+```
+
+### Phase 1: Brainstorm/Update (Foundation)
+
+#### For CREATE_NEW Mode
+- ***BẮT BUỘC*** sử dụng [Brainstorm Detailed Workflow](brainstorm-detailed-workflow.md)
+- ***BẮT BUỘC*** thực hiện 3 giai đoạn brainstorm: Foundation → Structure → Advanced
+- ***BẮT BUỘC*** tạo file `Brainstorm_{ProjectName}.md` với đầy đủ insights
+- ***BẮT BUỘC*** xác định project scope, objectives, và target users
+- ***BẮT BUỘC*** phân tích competitors và market research
+- ***BẮT BUỘC*** định nghĩa core features và user stories
+
+#### For UPDATE_EXISTING Mode
+- ***BẮT BUỘC*** load existing brainstorm/requirements/design data
+- ***BẮT BUỘC*** identify specific areas cần update theo user request
+- ***BẮT BUỘC*** perform targeted brainstorm cho new/changed requirements
+- ***BẮT BUỘC*** maintain consistency với existing project vision
+- ***BẮT BUỘC*** document rationale cho changes
+
+#### For SUPPLEMENT_DATA Mode
+- ***BẮT BUỘC*** analyze gaps trong existing documentation
+- ***BẮT BUỘC*** perform focused brainstorm để fill gaps
+- ***BẮT BUỘC*** ensure new data integrates seamlessly với existing content
+- ***BẮT BUỘC*** validate completeness sau khi supplement
+
+#### For RESTRUCTURE Mode
+- ***BẮT BUỘC*** backup existing files trước khi restructure
+- ***BẮT BUỘC*** perform comprehensive analysis của current state
+- ***BẮT BUỘC*** design new structure based on requirements
+- ***BẮT BUỘC*** migrate existing content sang new structure
+- ***BẮT BUỘC*** validate integrity sau restructure
+
+### Phase 2: Requirements Generation/Update
+
+#### For CREATE_NEW Mode
+- ***BẮT BUỘC*** tạo `.kiro/specs/{project}/requirements.md` từ brainstorm results
+- ***BẮT BUỘC*** convert brainstorm insights thành structured requirements
+- ***BẮT BUỘC*** định nghĩa functional và non-functional requirements
+- ***BẮT BUỘC*** xác định acceptance criteria cho mỗi requirement
+- ***BẮT BUỘC*** prioritize requirements theo MoSCoW method (Must, Should, Could, Won't)
+
+#### For UPDATE_EXISTING Mode
+- ***BẮT BUỘC*** load existing requirements.md
+- ***BẮT BUỘC*** identify specific requirements cần update/add/remove
+- ***BẮT BUỘC*** update requirements while maintaining traceability
+- ***BẮT BUỘC*** re-prioritize requirements nếu cần thiết
+- ***BẮT BUỘC*** update acceptance criteria cho changed requirements
+- ***BẮT BUỘC*** document change rationale và impact analysis
+
+#### For SUPPLEMENT_DATA Mode
+- ***BẮT BUỘC*** analyze existing requirements cho gaps
+- ***BẮT BUỘC*** add missing functional/non-functional requirements
+- ***BẮT BUỘC*** enhance existing requirements với additional details
+- ***BẮT BUỘC*** ensure consistency với existing requirement structure
+- ***BẮT BUỘC*** validate completeness sau supplementation
+
+#### For RESTRUCTURE Mode
+- ***BẮT BUỘC*** backup existing requirements.md
+- ***BẮT BUỘC*** reorganize requirements theo new structure
+- ***BẮT BUỘC*** migrate existing content sang new format
+- ***BẮT BUỘC*** update cross-references và dependencies
+- ***BẮT BUỘC*** validate restructured requirements
+
+#### Requirements Structure Template
+```markdown
+# Project Requirements
+
+## 1. Project Overview
+- Project Name: [Name]
+- Project Type: [Type]
+- Target Platform: [Platform]
+- Timeline: [Timeline]
+
+## 2. Functional Requirements
+### FR-001: [Requirement Name]
+- **Description**: [Detailed description]
+- **Priority**: Must/Should/Could/Won't
+- **Acceptance Criteria**:
+  - [ ] Criterion 1
+  - [ ] Criterion 2
+- **Dependencies**: [Other requirements]
+- **Source**: [Brainstorm insight reference]
+
+## 3. Non-Functional Requirements
+### NFR-001: [Requirement Name]
+- **Category**: Performance/Security/Usability/etc.
+- **Description**: [Detailed description]
+- **Metrics**: [Measurable criteria]
+- **Priority**: Must/Should/Could/Won't
+
+## 4. Constraints
+- Technical constraints
+- Business constraints
+- Time constraints
+- Resource constraints
+
+## 5. Assumptions
+- List of assumptions made during requirements gathering
+```
+
+### Phase 3: Design Generation/Update
+
+#### For CREATE_NEW Mode
+- ***BẮT BUỘC*** tạo `.kiro/specs/{project}/design.md` từ requirements
+- ***BẮT BUỘC*** định nghĩa system architecture và component design
+- ***BẮT BUỘC*** tạo user interface design specifications
+- ***BẮT BUỘC*** định nghĩa data models và database schema
+- ***BẮT BUỘC*** xác định API endpoints và integration points
+- ***BẮT BUỘC*** tạo user flow diagrams và wireframes (text-based)
+
+#### For UPDATE_EXISTING Mode
+- ***BẮT BUỘC*** load existing design.md
+- ***BẮT BUỘC*** identify design components cần update theo changed requirements
+- ***BẮT BUỘC*** update architecture/UI/data models theo new requirements
+- ***BẮT BUỘC*** maintain design consistency và backward compatibility
+- ***BẮT BUỘC*** update integration points và API specifications
+- ***BẮT BUỘC*** document design change rationale và impact
+
+#### For SUPPLEMENT_DATA Mode
+- ***BẮT BUỘC*** analyze existing design cho missing components
+- ***BẮT BUỘC*** add missing design specifications
+- ***BẮT BUỘC*** enhance existing design với additional details
+- ***BẮT BUỘC*** ensure new design elements integrate với existing architecture
+- ***BẮT BUỘC*** validate design completeness và consistency
+
+#### For RESTRUCTURE Mode
+- ***BẮT BUỘC*** backup existing design.md
+- ***BẮT BUỘC*** redesign architecture theo new requirements structure
+- ***BẮT BUỘC*** migrate existing design elements sang new structure
+- ***BẮT BUỘC*** update all design cross-references và dependencies
+- ***BẮT BUỘC*** validate restructured design integrity
+
+#### Design Structure Template
+```markdown
+# Project Design Specification
+
+## 1. System Architecture
+### 1.1 High-Level Architecture
+- Architecture pattern: [MVC/MVVM/Clean Architecture/etc.]
+- Technology stack: [Technologies]
+- Deployment architecture: [Cloud/On-premise/Hybrid]
+
+### 1.2 Component Design
+- Component 1: [Description and responsibilities]
+- Component 2: [Description and responsibilities]
+
+## 2. User Interface Design
+### 2.1 Design Principles
+- Design system: [Material Design/Human Interface Guidelines/Custom]
+- Color scheme: [Primary/Secondary colors]
+- Typography: [Font families and sizes]
+
+### 2.2 Screen Specifications
+#### Screen 1: [Screen Name]
+- **Purpose**: [What this screen does]
+- **Layout**: [Description of layout]
+- **Components**: [List of UI components]
+- **User Interactions**: [Available actions]
+- **Navigation**: [How users navigate to/from this screen]
+
+## 3. Data Design
+### 3.1 Data Models
+```
+Entity: [EntityName]
+- field1: [type] - [description]
+- field2: [type] - [description]
+```
+
+### 3.2 Database Schema
+- Database type: [SQL/NoSQL]
+- Tables/Collections: [List and relationships]
+
+## 4. API Design
+### 4.1 Endpoints
+```
+GET /api/endpoint
+- Purpose: [Description]
+- Parameters: [List parameters]
+- Response: [Response format]
+```
+
+## 5. Integration Points
+- External APIs: [List and purpose]
+- Third-party services: [List and integration method]
+```
+
+### Phase 4: Task Generation/Update
+
+#### For CREATE_NEW Mode
+- ***BẮT BUỘC*** tạo `.kiro/specs/{project}/tasks.md` từ design specifications
+- ***BẮT BUỘC*** convert design components thành executable tasks
+- ***BẮT BUỘC*** sử dụng Kiro task format với ID, status, priority, dependencies
+- ***BẮT BUỘC*** định nghĩa acceptance criteria cho mỗi task
+- ***BẮT BUỘC*** xác định task dependencies và execution order
+- ***BẮT BUỘC*** estimate effort và complexity cho mỗi task
+
+#### For UPDATE_EXISTING Mode
+- ***BẮT BUỘC*** load existing tasks.md
+- ***BẮT BUỘC*** identify tasks cần update/add/remove theo design changes
+- ***BẮT BUỘC*** update existing tasks while preserving completed work
+- ***BẮT BUỘC*** add new tasks cho new design components
+- ***BẮT BUỘC*** update task dependencies và priorities
+- ***BẮT BUỘC*** re-estimate effort cho changed tasks
+- ***BẮT BUỘC*** document task change rationale và impact
+
+#### For SUPPLEMENT_DATA Mode
+- ***BẮT BUỘC*** analyze existing tasks cho missing coverage
+- ***BẮT BUỘC*** add missing tasks cho uncovered design components
+- ***BẮT BUỘC*** enhance existing tasks với additional details
+- ***BẮT BUỘC*** ensure new tasks integrate với existing task flow
+- ***BẮT BUỘC*** validate task completeness và coverage
+
+#### For RESTRUCTURE Mode
+- ***BẮT BUỘC*** backup existing tasks.md
+- ***BẮT BUỘC*** reorganize tasks theo new design structure
+- ***BẮT BUỘC*** migrate existing task progress sang new structure
+- ***BẮT BUỘC*** update all task dependencies và cross-references
+- ***BẮT BUỘC*** validate restructured task integrity và executability
+
+#### Task #generation-rules (Universal)
+- Mỗi design component tương ứng với 1-3 tasks
+- Tasks phải có thể thực hiện độc lập (với dependencies được resolve)
+- Mỗi task không nên vượt quá 1 ngày công việc
+- Tasks phải có acceptance criteria rõ ràng và measurable
+- Preserve existing task status khi update/restructure
+
+## Validation và Quality Gates
+
+### Pre-Phase Validation (Universal)
+- ***BẮT BUỘC*** implement **Recitation System** trước mỗi phase
+- ***BẮT BUỘC*** áp dụng **"Execute → Verify → Validate → Update"** pattern
+- ***BẮT BUỘC*** validate plan comprehension trước khi thực hiện
+- ***BẮT BUỘC*** document implementation notes cho mỗi step
+- ***BẮT BUỘC*** Context Analysis validation: Xác nhận operation mode phù hợp
+
+#### Initial Recitation Protocol
+```markdown
+I understand I need to implement: [brief phase summary]
+The phase has [N] major steps: [list high-level steps]
+Success criteria: [list main success criteria]
+Operation mode: [CREATE_NEW/UPDATE_EXISTING/SUPPLEMENT_DATA/RESTRUCTURE]
+```
+
+#### Milestone Recitation Protocol
+```markdown
+Progress Update:
+✅ Completed: [list completed items]
+🔄 Current: [current step]
+⏳ Remaining: [list remaining items]
+Plan validation: [any concerns or confirmations about remaining steps]
+Mode-specific considerations: [any mode-specific validations needed]
+```
+
+### Requirements Validation (Mode-Specific)
+#### For CREATE_NEW
+- ***BẮT BUỘC*** review requirements với stakeholders (nếu có)
+- ***BẮT BUỘC*** đảm bảo requirements SMART (Specific, Measurable, Achievable, Relevant, Time-bound)
+- ***BẮT BUỘC*** kiểm tra consistency giữa functional và non-functional requirements
+- ***BẮT BUỘC*** validate feasibility với technical constraints
+- ***BẮT BUỘC*** apply **Plan Correction Protocol** nếu phát hiện issues
+
+#### For UPDATE_EXISTING/SUPPLEMENT_DATA/RESTRUCTURE
+- ***BẮT BUỘC*** validate existing requirements integrity
+- ***BẮT BUỘC*** check change impact và backward compatibility
+- ***BẮT BUỘC*** ensure updated requirements consistency
+- ***BẮT BUỘC*** validate change rationale và documentation
+- ***BẮT BUỘC*** apply **Plan Correction Protocol** nếu có conflicts
+
+### Design Validation (Mode-Specific)
+#### For CREATE_NEW
+- ***BẮT BUỘC*** đảm bảo design satisfy tất cả requirements
+- ***BẮT BUỘC*** kiểm tra architectural consistency
+- ***BẮT BUỘC*** validate scalability và maintainability
+- ***BẮT BUỘC*** review security considerations
+- ***BẮT BUỘC*** implement **step-by-step validation** cho mỗi design component
+
+#### For UPDATE_EXISTING/SUPPLEMENT_DATA/RESTRUCTURE
+- ***BẮT BUỘC*** validate design change consistency với requirements
+- ***BẮT BUỘC*** check architectural integrity sau changes
+- ***BẮT BUỘC*** validate integration compatibility
+- ***BẮT BUỘC*** ensure design evolution coherence
+- ***BẮT BUỘC*** implement **step-by-step validation** cho changed components
+
+### Task Validation (Mode-Specific)
+#### For CREATE_NEW
+- ***BẮT BUỘC*** đảm bảo tasks cover toàn bộ design specifications
+- ***BắT BUỘC*** kiểm tra task dependencies không có circular references
+- ***BẮT BUỘC*** validate task acceptance criteria
+- ***BẮT BUỘC*** estimate total effort và timeline
+- ***BẮT BUỘC*** apply **progress tracking format**: `- [x] ~~Step completed~~ ✅ Implemented`
+
+#### For UPDATE_EXISTING/SUPPLEMENT_DATA/RESTRUCTURE
+- ***BẮT BUỘC*** validate task changes không break existing dependencies
+- ***BẮT BUỘC*** check task coverage completeness
+- ***BẮT BUỘC*** ensure task status preservation
+- ***BẮT BUỘC*** validate updated effort estimates
+- ***BẮT BUỘC*** apply **progress tracking format** cho new/changed tasks
+
+## Integration với Kiro System
+
+### Dynamic Workflow Protocol
+- ***BẮT BUỘC*** workflow có thể được trigger bởi user request hoặc system analysis
+- ***BẮT BUỘC*** support both standalone execution và integration với existing Kiro workflows
+- ***BẮT BUỘC*** maintain compatibility với existing Kiro system expectations
+- ***BẮT BUỘC*** provide seamless transition giữa các operation modes
+
+### File Structure Compliance
+- ***BẮT BUỘC*** tạo files theo đúng Kiro directory structure
+- ***BẮT BUỘC*** sử dụng Kiro naming conventions
+- ***BẮT BUỘC*** format files theo Kiro specifications
+- ***BẮT BUỘC*** maintain traceability links giữa các files
+
+### Handoff Protocol (Mode-Specific)
+#### For CREATE_NEW Mode
+- ***BẮT BUỘC*** sau khi hoàn thành workflow, chuyển giao cho Kiro system
+- ***BẮT BUỘC*** đảm bảo tất cả files (requirements.md, design.md, tasks.md) tồn tại
+- ***BẮT BUỘC*** validate file format compatibility với Kiro expectations
+- ***BẮT BUỘC*** trigger Kiro workflow execution với generated artifacts
+
+#### For UPDATE_EXISTING/SUPPLEMENT_DATA/RESTRUCTURE Modes
+- ***BẮT BUỘC*** notify Kiro system về changes made
+- ***BẮT BUỘC*** update Kiro system state với modified artifacts
+- ***BẮT BUỘC*** validate updated artifacts compatibility
+- ***BẮT BUỘC*** trigger appropriate Kiro workflow phases based on changes
+
+### Handoff to Kiro Execution
+- ***BẮT BUỘC*** validate file format compatibility với Kiro tools
+- ***BẮT BUỘC*** test task execution với [Kiro Task Execution](kiro-task-execution.md)
+- ***BẮT BUỘC*** ensure seamless transition từ dynamic workflow sang Kiro workflow
+
+## Error Handling và Plan Correction Protocol
+
+### Plan Correction Protocol (Từ Note.md Implementation Mode)
+- ***BẮT BUỘC*** **STOP IMMEDIATELY** khi phát hiện deviation từ plan
+- ***BẮT BUỘC*** document deviation với format:
+  ```markdown
+  **PLAN DEVIATION DETECTED**
+  - Current step: [step name]
+  - Expected outcome: [what was planned]
+  - Actual situation: [what actually happened]
+  - Impact assessment: [how this affects remaining plan]
+  - Proposed correction: [suggested fix]
+  ```
+- ***BẮT BUỘC*** request user approval trước khi implement correction
+- ***BẮT BUỘC*** update plan documentation sau khi correction được approve
+
+### Implementation Mode Integration (Universal)
+- ***BẮT BUỘC*** apply **Recitation System** khi gặp unclear requirements
+- ***BẮT BUỘC*** implement **step-by-step validation** cho mỗi phase
+- ***BẮT BUỘC*** use **progress tracking format** cho all deliverables
+- ***BẮT BUỘC*** maintain **implementation notes** throughout process
+- ***BẮT BUỘC*** handle mode-specific error scenarios appropriately
+
+### Context Analysis Error Handling
+- ***BẮT BUỘC*** STOP nếu không thể determine appropriate operation mode
+- ***BẮT BUỘC*** validate file existence và completeness trước khi proceed
+- ***BẮT BUỘC*** confirm user intent nếu multiple modes applicable
+- ***BẮT BUỘC*** document mode selection rationale
+
+### Brainstorm/Update Phase Error Handling
+#### For CREATE_NEW Mode
+- Nếu không thể access competitor information → **STOP**, document issue, request user guidance
+- Nếu feature definition không clear → apply **Plan Correction Protocol**
+- Nếu không thể generate comprehensive brainstorm → **STOP**, validate với user về minimal viable approach
+
+#### For UPDATE_EXISTING/SUPPLEMENT_DATA/RESTRUCTURE Modes
+- ***BẮT BUỘC*** STOP nếu existing content không thể parse hoặc understand
+- ***BẮT BUỘC*** validate change requests against existing structure
+- ***BẮT BUỘC*** apply Recitation System cho conflicting requirements
+- ***BẮT BUỘC*** use Plan Correction Protocol cho major structural changes
+
+### Requirements Generation/Update Error Handling
+#### #universal-rules
+- Nếu brainstorm data insufficient → apply **Plan Correction Protocol** với user input request
+- Nếu không thể apply MoSCoW → **STOP**, document limitation, request approval cho alternative approach
+- Nếu acceptance criteria không feasible → apply **step-by-step validation** để identify specific issues
+
+#### Mode-#specific-rules
+- **UPDATE_EXISTING**: STOP nếu changes break existing dependencies
+- **SUPPLEMENT_DATA**: STOP nếu new requirements conflict với existing ones
+- **RESTRUCTURE**: STOP nếu restructure loses critical information
+
+### Design Phase Error Handling
+#### #universal-rules
+- Nếu requirements unclear → **STOP**, implement **Recitation System** để clarify understanding
+- Nếu technical constraints không realistic → apply **Plan Correction Protocol**
+- Nếu UI/UX specifications quá complex → **STOP**, validate scope reduction với user
+
+#### Mode-#specific-rules
+- **UPDATE_EXISTING**: STOP nếu design changes break backward compatibility
+- **SUPPLEMENT_DATA**: STOP nếu new design elements không integrate properly
+- **RESTRUCTURE**: STOP nếu restructure affects system integrity
+
+### Task Generation/Update Error Handling
+#### #universal-rules
+- Nếu design specifications incomplete → **STOP**, validate partial implementation approach
+- Nếu dependency mapping quá complex → apply **Plan Correction Protocol** cho simplified approach
+- Nếu acceptance criteria không measurable → implement **progress tracking format** với basic metrics
+
+#### Mode-#specific-rules
+- **UPDATE_EXISTING**: STOP nếu task changes affect completed work
+- **SUPPLEMENT_DATA**: STOP nếu new tasks create circular dependencies
+- **RESTRUCTURE**: STOP nếu task reorganization loses progress tracking
+
+### Recovery Protocols
+
+#### Incomplete Brainstorm Recovery
+- Apply **Recitation System** để validate current understanding
+- Document missing information với **Plan Correction Protocol**
+- Request user approval cho alternative brainstorm approach
+
+#### Design Issues Recovery
+- Implement **step-by-step validation** cho design components
+- Apply **Plan Correction Protocol** khi technical constraints conflict
+- Use **progress tracking format** để monitor design review progress
+
+#### Task Generation Problems Recovery
+- Apply **Execute → Verify → Validate → Update** pattern cho task breakdown
+- Use **Plan Correction Protocol** khi dependencies quá phức tạp
+- Implement **Recitation System** để validate task acceptance criteria
+
+## Monitoring và Metrics với Implementation Mode Integration
+
+### Quality Assurance Standards (Từ Note.md Implementation Mode)
+- ***BẮT BUỘC*** implement **methodical approach** với step-by-step validation
+- ***BẮT BUỘC*** maintain **quality standards** cho code patterns, documentation, và testing
+- ***BẮT BUỘC*** apply **plan-driven execution** với strict adherence to implementation plans
+- ***BẮT BUỘC*** document **implementation notes** cho mỗi completed step
+
+### Enhanced Process Metrics
+- Time từ brainstorm đến completed tasks với **Recitation System** overhead
+- Number of iterations cần thiết cho mỗi phase với **Plan Correction Protocol**
+- Quality của generated artifacts với **step-by-step validation**
+- **Plan deviation frequency** và correction success rate
+- **Implementation notes coverage** percentage
+
+### Comprehensive Success Criteria
+- Tất cả 4 files được tạo thành công với **quality assurance standards**
+- Tasks có thể execute được bằng Kiro system với complete documentation
+- Zero blocking issues trong task execution với **Plan Correction Protocol** support
+- Stakeholder approval cho requirements và design với **step-by-step validation**
+- ***BẮT BUỘC*** all **implementation notes** documented và validated
+- ***BẮT BUỘC*** **plan-driven execution** maintained throughout process
+- ***BẮT BUỘC*** successful handoff sang Kiro workflow với complete documentation
+- ***BẮT BUỘC*** **Plan Correction Protocol** documentation complete nếu có deviations
+
+## Best Practices
+
+### Documentation (Mode-Aware)
+- ***BẮT BUỘC*** maintain traceability từ brainstorm đến tasks
+- ***BẮT BUỘC*** document assumptions, decisions, và changes
+- ***BẮT BUỘC*** version control tất cả generated files với change history
+- ***KHUYẾN NGHỊ*** tạo summary document cho quick reference
+- ***BẮT BUỘC*** track operation mode rationale và outcomes
+
+### Collaboration (Enhanced)
+- ***BẮT BUỘC*** involve stakeholders trong requirements review (all modes)
+- ***KHUYẾN NGHỊ*** peer review cho design specifications
+- ***BẮT BUỘC*** validate tasks với development team
+- ***BẮT BUỘC*** continuous feedback loop với users
+- ***BẮT BUỘC*** change impact communication cho UPDATE/RESTRUCTURE modes
+
+### Continuous Improvement (Dynamic)
+- ***BẮT BUỘC*** collect feedback sau mỗi dynamic workflow execution per mode
+- ***BẮT BUỘC*** update templates dựa trên lessons learned across different operations
+- ***KHUYẾN NGHỊ*** maintain knowledge base của common patterns
+- ***BẮT BUỘC*** optimize workflow efficiency cho each operation type
+- ***BẮT BUỘC*** monitor mode usage patterns và success rates
+
+## Tích Hợp với Existing Workflows
+
+### Planning Workflow Integration (Enhanced)
+- ***BẮT BUỘC*** sử dụng [Planning Workflow](planning-workflow.md) sau khi có tasks
+- ***BẮT BUỘC*** apply planning validation rules
+- ***BẮT BUỘC*** integrate với project stage management
+- ***BẮT BUỘC*** support incremental planning updates cho non-CREATE modes
+
+### Development Workflow Integration (Mode-Aware)
+- ***BẮT BUỘC*** transition sang [#development-rules](development-rules.md) sau task generation
+- ***BẮT BUỘC*** apply [Auto Task Execution](auto-task-execution.md) cho generated tasks
+- ***BẮT BUỘC*** maintain consistency với existing development practices
+- ***BẮT BUỘC*** support development workflow updates cho changed artifacts
+
+### Quality Assurance Integration (Universal)
+- ***BẮT BUỘC*** all artifacts must pass quality gates trước khi handoff
+- ***BẮT BUỘC*** validation protocols ensure compatibility với downstream processes
+- ***BẮT BUỘC*** error handling mechanisms prevent workflow disruption
+- ***BẮT BUỘC*** mode-specific quality checks ensure appropriate validation
+
+---
+
+**Lưu ý quan trọng**: Kiro Dynamic Workflow có thể được sử dụng:
+1. **As Dynamic Workflow**: Khi Kiro tools không available hoặc không thể tạo được required files
+2. **On Demand**: Khi user explicitly requests artifact creation/update
+3. **For Maintenance**: Khi cần supplement hoặc restructure existing artifacts
+4. **For Evolution**: Khi project requirements hoặc scope changes
+
+Trong normal operations với stable artifacts, prefer using dedicated Kiro tools. Dynamic workflow provides flexibility cho changing requirements và iterative development.

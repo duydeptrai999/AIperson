@@ -1,0 +1,339 @@
+---
+description: Trae-specific configuration for info-hub integration and async/import handling
+globs: "*.js,*.ts,*.jsx,*.tsx"
+alwaysApply: false
+---
+
+# Trae Configuration for Info-Hub Integration
+
+## Info-Hub Integration Rules
+
+### Automatic Checking
+- **BẮT BUỘC** check `info-hub.md` before ANY operation
+- **BẮT BUỘC** read "Currently Working" section to avoid conflicts
+- **BẮT BUỘC** update status to "Working" when starting tasks
+- **BẮT BUỘC** update status to "Idle" when completing or pausing
+- **NGHIÊM CẤM** skip info-hub check even if not mentioned
+
+### Update Protocol for Trae
+```javascript
+// Before starting work
+async function checkInfoHub() {
+  const infoHub = await readFile('info-hub.md');
+  const currentWork = parseCurrentlyWorking(infoHub);
+  
+  if (currentWork.find(w => w.tool === 'Trae' && w.status === 'Working')) {
+    throw new Error('Another Trae instance is already working');
+  }
+  
+  // Update status
+  await updateInfoHub('Trae', 'Working', currentTask);
+}
+
+// After completing work
+async function releaseInfoHub() {
+  await updateInfoHub('Trae', 'Idle', null);
+}
+```
+
+## Import Analysis Enhancement
+
+### Automatic Import Resolution
+- **BẮT BUỘC** use explicit imports for all modules
+- **BẮT BUỘC** analyze import dependencies before execution
+- **BẮT BUỘC** auto-fix missing imports when detected
+- **NGHIÊM CẤM** use implicit or global imports
+
+### Import Patterns for Trae
+```javascript
+// ❌ WRONG - Implicit import
+const fs = require('fs');
+
+// ✅ CORRECT - Explicit import with error handling
+import { promises as fs } from 'fs';
+import { handleError } from './utils/error-handler.js';
+
+// ✅ CORRECT - Named imports for clarity
+import { 
+  readFile, 
+  writeFile, 
+  appendFile 
+} from './utils/file-operations.js';
+```
+
+## Async Function Validation
+
+### Automatic Async Detection
+- **BẮT BUỘC** mark all functions with `await` as `async`
+- **BẮT BUỘC** validate async/await patterns before execution
+- **BẮT BUỘC** add proper error handling for async operations
+- **NGHIÊM CẤM** use callbacks or raw promises without async/await
+
+### Async Patterns for Trae
+```javascript
+// ❌ WRONG - Missing async
+function processData() {
+  const data = await fetchData(); // ERROR: await without async
+  return data;
+}
+
+// ✅ CORRECT - Proper async/await
+async function processData() {
+  try {
+    const data = await fetchData();
+    return data;
+  } catch (error) {
+    await logError('processData', error);
+    throw error;
+  }
+}
+
+// ✅ CORRECT - Concurrent async operations
+async function processMultiple(items) {
+  const results = await Promise.all(
+    items.map(item => processItem(item))
+  );
+  return results;
+}
+```
+
+## MCP Integration for Trae
+
+### Context7 Configuration
+```javascript
+// Trae-specific Context7 settings
+const context7Config = {
+  autoCheck: true,
+  importAnalysis: true,
+  asyncValidation: true,
+  cacheDuration: 300000, // 5 minutes
+  fallbackBehavior: 'use-local-context'
+};
+
+// Before any task execution
+async function validateWithContext7(task) {
+  try {
+    const context = await getContext7Validation(task);
+    if (!context.valid) {
+      console.warn(`Context7 warning: ${context.message}`);
+      // Continue with local validation
+    }
+  } catch (error) {
+    // Fallback to local validation
+    console.log('Context7 unavailable, using local validation');
+  }
+}
+```
+
+## Error Handling Patterns
+
+### Trae Error Recovery
+```javascript
+// Global error handler for Trae
+process.on('unhandledRejection', async (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  
+  // Update info-hub about error
+  await updateInfoHub('Trae', 'Error', {
+    error: reason.toString(),
+    timestamp: new Date().toISOString()
+  });
+  
+  // Attempt graceful shutdown
+  await releaseInfoHub();
+  process.exit(1);
+});
+
+// Async operation wrapper
+async function safeExecute(operation, operationName) {
+  const startTime = Date.now();
+  
+  try {
+    console.log(`Starting ${operationName}...`);
+    const result = await operation();
+    console.log(`Completed ${operationName} in ${Date.now() - startTime}ms`);
+    return result;
+  } catch (error) {
+    console.error(`Failed ${operationName}:`, error);
+    await updateInfoHub('Trae', 'Error', {
+      operation: operationName,
+      error: error.message
+    });
+    throw error;
+  }
+}
+```
+
+## Performance Optimization
+
+### Trae-Specific Optimizations
+```javascript
+// Batch operations for better performance
+const batchProcessor = {
+  queue: [],
+  timeout: null,
+  
+  add(item) {
+    this.queue.push(item);
+    this.scheduleProcess();
+  },
+  
+  scheduleProcess() {
+    if (this.timeout) return;
+    
+    this.timeout = setTimeout(() => {
+      this.process();
+      this.timeout = null;
+    }, 100); // Process batch every 100ms
+  },
+  
+  async process() {
+    const items = [...this.queue];
+    this.queue = [];
+    
+    if (items.length === 0) return;
+    
+    await safeExecute(
+      () => processBatch(items),
+      `Batch processing ${items.length} items`
+    );
+  }
+};
+```
+
+## Integration with Other Tools
+
+### Conflict Detection
+```javascript
+// Check for conflicts with other AI tools
+async function checkForConflicts(task) {
+  const infoHub = await readFile('info-hub.md');
+  const activeTools = parseActiveTools(infoHub);
+  
+  // Check if task might conflict with other tools
+  for (const tool of activeTools) {
+    if (tool.task && tasksConflict(task, tool.task)) {
+      console.warn(`Potential conflict with ${tool.name} working on ${tool.task}`);
+      
+      // Wait or coordinate
+      await coordinateWithTool(tool.name, task);
+    }
+  }
+}
+
+// Task conflict detection
+function tasksConflict(task1, task2) {
+  // Check if tasks modify same files
+  const files1 = getAffectedFiles(task1);
+  const files2 = getAffectedFiles(task2);
+  
+  return files1.some(f => files2.includes(f));
+}
+```
+
+## Monitoring and Metrics
+
+### Trae Performance Tracking
+```javascript
+// Track Trae-specific metrics
+const metrics = {
+  tasksCompleted: 0,
+  errorsEncountered: 0,
+  avgExecutionTime: 0,
+  importIssuesFixed: 0,
+  asyncIssuesFixed: 0,
+  
+  async report() {
+    await updateInfoHub('Trae', 'Metrics', {
+      ...this,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+// Update metrics after each operation
+async function trackOperation(operation, duration, success) {
+  if (success) {
+    metrics.tasksCompleted++;
+  } else {
+    metrics.errorsEncountered++;
+  }
+  
+  // Update average execution time
+  metrics.avgExecutionTime = 
+    (metrics.avgExecutionTime * (metrics.tasksCompleted - 1) + duration) / 
+    metrics.tasksCompleted;
+  
+  // Report every 10 operations
+  if ((metrics.tasksCompleted + metrics.errorsEncountered) % 10 === 0) {
+    await metrics.report();
+  }
+}
+```
+
+## Testing Configuration
+
+### Trae Test Patterns
+```javascript
+// Test async functions properly
+describe('Async Operations', () => {
+  it('should handle async operations correctly', async () => {
+    // Always use async/await in tests
+    const result = await processData(testData);
+    expect(result).toBeDefined();
+  });
+  
+  it('should handle errors gracefully', async () => {
+    // Test error scenarios
+    await expect(processInvalidData()).rejects.toThrow('Invalid data');
+  });
+});
+
+// Mock info-hub for testing
+const mockInfoHub = {
+  async read() {
+    return testInfoHubContent;
+  },
+  
+  async update(tool, status, data) {
+    // Track updates for verification
+    this.updates.push({ tool, status, data });
+  },
+  
+  updates: []
+};
+```
+
+## Debugging Support
+
+### Trae Debug Mode
+```javascript
+// Enable detailed logging for debugging
+const DEBUG = process.env.TRAE_DEBUG === 'true';
+
+function debugLog(...args) {
+  if (DEBUG) {
+    console.log('[TRAE DEBUG]', new Date().toISOString(), ...args);
+  }
+}
+
+// Trace async operations
+async function traceAsync(name, fn) {
+  const traceId = Math.random().toString(36).substr(2, 9);
+  
+  debugLog(`TRACE START: ${name} [${traceId}]`);
+  
+  try {
+    const result = await fn();
+    debugLog(`TRACE SUCCESS: ${name} [${traceId}]`);
+    return result;
+  } catch (error) {
+    debugLog(`TRACE ERROR: ${name} [${traceId}]`, error);
+    throw error;
+  }
+}
+```
+
+---
+
+**Note**: This configuration is specific to Trae and addresses its unique challenges with imports and async functions. Always ensure info-hub synchronization is maintained.
