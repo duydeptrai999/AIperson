@@ -1,0 +1,115 @@
+> Task :app:compileDebugKotlin FAILED
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/MainActivity.kt:16:8 Unresolved reference 'dagger'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/MainActivity.kt:18:2 Unresolved reference 'AndroidEntryPoint'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/data/ai/WeatherCompatibilityEngine.kt:85:17 None of the following candidates is applicable:
+fun max(a: Double, b: Double): Double
+fun max(a: Float, b: Float): Float
+fun max(a: Int, b: Int): Int
+fun max(a: Long, b: Long): Long
+fun max(a: UInt, b: UInt): UInt
+fun max(a: ULong, b: ULong): ULong
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/data/ai/WeatherCompatibilityEngine.kt:89:17 None of the following candidates is applicable:
+fun max(a: Double, b: Double): Double
+fun max(a: Float, b: Float): Float
+fun max(a: Int, b: Int): Int
+fun max(a: Long, b: Long): Long
+fun max(a: UInt, b: UInt): UInt
+fun max(a: ULong, b: ULong): ULong
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/BottomNavigation.kt:42:50 This is an experimental animation API.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/BottomNavigation.kt:178:33 This is an experimental animation API.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/BottomNavigation.kt:248:34 This is an experimental animation API.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/BottomNavigation.kt:350:13 Unresolved reference 'Color'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/BottomNavigation.kt:352:17 Unresolved reference 'RoundedCornerShape'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:10:17 Unresolved reference 'hilt'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:28:46 Unresolved reference 'hiltViewModel'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:116:21 No parameter with name 'onNavigateBack' found.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:168:9 Unresolved reference 'Column'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:171:29 Unresolved reference 'dp'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:173:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:175:39 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:176:39 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:179:13 Unresolved reference 'Spacer'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:179:40 Unresolved reference 'height'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:179:50 Unresolved reference 'dp'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:181:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:182:37 Unresolved reference 'fillMaxWidth'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:183:39 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:184:52 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:187:17 Unresolved reference 'Column'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:188:52 Unresolved reference 'dp'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:190:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:192:47 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:194:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:196:47 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:197:47 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:200:21 Unresolved reference 'Spacer'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:200:48 Unresolved reference 'height'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:200:57 Unresolved reference 'dp'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:202:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:203:61 Unresolved reference 'name'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:204:47 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:208:54 Unresolved reference 'getProgressToNextLevel'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:210:30 Unresolved reference 'fillMaxWidth'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:211:46 Unresolved reference 'dp'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:216:13 Unresolved reference 'Spacer'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:216:40 Unresolved reference 'height'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:216:50 Unresolved reference 'dp'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:218:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:220:39 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:221:39 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:240:9 Unresolved reference 'Column'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:243:29 Unresolved reference 'dp'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:245:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:247:39 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:248:39 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:251:13 Unresolved reference 'Spacer'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:251:40 Unresolved reference 'height'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:251:50 Unresolved reference 'dp'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:253:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:254:37 Unresolved reference 'fillMaxWidth'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:255:39 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:256:52 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:259:17 Unresolved reference 'Column'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:260:52 Unresolved reference 'dp'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:262:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:264:47 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:267:21 Unresolved reference 'Spacer'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:267:48 Unresolved reference 'height'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:267:57 Unresolved reference 'dp'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:269:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:271:47 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:274:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:276:47 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:279:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:280:68 Unresolved reference 'preferredActivities'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:280:107 Unresolved reference 'displayName'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:280:109 Unresolved reference 'it'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:281:47 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:284:21 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:285:68 Unresolved reference 'healthConditions'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:285:104 Unresolved reference 'displayName'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:285:106 Unresolved reference 'it'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:286:47 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:291:13 Unresolved reference 'Spacer'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:291:40 Unresolved reference 'height'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:291:50 Unresolved reference 'dp'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:293:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:295:39 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:296:39 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:311:46 Unresolved reference 'hiltViewModel'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/navigation/NavGraph.kt:359:21 No parameter with name 'onNavigateBack' found.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/screens/WeatherDetailScreen.kt:111:39 Smart cast to 'com.dex.base.baseandroidcompose.data.models.WeatherData' is impossible, because 'weatherData' is a delegated property.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/screens/WeatherDetailScreen.kt:112:41 Smart cast to 'com.dex.base.baseandroidcompose.data.models.WeatherCompatibility' is impossible, because 'compatibility' is a delegated property.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/screens/WeatherDetailScreen.kt:119:41 Smart cast to 'com.dex.base.baseandroidcompose.data.models.WeatherCompatibility' is impossible, because 'compatibility' is a delegated property.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/screens/WeatherDetailScreen.kt:127:35 Smart cast to 'com.dex.base.baseandroidcompose.data.models.WeatherCompatibility' is impossible, because 'compatibility' is a delegated property.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/screens/WeatherDetailScreen.kt:134:43 Smart cast to 'com.dex.base.baseandroidcompose.data.models.WeatherCompatibility' is impossible, because 'compatibility' is a delegated property.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/screens/WeatherDetailScreen.kt:141:39 Smart cast to 'com.dex.base.baseandroidcompose.data.models.WeatherData' is impossible, because 'weatherData' is a delegated property.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/screens/WeatherDetailScreen.kt:165:43 Unresolved reference 'getScoreColor'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/screens/WeatherDetailScreen.kt:166:43 Unresolved reference 'getScoreColor'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/screens/WeatherDetailScreen.kt:180:48 Unresolved reference 'cityName'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/screens/WeatherDetailScreen.kt:195:47 Unresolved reference 'getScoreColor'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/screens/WeatherDetailScreen.kt:244:42 Unresolved reference 'getScoreColor'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/screens/WeatherDetailScreen.kt:271:43 Unresolved reference 'getScoreColor'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/screens/WeatherDetailScreen.kt:280:39 Unresolved reference 'getScoreColor'.
+e: file:///C:/Users/Admin/Desktop/AI%20persion/BaseAndroidCompose-master/app/src/main/java/com/dex/base/baseandroidcompose/ui/screens/WeatherDetailScreen.kt:281:44 Unresolved reference 'getScoreColor'.
+

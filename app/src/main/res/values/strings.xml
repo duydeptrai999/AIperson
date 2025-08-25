@@ -23,4 +23,55 @@
     <string name="no_internet_title">No Internet Connection</string>
     <string name="no_internet_message">This app requires an internet connection. Please check your internet connection and try again.</string>
     <string name="exit">Exit</string>
+
+    <!-- Weather App Strings -->
+    <string name="weather_home_title">Weather Companion</string>
+    <string name="profile_content_desc">Profile</string>
+    <string name="refresh_content_desc">Refresh weather data</string>
+    <string name="current_location">Current Location</string>
+    <string name="sunny_weather">Sunny</string>
+    <string name="humidity">Humidity</string>
+    <string name="wind_speed">Wind</string>
+    <string name="uv_index">UV Index</string>
+    <string name="compatibility_score">Weather Compatibility</string>
+    <string name="excellent_match">Excellent Match!</string>
+    <string name="perfect_weather_desc">Perfect weather for your activities</string>
+    <string name="your_points">Your Points</string>
+    <string name="five_day_forecast">5-Day Forecast</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    
+    <!-- User Profile Strings -->
+    <string name="user_profile_title">Your Profile</string>
+    <string name="age">Age</string>
+    <string name="occupation">Occupation</string>
+    <string name="location">Location</string>
+    <string name="save_profile">Save Profile</string>
+    <string name="enter_age">Enter your age</string>
+    <string name="enter_occupation">Enter your occupation</string>
+    <string name="enter_location">Enter your location</string>
+    
+    <!-- Rewards Strings -->
+    <string name="rewards_title">Rewards</string>
+    <string name="available_rewards">Available Rewards</string>
+    <string name="points_balance">Points Balance</string>
+    <string name="redeem">Redeem</string>
+    <string name="points_available">points available</string>
+    <string name="points">points</string>
+    <string name="need_more_points">Need More</string>
+    <string name="back">Back</string>
+    
+    <!-- Weather Detail Strings -->
+    <string name="weather_details">Weather Details</string>
+    <string name="hourly_forecast">Hourly Forecast</string>
+    <string name="air_quality">Air Quality</string>
+    <string name="feels_like">Feels like</string>
+    <string name="pressure">Pressure</string>
+    <string name="visibility">Visibility</string>
+    
+    <!-- Navigation Strings -->
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+    <string name="rewards">Rewards</string>
+    <string name="details">Details</string>
 </resources>
