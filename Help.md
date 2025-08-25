@@ -130,4 +130,4 @@ LaunchedEffect(currentSlideIndex) {
 - **Callback System**: `onAdLoaded` callback để track trạng thái load ad
 - **Compose Integration**: Sử dụng `LaunchedEffect` để trigger refresh
 - **Ad Lifecycle**: Proper destroy và load native ad mới
-- **UI Updates**: Compose tự động re-render khi state thay đổi
+- **UI Updates**: Compose tự động re-render khi state thay đổi 

@@ -3,6 +3,16 @@
 ## [Latest] - 2024-12-19
 
 ### Added
+- **API & Notification Optimization Strategy**: Bổ sung hướng dẫn tối ưu hóa tần suất load API thời tiết và hiển thị thông báo
+  - **Weather API Strategy**: Định nghĩa 3 lần/ngày (6AM, 12PM, 6PM) cho optimal accuracy
+  - **Smart Refresh Logic**: Foreground refresh nếu data >2h, background theo schedule
+  - **Notification Strategy**: 1 core notification/ngày + 2 conditional notifications tối đa
+  - **UX Guidelines**: Skeleton loading, progressive enhancement, rich notifications
+  - **User Control**: Frequency control, timing preference, data usage options
+  - **Adaptive Learning**: User behavior analysis cho timing và content optimization
+  - **Performance**: Battery optimization, network efficiency, memory management
+  - **File Updated**: `Brainstorm_WeatherPersonalizedApp.md` với section mới về API & Notification optimization
+
 - ✅ **Git Repository Initialization**: Khởi tạo Git repository cho dự án Weather Personalized App
   - ✅ Commit đầu tiên với toàn bộ codebase và cấu trúc dự án
   - ✅ Thiết lập version control cho quá trình phát triển

@@ -163,6 +163,102 @@ data class Reward(
 4. **Point Assignment**: Gán point dựa trên score
 5. **Notification Trigger**: Gửi thông báo cá nhân hóa
 
+### 📊 API & Notification Optimization Strategy
+
+#### 🌤️ Weather API Loading Strategy
+
+**Tần suất tối ưu cho API calls:**
+
+1. **Primary Weather Updates** (3 lần/ngày):
+   - **06:00 AM**: Morning update cho notification hàng ngày
+   - **12:00 PM**: Midday update cho accuracy cao
+   - **06:00 PM**: Evening update cho planning ngày mai
+
+2. **Smart Refresh Logic**:
+   ```
+   - Foreground App: Refresh nếu data > 2 giờ
+   - Background: Chỉ refresh theo schedule
+   - User Pull-to-Refresh: Instant update (rate limit 1/phút)
+   - Location Change: Auto refresh nếu di chuyển > 10km
+   ```
+
+3. **Data Caching Strategy**:
+   - **Local Cache**: 24 giờ weather data
+   - **Offline Mode**: Hiển thị last known data + timestamp
+   - **Progressive Loading**: Show cached → Update với fresh data
+   - **Bandwidth Optimization**: Chỉ fetch changed data
+
+#### 🔔 Smart Notification Strategy
+
+**Tần suất thông báo tối ưu:**
+
+1. **Daily Core Notification** (1 lần/ngày):
+   - **Timing**: 7:00-9:00 AM (tuỳ chỉnh theo user preference)
+   - **Content**: Weather compatibility score + points earned
+   - **Action**: Deep link vào app để xem chi tiết
+
+2. **Conditional Notifications** (Tối đa 2 lần/ngày):
+   - **Weather Alert**: Chỉ khi có thay đổi đáng kể (>30% compatibility change)
+   - **Achievement**: Khi đạt milestone points (weekly/monthly)
+   - **Reminder**: Nếu user không mở app >3 ngày (soft reminder)
+
+3. **Smart Timing Algorithm**:
+   ```
+   User Activity Pattern Analysis:
+   - Track app usage time → Optimize notification timing
+   - Avoid notification during sleep hours (10PM-6AM)
+   - Respect "Do Not Disturb" settings
+   - Adaptive timing based on user interaction rate
+   ```
+
+#### 🎯 UX Optimization Guidelines
+
+**Loading Experience:**
+1. **Skeleton Loading**: Show weather card structure while loading
+2. **Progressive Enhancement**: Display basic info → Add details
+3. **Error Handling**: Graceful fallback với cached data
+4. **Loading Indicators**: Subtle progress indicators, không blocking UI
+
+**Notification UX:**
+1. **Rich Notifications**: Weather icon + compatibility score + action buttons
+2. **Personalized Content**: "Perfect weather for your morning jog! +10 points"
+3. **Quick Actions**: "View Details" và "Claim Reward" buttons
+4. **Notification Grouping**: Group related notifications để tránh spam
+
+**Performance Optimization:**
+1. **Background Sync**: Sử dụng WorkManager cho scheduled tasks
+2. **Battery Optimization**: Batch API calls, avoid frequent wake-ups
+3. **Network Efficiency**: Compress data, use HTTP/2, implement retry logic
+4. **Memory Management**: Cache management với LRU strategy
+
+#### 📱 User Control & Customization
+
+**Notification Settings:**
+- **Frequency Control**: Daily/Every 2 days/Weekly options
+- **Time Preference**: User-selectable notification time
+- **Content Type**: Weather only/Weather + Tips/Full personalization
+- **Quiet Hours**: Customizable do-not-disturb periods
+
+**Data Usage Control:**
+- **Wifi Only Mode**: Chỉ update khi có Wifi
+- **Data Saver**: Reduced frequency cho mobile data
+- **Manual Refresh**: Option để disable auto-refresh
+- **Offline Mode**: Full functionality với cached data
+
+#### 🔄 Adaptive Learning System
+
+**User Behavior Analysis:**
+1. **Engagement Tracking**: Monitor notification open rates
+2. **Timing Optimization**: Learn optimal notification times
+3. **Content Preference**: Adapt notification content based on interaction
+4. **Frequency Adjustment**: Auto-adjust based on user response
+
+**Smart Recommendations:**
+- Suggest optimal notification times based on usage patterns
+- Recommend data refresh frequency based on location stability
+- Personalize content depth based on engagement level
+- Adaptive point earning suggestions based on weather patterns
+
 #### Reward Interaction
 1. **Point Check**: Kiểm tra số point hiện có
 2. **Reward Browse**: Duyệt danh sách reward available
