@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -157,7 +158,10 @@ fun WeatherHomeScreen(
             
             // Current Weather Card
             item {
-                CurrentWeatherCard(onNavigateToDetails = onNavigateToDetail)
+                CurrentWeatherCard(
+                    weatherData = uiState.weatherData,
+                    onNavigateToDetails = onNavigateToDetail
+                )
             }
             
             // Enhanced Compatibility Score Card
@@ -371,6 +375,7 @@ fun LocationCard(
 
 @Composable
 fun CurrentWeatherCard(
+    weatherData: WeatherData?,
     onNavigateToDetails: () -> Unit
 ) {
     Card(
@@ -389,59 +394,107 @@ fun CurrentWeatherCard(
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Weather Icon (placeholder)
-            Box(
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(40.dp))
-                    .background(
-                        brush = Brush.radialGradient(
-                            colors = listOf(SunYellow, SunYellow.copy(alpha = 0.7f))
-                        )
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
+            if (weatherData != null) {
+                // Weather Icon based on actual weather condition
+                val weatherIcon = when {
+                    weatherData.description.contains("clear", ignoreCase = true) -> "☀️"
+                    weatherData.description.contains("cloud", ignoreCase = true) -> "☁️"
+                    weatherData.description.contains("rain", ignoreCase = true) -> "🌧️"
+                    weatherData.description.contains("snow", ignoreCase = true) -> "❄️"
+                    weatherData.description.contains("mist", ignoreCase = true) || 
+                    weatherData.description.contains("fog", ignoreCase = true) -> "🌫️"
+                    else -> "🌤️"
+                }
+                
+                val iconColor = when {
+                    weatherData.description.contains("clear", ignoreCase = true) -> SunYellow
+                    weatherData.description.contains("cloud", ignoreCase = true) -> Color.Gray
+                    weatherData.description.contains("rain", ignoreCase = true) -> DeepSkyBlue
+                    else -> SunYellow
+                }
+                
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(RoundedCornerShape(40.dp))
+                        .background(
+                            brush = Brush.radialGradient(
+                                colors = listOf(iconColor, iconColor.copy(alpha = 0.7f))
+                            )
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = weatherIcon,
+                        fontSize = 40.sp
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                // Temperature from API
                 Text(
-                    text = "☀️",
-                    fontSize = 40.sp
+                    text = "${weatherData.temperature.roundToInt()}°C",
+                    style = MaterialTheme.typography.displayLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-            }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            // Temperature
-            Text(
-                text = "28°C", // TODO: Get from weather service
-                style = MaterialTheme.typography.displayLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            
-            // Weather Description
-            Text(
-                text = stringResource(R.string.sunny_weather),
-                style = MaterialTheme.typography.titleMedium,
-                color = RainyGray
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            // Weather Details Row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                WeatherDetailItem(
-                    label = stringResource(R.string.humidity),
-                    value = "65%"
+                
+                // Weather Description from API
+                Text(
+                    text = weatherData.description.replaceFirstChar { it.uppercase() },
+                    style = MaterialTheme.typography.titleMedium,
+                    color = RainyGray
                 )
-                WeatherDetailItem(
-                    label = stringResource(R.string.wind_speed),
-                    value = "12 km/h"
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                // Weather Details Row with real data
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    WeatherDetailItem(
+                        label = stringResource(R.string.humidity),
+                        value = "${weatherData.humidity}%"
+                    )
+                    WeatherDetailItem(
+                        label = stringResource(R.string.wind_speed),
+                        value = "${weatherData.windSpeed.roundToInt()} km/h"
+                    )
+                    WeatherDetailItem(
+                        label = "Feels Like",
+                        value = "${weatherData.feelsLike.roundToInt()}°C"
+                    )
+                }
+            } else {
+                // Loading state
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(RoundedCornerShape(40.dp))
+                        .background(Color.Gray.copy(alpha = 0.3f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(40.dp),
+                        color = DeepSkyBlue
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                Text(
+                    text = "Loading...",
+                    style = MaterialTheme.typography.displayLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
-                WeatherDetailItem(
-                    label = stringResource(R.string.uv_index),
-                    value = "6"
+                
+                Text(
+                    text = "Getting weather data",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = RainyGray
                 )
             }
         }
