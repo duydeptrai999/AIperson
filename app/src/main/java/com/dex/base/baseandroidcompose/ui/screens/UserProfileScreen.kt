@@ -1,471 +1,613 @@
 package com.dex.base.baseandroidcompose.ui.screens
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dex.base.baseandroidcompose.R
-import com.dex.base.baseandroidcompose.data.models.*
-import com.dex.base.baseandroidcompose.ui.theme.*
-import com.dex.base.baseandroidcompose.ui.viewmodels.WeatherViewModel
+import com.dex.base.baseandroidcompose.data.models.Location
+import com.dex.base.baseandroidcompose.data.models.Occupation
+import com.dex.base.baseandroidcompose.data.models.UserProfile
+import com.dex.base.baseandroidcompose.data.models.WeatherPreferences
 import com.dex.base.baseandroidcompose.ui.viewmodels.UserViewModel
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserProfileScreen(
     onNavigateBack: () -> Unit = {},
     onProfileSaved: () -> Unit = {},
-    weatherViewModel: WeatherViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel()
 ) {
+    val userProfile by userViewModel.userProfile.collectAsStateWithLifecycle()
+    val isLoading by userViewModel.isLoading.collectAsStateWithLifecycle()
+    val error by userViewModel.error.collectAsStateWithLifecycle()
+    
+    // State for edit mode with animation
+    var isEditMode by remember { mutableStateOf(false) }
+    
+    // Form states
     var age by remember { mutableStateOf("") }
-    var occupation by remember { mutableStateOf("") }
+    var selectedOccupation by remember { mutableStateOf(Occupation.OFFICE_WORKER) }
     var location by remember { mutableStateOf("") }
-    var expanded by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
     
-    val userProfile by userViewModel.userProfile.collectAsState()
-    val isLoading by userViewModel.isLoading.collectAsState()
-    val error by userViewModel.error.collectAsState()
+    // Animation states
+    val animatedVisibilityState = remember { MutableTransitionState(false) }
+    animatedVisibilityState.targetState = true
     
-    // Load existing profile data if available
+    // Update form states when profile changes
     LaunchedEffect(userProfile) {
         userProfile?.let { profile ->
             age = profile.age.toString()
-            occupation = profile.occupation.name
-            location = "${profile.location.city}, ${profile.location.country}"
+            selectedOccupation = profile.occupation
+            location = profile.location.city
+            isEditMode = false // Reset edit mode when profile loads
         }
     }
     
-    // Handle error messages
-    LaunchedEffect(error) {
-        error?.let {
-            errorMessage = it
-        }
-    }
+    // Determine if we have existing profile
+    val hasExistingProfile = userProfile != null
     
-    Column(
+    // Show edit form if no profile exists OR if in edit mode
+    val showEditForm = !hasExistingProfile || isEditMode
+    
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        SkyBlue.copy(alpha = 0.3f),
-                        CloudWhite
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.surface
                     )
                 )
             )
     ) {
-        // Top App Bar
-        TopAppBar(
-            title = {
-                Text(
-                    text = stringResource(R.string.user_profile_title),
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Back",
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent
+        AnimatedVisibility(
+            visibleState = animatedVisibilityState,
+            enter = fadeIn(animationSpec = tween(800)) + slideInVertically(
+                animationSpec = tween(800),
+                initialOffsetY = { it / 3 }
             )
-        )
-        
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // Profile Header
-            ProfileHeader()
-            
-            // Age Input
-            ProfileInputField(
-                label = stringResource(R.string.age),
-                value = age,
-                onValueChange = { age = it },
-                placeholder = stringResource(R.string.enter_age),
-                icon = Icons.Default.Person,
-                keyboardType = KeyboardType.Number
-            )
-            
-            // Occupation Dropdown
-            var expanded by remember { mutableStateOf(false) }
-            val occupations = Occupation.values().map { it.name.replace("_", " ").lowercase().replaceFirstChar { char -> char.uppercase() } }
-            
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = WeatherCardBackground
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = null,
-                            tint = DeepSkyBlue,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = stringResource(R.string.occupation),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                    
-                    ExposedDropdownMenuBox(
-                        expanded = expanded,
-                        onExpandedChange = { expanded = !expanded },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        OutlinedTextField(
-                            value = occupation,
-                            onValueChange = {},
-                            readOnly = true,
-                            placeholder = {
-                                Text(
-                                    text = stringResource(R.string.enter_occupation),
-                                    color = RainyGray
-                                )
-                            },
-                            trailingIcon = {
-                                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .menuAnchor(),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = DeepSkyBlue,
-                                unfocusedBorderColor = RainyGray.copy(alpha = 0.5f),
-                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
-                            )
-                        )
-                        
-                        ExposedDropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
-                        ) {
-                            occupations.forEach { occupationOption ->
-                                DropdownMenuItem(
-                                    text = { Text(occupationOption) },
-                                    onClick = {
-                                        occupation = occupationOption
-                                        expanded = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-            
-            // Location Input
-            ProfileInputField(
-                label = stringResource(R.string.location),
-                value = location,
-                onValueChange = { location = it },
-                placeholder = stringResource(R.string.enter_location),
-                icon = Icons.Default.LocationOn
-            )
-            
-            Spacer(modifier = Modifier.height(20.dp))
-            
-            // Save Button
-            Button(
-                onClick = {
-                    // Validation
-                    var isValid = true
-                    var errorMessage = ""
-                    
-                    // Validate age
-                    val ageInt = age.toIntOrNull()
-                    if (ageInt == null || ageInt < 1 || ageInt > 120) {
-                        isValid = false
-                        errorMessage = "Please enter a valid age (1-120)"
-                    }
-                    
-                    // Validate occupation
-                    if (occupation.isBlank()) {
-                        isValid = false
-                        errorMessage = "Please select an occupation"
-                    }
-                    
-                    // Validate location
-                    if (location.isBlank()) {
-                        isValid = false
-                        errorMessage = "Location is required"
-                    }
-                    
-                    if (isValid) {
-                         errorMessage = "" // Clear error message
-                         try {
-                            val occupationEnum = try {
-                                Occupation.valueOf(occupation.uppercase().replace(" ", "_"))
-                            } catch (e: IllegalArgumentException) {
-                                Occupation.OTHER
-                            }
-                            
-                            // Parse location (assuming format "City, Country")
-                            val locationParts = location.split(",")
-                            val city = locationParts.getOrNull(0)?.trim() ?: "Unknown"
-                            val country = locationParts.getOrNull(1)?.trim() ?: "Unknown"
-                            
-                            val newProfile = UserProfile(
-                                id = userProfile?.id ?: java.util.UUID.randomUUID().toString(),
-                                age = ageInt!!,
-                                location = Location(
-                                    city = city,
-                                    country = country,
-                                    latitude = 0.0, // Will be updated later with geocoding
-                                    longitude = 0.0,
-                                    timezone = "Asia/Ho_Chi_Minh" // Default timezone
-                                ),
-                                occupation = occupationEnum,
-                                preferences = userProfile?.preferences ?: WeatherPreferences(),
-                                pointBalance = userProfile?.pointBalance ?: 0,
-                                totalPointsEarned = userProfile?.totalPointsEarned ?: 0,
-                                level = userProfile?.level ?: 1,
-                                createdAt = userProfile?.createdAt ?: System.currentTimeMillis(),
-                                lastUpdated = System.currentTimeMillis()
-                            )
-                            
-                            userViewModel.saveUserProfile(newProfile)
-                            onProfileSaved()
-                            
-                        } catch (e: Exception) {
-                            // Handle invalid occupation or other errors
-                            // For now, use default values
-                            val newProfile = UserProfile(
-                                id = userProfile?.id ?: java.util.UUID.randomUUID().toString(),
-                                age = age.toIntOrNull() ?: 25,
-                                location = Location(
-                                    city = location,
-                                    country = "Unknown",
-                                    latitude = 0.0,
-                                    longitude = 0.0,
-                                    timezone = "Asia/Ho_Chi_Minh" // Default timezone
-                                ),
-                                occupation = Occupation.OTHER,
-                                preferences = userProfile?.preferences ?: WeatherPreferences(),
-                                pointBalance = userProfile?.pointBalance ?: 0,
-                                totalPointsEarned = userProfile?.totalPointsEarned ?: 0,
-                                level = userProfile?.level ?: 1,
-                                createdAt = userProfile?.createdAt ?: System.currentTimeMillis(),
-                                lastUpdated = System.currentTimeMillis()
-                            )
-                            
-                            userViewModel.saveUserProfile(newProfile)
-                            onProfileSaved()
-                        }
-                    } else {
-                         errorMessage = errorMessage
-                     }
-                },
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = DeepSkyBlue
-                ),
-                enabled = !isLoading && age.isNotBlank() && occupation.isNotBlank() && location.isNotBlank()
+                    .fillMaxSize()
+                    .padding(20.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        color = Color.White
+        if (showEditForm) {
+            // Edit/Create Form
+            ProfileEditForm(
+                age = age,
+                onAgeChange = { age = it },
+                selectedOccupation = selectedOccupation,
+                onOccupationChange = { selectedOccupation = it },
+                location = location,
+                onLocationChange = { location = it },
+                hasExistingProfile = hasExistingProfile,
+                isLoading = isLoading,
+                onSave = {
+                    val ageInt = age.toIntOrNull() ?: 25
+                    val newProfile = UserProfile(
+                        id = userProfile?.id ?: UUID.randomUUID().toString(),
+                        age = ageInt,
+                        location = Location(
+                            city = location.ifBlank { "Ho Chi Minh City" },
+                            country = "Vietnam",
+                            latitude = 10.8231,
+                            longitude = 106.6297,
+                            timezone = "Asia/Ho_Chi_Minh"
+                        ),
+                        occupation = selectedOccupation,
+                        preferences = userProfile?.preferences ?: WeatherPreferences(),
+                        pointBalance = userProfile?.pointBalance ?: 0,
+                        totalPointsEarned = userProfile?.totalPointsEarned ?: 0,
+                        level = userProfile?.level ?: 1,
+                        createdAt = userProfile?.createdAt ?: System.currentTimeMillis(),
+                        lastUpdated = System.currentTimeMillis()
                     )
-                } else {
-                    Text(
-                        text = stringResource(R.string.save_profile),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.White
-                    )
+                    userViewModel.saveUserProfile(newProfile)
+                    if (!hasExistingProfile) {
+                        onProfileSaved()
+                    }
+                },
+                onCancel = if (hasExistingProfile) {
+                    { isEditMode = false }
+                } else null
+            )
+        } else {
+            // Profile View Mode
+            ProfileViewMode(
+                userProfile = userProfile!!,
+                onEditClick = { isEditMode = true }
+            )
+        }
+        
+                // Error handling
+                error?.let { errorMessage ->
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .shadow(
+                                elevation = 8.dp,
+                                shape = RoundedCornerShape(16.dp)
+                            ),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer
+                        ),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(20.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Warning,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onErrorContainer,
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(
+                                text = errorMessage,
+                                color = MaterialTheme.colorScheme.onErrorContainer,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
                 }
             }
-            
-            // Error message display
-            if (errorMessage.isNotEmpty()) {
-                Text(
-                    text = errorMessage,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
-            
-
         }
     }
 }
 
 @Composable
-fun ProfileHeader() {
+fun ProfileViewMode(
+    userProfile: UserProfile,
+    onEditClick: () -> Unit
+) {
+    Column {
+        // Header with Edit button
+        ProfileViewHeader(
+            onEditClick = onEditClick
+        )
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        // Profile Data Card
+        ProfileDataCard(
+            userProfile = userProfile
+        )
+    }
+}
+
+@Composable
+fun ProfileViewHeader(
+    onEditClick: () -> Unit
+) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = 12.dp,
+                shape = RoundedCornerShape(24.dp)
+            ),
+        shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = WeatherCardBackground
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // Profile Avatar
-            Box(
-                modifier = Modifier
-                    .size(80.dp)
-                    .background(
-                        brush = Brush.radialGradient(
-                            colors = listOf(
-                                DeepSkyBlue.copy(alpha = 0.8f),
-                                SkyBlue.copy(alpha = 0.6f)
-                            )
-                        ),
-                        shape = RoundedCornerShape(40.dp)
-                    ),
-                contentAlignment = Alignment.Center
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(40.dp)
-                )
+                // Enhanced Avatar with gradient
+                Box(
+                    modifier = Modifier
+                        .size(72.dp)
+                        .clip(CircleShape)
+                        .background(
+                            brush = Brush.linearGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.primary,
+                                    MaterialTheme.colorScheme.secondary
+                                )
+                            )
+                        )
+                        .border(
+                            width = 3.dp,
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(36.dp)
+                    )
+                }
+                
+                Spacer(modifier = Modifier.width(20.dp))
+                
+                Column {
+                    Text(
+                        text = stringResource(R.string.user_profile_view_title),
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "Manage your profile",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
             
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Text(
-                text = "Personalize Your Weather Experience",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
+            // Enhanced Edit Button
+            FilledTonalIconButton(
+                onClick = onEditClick,
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = stringResource(R.string.edit),
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ProfileDataCard(
+    userProfile: UserProfile
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = 16.dp,
+                shape = RoundedCornerShape(24.dp)
+            ),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(28.dp)
+        ) {
+            ProfileInfoRow(
+                icon = Icons.Default.Cake,
+                label = stringResource(R.string.age),
+                value = "${userProfile.age} years old",
+                iconColor = MaterialTheme.colorScheme.primary
             )
             
-            Spacer(modifier = Modifier.height(8.dp))
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 20.dp),
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                thickness = 1.dp
+            )
             
-            Text(
-                text = "Help us provide better weather recommendations by sharing some basic information about yourself.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = RainyGray
+            ProfileInfoRow(
+                icon = Icons.Default.Work,
+                label = stringResource(R.string.occupation),
+                value = userProfile.occupation.displayName,
+                iconColor = MaterialTheme.colorScheme.secondary
+            )
+            
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 20.dp),
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                thickness = 1.dp
+            )
+            
+            ProfileInfoRow(
+                icon = Icons.Default.LocationOn,
+                label = stringResource(R.string.location),
+                value = "${userProfile.location.city}, ${userProfile.location.country}",
+                iconColor = MaterialTheme.colorScheme.tertiary
             )
         }
     }
+}
+
+@Composable
+fun ProfileInfoRow(
+    icon: ImageVector,
+    label: String,
+    value: String,
+    iconColor: Color
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Icon with background
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape)
+                .background(iconColor.copy(alpha = 0.1f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = iconColor,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+        
+        Spacer(modifier = Modifier.width(16.dp))
+        
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 16.sp
+            )
+        }
+    }
+}
+
+// Overloaded function for backward compatibility
+@Composable
+fun ProfileInfoRow(
+    label: String,
+    value: String
+) {
+    ProfileInfoRow(
+        icon = Icons.Default.Info,
+        label = label,
+        value = value,
+        iconColor = MaterialTheme.colorScheme.primary
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileInputField(
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    placeholder: String,
-    icon: ImageVector,
-    keyboardType: KeyboardType = KeyboardType.Text
+fun ProfileEditForm(
+    age: String,
+    onAgeChange: (String) -> Unit,
+    selectedOccupation: Occupation,
+    onOccupationChange: (Occupation) -> Unit,
+    location: String,
+    onLocationChange: (String) -> Unit,
+    hasExistingProfile: Boolean,
+    isLoading: Boolean,
+    onSave: () -> Unit,
+    onCancel: (() -> Unit)? = null
 ) {
+    var showOccupationDropdown by remember { mutableStateOf(false) }
+    
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = 12.dp,
+                shape = RoundedCornerShape(24.dp)
+            ),
+        shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = WeatherCardBackground
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(28.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+            // Form Header
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 8.dp)
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = icon,
+                    imageVector = Icons.Default.Edit,
                     contentDescription = null,
-                    tint = DeepSkyBlue,
-                    modifier = Modifier.size(20.dp)
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(28.dp)
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = label,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
+                    text = if (hasExistingProfile) "Edit Profile" else "Create Profile",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
             
+            // Age Input with icon
             OutlinedTextField(
-                value = value,
-                onValueChange = onValueChange,
-                placeholder = {
-                    Text(
-                        text = placeholder,
-                        color = RainyGray
+                value = age,
+                onValueChange = onAgeChange,
+                label = { Text(stringResource(R.string.age)) },
+                placeholder = { Text(stringResource(R.string.enter_age)) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Cake,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = DeepSkyBlue,
-                    unfocusedBorderColor = RainyGray.copy(alpha = 0.5f),
-                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
-                ),
-                keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-                singleLine = true
+                singleLine = true,
+                shape = RoundedCornerShape(16.dp)
             )
+            
+            // Occupation Dropdown with icon
+            ExposedDropdownMenuBox(
+                expanded = showOccupationDropdown,
+                onExpandedChange = { showOccupationDropdown = it }
+            ) {
+                OutlinedTextField(
+                    value = selectedOccupation.displayName,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text(stringResource(R.string.occupation)) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Work,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.secondary
+                        )
+                    },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = showOccupationDropdown) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor(),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                
+                ExposedDropdownMenu(
+                    expanded = showOccupationDropdown,
+                    onDismissRequest = { showOccupationDropdown = false }
+                ) {
+                    Occupation.values().forEach { occupation ->
+                        DropdownMenuItem(
+                            text = { Text(occupation.displayName) },
+                            onClick = {
+                                onOccupationChange(occupation)
+                                showOccupationDropdown = false
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Work,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        )
+                    }
+                }
+            }
+            
+            // Location Input with icon
+            OutlinedTextField(
+                value = location,
+                onValueChange = onLocationChange,
+                label = { Text(stringResource(R.string.location)) },
+                placeholder = { Text(stringResource(R.string.enter_location)) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.tertiary
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                shape = RoundedCornerShape(16.dp)
+            )
+            
+            // Action Buttons with modern design
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = if (onCancel != null) Arrangement.spacedBy(16.dp) else Arrangement.Center
+            ) {
+                // Cancel Button (only show if editing existing profile)
+                onCancel?.let {
+                    OutlinedButton(
+                        onClick = it,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp),
+                        enabled = !isLoading,
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            stringResource(R.string.cancel),
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+                
+                // Save/Update Button
+                Button(
+                    onClick = onSave,
+                    modifier = if (onCancel != null) Modifier.weight(1f).height(56.dp) else Modifier.fillMaxWidth().height(56.dp),
+                    enabled = !isLoading && age.isNotBlank() && location.isNotBlank(),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            strokeWidth = 2.dp,
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    } else {
+                        Icon(
+                            imageVector = if (hasExistingProfile) Icons.Default.Update else Icons.Default.Save,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            stringResource(
+                                if (hasExistingProfile) R.string.update_profile 
+                                else R.string.save_profile
+                            ),
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+            }
         }
     }
 }

@@ -1,5 +1,211 @@
 # Help.md - Hướng dẫn sử dụng tính năng
 
+## 👤 UserProfileScreen - Enhanced UI/UX với Material Design 3
+
+### Mô tả tính năng
+Tính năng quản lý hồ sơ người dùng với thiết kế Material Design 3 hiện đại, hệ thống quản lý trạng thái thông minh, và trải nghiệm người dùng được tối ưu hóa với animations và visual effects. Hỗ trợ chuyển đổi tự động giữa ba trạng thái: **chế độ nhập liệu**, **chế độ xem**, và **chế độ chỉnh sửa**.
+
+### Cải tiến UI/UX mới
+
+**1. Modern Visual Design**:
+- **Gradient Background**: Vertical gradient với primary và secondary colors
+- **Enhanced Cards**: Shadow effects và rounded corners (24dp)
+- **Icon Integration**: Meaningful icons cho mỗi thông tin với color coding
+- **Animated Transitions**: fadeIn và slideInVertically effects
+- **Material Design 3**: Dynamic colors và consistent theming
+
+**2. Enhanced Components**:
+- **ProfileViewHeader**: Large avatar (80dp) với gradient background, modern FilledTonalIconButton
+- **ProfileDataCard**: Deep shadow (16dp), larger padding (28dp), icon integration
+- **ProfileInfoRow**: Redesigned với icon backgrounds, horizontal layout, color coding
+- **ProfileEditForm**: Card container, form header, leading icons, rounded inputs (16dp)
+
+### Cách hoạt động
+
+**1. Trạng thái ban đầu (Chưa có dữ liệu - showEditForm = true)**:
+- Gradient background fades in với smooth animation
+- ProfileEditForm với "Create Profile" header và icons
+- Form nhập liệu với leading icons: Cake (Age), Work (Occupation), LocationOn (Location)
+- Modern buttons với enhanced spacing và typography
+- Success animation sau khi lưu thành công
+
+**2. Trạng thái đã có dữ liệu (Profile View Mode - showEditForm = false)**:
+- Smooth entry animation với gradient header
+- Large avatar với gradient background
+- Information cards với color-coded icons:
+  - Age: Cake icon (Primary color)
+  - Occupation: Work icon (Secondary color) 
+  - Location: LocationOn icon (Tertiary color)
+- Touch-friendly edit button với visual feedback
+
+**3. Chế độ chỉnh sửa (Edit Mode - showEditForm = true, hasExistingProfile = true)**:
+- Smooth transition từ view → edit mode
+- Form pre-filled với current data
+- Visual indicators cho required fields
+- Modern dropdown với icons
+- Clear save/cancel actions với feedback
+- Enhanced buttons: 56dp height, icons (Close và Save/Update)
+
+### Logic chuyển đổi trạng thái
+```kotlin
+val hasExistingProfile = userProfile != null
+val showEditForm = !hasExistingProfile || isEditMode
+// Enhanced với animation states
+val animatedVisibilityState = remember { MutableTransitionState(false) }
+```
+
+### Enhanced UI Components
+
+**UserProfileScreen (Main Component)**:
+- Gradient background với `Brush.verticalGradient`
+- Animation integration với `AnimatedVisibility`
+- Enhanced error display với warning icons
+- Improved state management với visual feedback
+
+**ProfileViewHeader (Redesigned)**:
+- Card container với shadow và gradient
+- Large avatar (80dp) với gradient background
+- Typography: headlineSmall với bold weight
+- Modern FilledTonalIconButton thay vì IconButton
+
+**ProfileDataCard (Enhanced)**:
+- Deep shadow (16dp elevation) cho visual depth
+- Larger padding (28dp) cho comfortable spacing
+- Icon integration với circular backgrounds
+- Color-coded information display
+
+**ProfileInfoRow (Completely Redesigned)**:
+- Horizontal layout với icon + text
+- Icon backgrounds với alpha transparency
+- Enhanced typography: SemiBold weight cho values
+- Color coding cho mỗi loại thông tin
+- Improved spacing: 16dp between elements
+
+**ProfileEditForm (Major Upgrade)**:
+- Card container với shadow effects
+- Form header với icon + title
+- Leading icons cho tất cả input fields
+- Rounded inputs (16dp corner radius)
+- Modern buttons với 56dp height
+- Enhanced dropdown với icons trong items
+
+### Visual Enhancements
+
+**Color System**:
+- **Primary**: Age-related information
+- **Secondary**: Occupation-related information
+- **Tertiary**: Location-related information
+- **Surface**: Card backgrounds với elevation
+- **Error**: Enhanced error states với visual indicators
+
+**Animation System**:
+- **Entry Animation**: fadeIn + slideInVertically
+- **State Transitions**: Smooth chuyển đổi giữa modes
+- **Micro-interactions**: Button press feedback
+- **Loading States**: Enhanced progress indicators
+
+**Accessibility Improvements**:
+- Content descriptions cho tất cả icons
+- Touch targets: 56dp minimum cho buttons
+- Color contrast: Material Design compliant
+- Screen reader optimization
+
+### State Management
+- `isEditMode`: Boolean để kiểm soát chế độ chỉnh sửa
+- `hasExistingProfile`: Boolean để xác định có dữ liệu hay chưa
+- `showEditForm`: Computed property với animation support
+- `animatedVisibilityState`: Quản lý animation transitions
+- Form states: age, selectedOccupation, location với validation
+- ViewModel states: userProfile, isLoading, error với visual feedback
+
+### Navigation Flow
+- **Enhanced Transitions**: Animated navigation với smooth effects
+- **Context Preservation**: Maintain state during navigation
+- **Success Feedback**: Visual confirmation sau khi save
+- **Consistent Back Navigation**: Unified back button behavior
+
+### String Resources sử dụng
+- `user_profile_title`: "Your Profile"
+- `user_profile_view_title`: "Profile" 
+- `create_profile_title`: "Create Profile"
+- `edit_profile_title`: "Edit Profile"
+- `age`, `occupation`, `location`: Labels cho các trường
+- `save_profile`, `update_profile`: Text cho nút action
+- `edit`, `cancel`: Text cho nút điều khiển
+- `enter_age`, `enter_location`: Placeholder text với icons
+
+### Performance Optimizations
+- **Lazy Composition**: Efficient recomposition
+- **State Hoisting**: Optimal state management
+- **Animation Performance**: Hardware-accelerated transitions
+- **Memory Efficiency**: Proper resource management với cleanup
+
+### Bug Fix - ANR (Application Not Responding) Issue
+
+**Problem Identified**:
+- **Issue**: App crashed with ANR when saving user profile, showing "Application Not Responding" error in logcat
+- **Root Cause**: `SharedPreferences.apply()` was being called on the main thread in `UserRepository.saveUserProfile()`, causing UI thread blocking when multiple save operations occurred
+
+**Solution Implemented**:
+- **Fix Applied**: Modified `UserRepository.saveUserProfile()` to use `Dispatchers.IO` for background thread execution
+- **Key Changes**:
+  1. **Added IO Dispatcher**: Wrapped SharedPreferences operations in `withContext(Dispatchers.IO)`
+  2. **Changed apply() to commit()**: Used `commit()` in IO thread for immediate write guarantee
+  3. **Thread Safety**: Ensured StateFlow updates happen on main thread
+  4. **Added Imports**: Added `kotlinx.coroutines.Dispatchers` and `kotlinx.coroutines.withContext`
+
+**Code Changes**:
+```kotlin
+// Before (causing ANR)
+suspend fun saveUserProfile(userProfile: UserProfile): Result<Unit> {
+    return try {
+        val jsonString = gson.toJson(userProfile)
+        sharedPreferences.edit()
+            .putString(KEY_USER_PROFILE, jsonString)
+            .apply() // This could block UI thread
+        
+        _userProfile.value = userProfile
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
+
+// After (ANR fixed)
+suspend fun saveUserProfile(userProfile: UserProfile): Result<Unit> {
+    return try {
+        withContext(Dispatchers.IO) {
+            val jsonString = gson.toJson(userProfile)
+            sharedPreferences.edit()
+                .putString(KEY_USER_PROFILE, jsonString)
+                .commit() // Use commit() in IO thread
+        }
+        
+        // Update StateFlow on main thread
+        _userProfile.value = userProfile
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
+```
+
+**Benefits**:
+- ✅ Eliminates ANR when saving user profile
+- ✅ Improves app responsiveness
+- ✅ Maintains data integrity with immediate write
+- ✅ Proper thread management for UI updates
+- ✅ Better user experience with smooth save operations
+
+**Testing Instructions**:
+1. Build and install the updated app
+2. Navigate to User Profile screen
+3. Edit profile information
+4. Click Save button multiple times quickly
+5. Verify no ANR occurs and app remains responsive
+6. Check logcat for any threading issues
+7. Test on different devices and Android versions
+
 ## 🌤️ OpenWeatherMap API Integration Guide
 
 ### Mô tả tính năng

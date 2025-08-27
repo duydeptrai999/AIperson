@@ -163,9 +163,7 @@ fun WeatherNavGraph(
                     onProfileSaved = {
                         // Navigate back after saving profile
                         navController.popBackStack()
-                    },
-                    weatherViewModel = weatherViewModel,
-                    userViewModel = userViewModel
+                    }
                 )
             }
         }
@@ -334,9 +332,7 @@ fun EnhancedWeatherNavGraph(
                     onProfileSaved = {
                         // Navigate back after saving profile
                         navController.popBackStack()
-                    },
-                    weatherViewModel = weatherViewModel,
-                    userViewModel = userViewModel
+                    }
                 )
             }
         }

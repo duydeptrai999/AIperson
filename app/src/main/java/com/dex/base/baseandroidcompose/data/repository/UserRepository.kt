@@ -7,9 +7,11 @@ import com.dex.base.baseandroidcompose.utils.Logger
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -37,14 +39,18 @@ class UserRepository @Inject constructor(
     
     /**
      * Save user profile to SharedPreferences
+     * Uses IO dispatcher to prevent ANR on main thread
      */
     suspend fun saveUserProfile(userProfile: UserProfile): Result<Unit> {
         return try {
-            val jsonString = gson.toJson(userProfile)
-            sharedPreferences.edit()
-                .putString(KEY_USER_PROFILE, jsonString)
-                .apply()
+            withContext(Dispatchers.IO) {
+                val jsonString = gson.toJson(userProfile)
+                sharedPreferences.edit()
+                    .putString(KEY_USER_PROFILE, jsonString)
+                    .commit() // Use commit() in IO thread for immediate write
+            }
             
+            // Update StateFlow on main thread
             _userProfile.value = userProfile
             Logger.d("User profile saved successfully: ${userProfile.id}")
             Result.success(Unit)
