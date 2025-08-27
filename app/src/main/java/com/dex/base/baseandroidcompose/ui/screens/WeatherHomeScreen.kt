@@ -43,18 +43,11 @@ fun WeatherHomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val userProfile by viewModel.userProfile.collectAsState()
-    val context = LocalContext.current
-    
-    var isRefreshing by remember { mutableStateOf(false) }
     var isNewPointsEarned by remember { mutableStateOf(false) }
-    var currentWeatherScore by remember { mutableStateOf(uiState.compatibility?.compatibilityScore ?: 0f) }
-    var totalPoints by remember { mutableStateOf(userProfile?.totalPointsEarned ?: 0) }
-    var dailyPointsEarned by remember { mutableStateOf(0) }
     
-    // Animation for points
     val pointsScale by animateFloatAsState(
-        targetValue = if (isNewPointsEarned) 1.2f else 1f,
-        animationSpec = tween(300),
+        targetValue = if (isNewPointsEarned) 1.1f else 1f,
+        animationSpec = tween(200),
         finishedListener = { isNewPointsEarned = false }
     )
     
@@ -64,136 +57,56 @@ fun WeatherHomeScreen(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        SkyBlue.copy(alpha = 0.3f),
+                        SkyBlue.copy(alpha = 0.2f),
                         CloudWhite
                     )
                 )
             )
     ) {
-        // Top App Bar with AI Personalization
-        TopAppBar(
-            title = {
-                Column {
-                    Text(
-                        text = "Good Morning! 🌤️",
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                    Text(
-                        text = "Perfect weather for ${userProfile?.occupation?.displayName ?: "everyone"}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = RainyGray
-                    )
-                }
-            },
-            actions = {
-                // Daily notification indicator
-                Box(
-                    modifier = Modifier
-                        .size(12.dp)
-                        .clip(CircleShape)
-                        .background(CompatibilityGreen)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                
-                IconButton(onClick = { /* Profile navigation handled by bottom nav */ }) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = stringResource(R.string.profile_content_desc),
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-                IconButton(
-                    onClick = {
-                        isRefreshing = true
-                        // Simulate AI recalculation
-                        currentWeatherScore = (75..95).random().toFloat()
-                        dailyPointsEarned = when {
-                            currentWeatherScore >= 90 -> 10
-                            currentWeatherScore >= 70 -> 7
-                            currentWeatherScore >= 50 -> 5
-                            currentWeatherScore >= 30 -> 3
-                            else -> 1
-                        }
-                        totalPoints = (totalPoints ?: 0) + dailyPointsEarned
-                        isNewPointsEarned = true
-                        isRefreshing = false
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = "Refresh AI Analysis",
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent
-            )
+        // Compact Top Bar
+        CompactTopBar(
+            userProfile = userProfile,
+            onRefresh = {
+                isNewPointsEarned = true
+                viewModel.refreshWeather()
+            }
         )
         
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            contentPadding = PaddingValues(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-
-            
-            // Location Card
-            item {
-                LocationCard(
-                    userProfile = userProfile
-                )
-            }
-            
-            // Current Weather Card
+            // Combined Location & Weather Card
             item {
                 when {
-                    uiState.isLoading -> {
-                        LoadingWeatherCard()
-                    }
-                    uiState.error != null -> {
-                        ErrorWeatherCard(
-                            error = uiState.error ?: "Unknown error",
-                            onRetry = { viewModel.refreshWeather() }
-                        )
-                    }
-                    else -> {
-                        CurrentWeatherCard(
-                            weatherData = uiState.weatherData,
-                            onNavigateToDetails = onNavigateToDetail
-                        )
-                    }
-                }
-            }
-            
-            // Enhanced Compatibility Score Card
-            item {
-                val compatibility = uiState.compatibility
-                if (compatibility != null) {
-                    EnhancedCompatibilityScoreCard(
-                        score = compatibility.compatibilityScore,
-                        userAge = userProfile?.age ?: 25,
-                        userOccupation = userProfile?.occupation?.displayName ?: "Unknown",
-                        reasoning = compatibility.reasoning.joinToString("\n"),
-                        modifier = Modifier.fillMaxWidth()
+                    uiState.isLoading -> CompactLoadingCard()
+                    uiState.error != null -> CompactErrorCard(
+                        error = uiState.error ?: "Unknown error",
+                        onRetry = { viewModel.refreshWeather() }
+                    )
+                    else -> CompactWeatherCard(
+                        weatherData = uiState.weatherData,
+                        userProfile = userProfile,
+                        onNavigateToDetails = onNavigateToDetail
                     )
                 }
             }
             
-            // Enhanced Points Display Card
+            // Combined Score & Points Card
             item {
-                EnhancedPointsDisplayCard(
-                    totalPoints = userProfile?.pointBalance ?: 0,
-                    dailyPointsEarned = uiState.compatibility?.pointsEarned ?: 0,
-                    isNewPointsEarned = isNewPointsEarned,
-                    animatedPoints = userProfile?.pointBalance?.toFloat() ?: 0f,
-                    onNavigateToRewards = { /* Rewards navigation handled by bottom nav */ }
-                )
+                val compatibility = uiState.compatibility
+                if (compatibility != null) {
+                    CompactScorePointsCard(
+                        score = compatibility.compatibilityScore,
+                        reasoning = compatibility.reasoning.joinToString(" • "),
+                        totalPoints = userProfile?.pointBalance ?: 0,
+                        dailyPoints = compatibility.pointsEarned,
+                        isNewPointsEarned = isNewPointsEarned,
+                        pointsScale = pointsScale
+                    )
+                }
             }
-            
-
         }
     }
 }
@@ -203,16 +116,81 @@ fun WeatherHomeScreen(
 
 
 @Composable
-fun LocationCard(
+fun CompactTopBar(
     userProfile: UserProfile?,
-    modifier: Modifier = Modifier
+    onRefresh: () -> Unit
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = Color.Transparent
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    text = "Good Morning! 🌤️",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = null,
+                        tint = DeepSkyBlue,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = userProfile?.let {
+                            if (it.location.country.isNotBlank()) {
+                                "${it.location.city}, ${it.location.country}"
+                            } else it.location.city
+                        } ?: "Ho Chi Minh City, Vietnam",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = RainyGray
+                    )
+                }
+            }
+            
+            Row {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(CompatibilityGreen)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                IconButton(
+                    onClick = onRefresh,
+                    modifier = Modifier.size(32.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = "Refresh",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CompactErrorCard(
+    error: String,
+    onRetry: () -> Unit
 ) {
     Card(
-        modifier = modifier,
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = WeatherCardBackground
-        ),
+        colors = CardDefaults.cardColors(containerColor = WeatherCardBackground),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -222,133 +200,333 @@ fun LocationCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Default.LocationOn,
+                imageVector = Icons.Default.Error,
                 contentDescription = null,
-                tint = DeepSkyBlue,
-                modifier = Modifier.size(24.dp)
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier.size(32.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column {
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = stringResource(R.string.current_location),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = RainyGray
+                    text = stringResource(R.string.error_title),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.error
                 )
                 Text(
-                    text = if (userProfile != null) {
-                        if (userProfile.location.country.isNotBlank()) {
-                                "${userProfile.location.city}, ${userProfile.location.country}"
-                            } else {
-                                userProfile.location.city
-                            }
-                    } else {
-                        "Ho Chi Minh City, Vietnam" // Default fallback
-                    },
+                    text = error,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = RainyGray
+                )
+            }
+            Button(
+                onClick = onRetry,
+                modifier = Modifier.height(32.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.retry),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CompactLoadingCard() {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = WeatherCardBackground),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(32.dp),
+                color = MaterialTheme.colorScheme.primary,
+                strokeWidth = 3.dp
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Column {
+                Text(
+                    text = stringResource(R.string.loading),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = stringResource(R.string.getting_weather_data),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = RainyGray
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CompactWeatherCard(
+    weatherData: WeatherData?,
+    userProfile: UserProfile?,
+    onNavigateToDetails: () -> Unit = {}
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onNavigateToDetails() },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = WeatherCardBackground),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            if (weatherData != null) {
+                // Main weather row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(
+                            text = "${weatherData.temperature.roundToInt()}°C",
+                            style = MaterialTheme.typography.displayMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = weatherData.description.replaceFirstChar { it.uppercase() },
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = RainyGray
+                        )
+                    }
+                    
+                    // Weather icon
+                    val weatherIcon = when {
+                        weatherData.description.contains("clear", ignoreCase = true) -> "☀️"
+                        weatherData.description.contains("cloud", ignoreCase = true) -> "☁️"
+                        weatherData.description.contains("rain", ignoreCase = true) -> "🌧️"
+                        weatherData.description.contains("snow", ignoreCase = true) -> "❄️"
+                        weatherData.description.contains("mist", ignoreCase = true) || 
+                        weatherData.description.contains("fog", ignoreCase = true) -> "🌫️"
+                        weatherData.description.contains("thunderstorm", ignoreCase = true) -> "⛈️"
+                        else -> "🌤️"
+                    }
+                    
+                    Text(
+                        text = weatherIcon,
+                        fontSize = 48.sp,
+                        modifier = Modifier.size(60.dp)
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(12.dp))
+                
+                // Compact weather details
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    CompactWeatherDetail(
+                        label = "Humidity",
+                        value = "${weatherData.humidity}%",
+                        icon = "💧"
+                    )
+                    CompactWeatherDetail(
+                        label = "Wind",
+                        value = "${weatherData.windSpeed.roundToInt()}m/s",
+                        icon = "💨"
+                    )
+                    CompactWeatherDetail(
+                        label = "Feels",
+                        value = "${weatherData.feelsLike.roundToInt()}°C",
+                        icon = "🌡️"
+                    )
+                    CompactWeatherDetail(
+                        label = "Visibility",
+                        value = "${(weatherData.visibility / 1000.0).roundToInt()}km",
+                        icon = "👁️"
+                    )
+                }
+            } else {
+                Text(
+                    text = "No weather data available",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = RainyGray,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CompactWeatherDetail(
+    label: String,
+    value: String,
+    icon: String
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = icon,
+            fontSize = 14.sp
+        )
+        Spacer(modifier = Modifier.height(2.dp))
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.Medium
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = RainyGray,
+            fontSize = 10.sp
+        )
+    }
+}
+
+@Composable
+fun CompactScorePointsCard(
+    score: Float,
+    reasoning: String,
+    totalPoints: Int,
+    dailyPoints: Int,
+    isNewPointsEarned: Boolean,
+    pointsScale: Float
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .scale(pointsScale),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isNewPointsEarned) 
+                SunYellow.copy(alpha = 0.1f) 
+            else 
+                WeatherCardBackground
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (isNewPointsEarned) 8.dp else 4.dp
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            // Header
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "🎯 AI Score & Points",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
+                
+                val level = (totalPoints / 1000) + 1
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = SunYellow.copy(alpha = 0.2f)
+                ) {
+                    Text(
+                        text = "Lv.$level",
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold,
+                        color = SunYellow,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
             }
-        }
-    }
-}
-
-@Composable
-fun ErrorWeatherCard(
-    error: String,
-    onRetry: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = WeatherCardBackground
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                imageVector = Icons.Default.Error,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(60.dp)
-            )
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             
-            Text(
-                text = stringResource(R.string.error_title),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.error
-            )
-            
-            Text(
-                text = error,
-                style = MaterialTheme.typography.bodyMedium,
-                color = RainyGray,
-                textAlign = TextAlign.Center
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Button(
-                onClick = onRetry,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
+            // Score and Points Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = stringResource(R.string.retry),
-                    color = Color.White
-                )
+                // Score section
+                Column {
+                    val scoreColor = when {
+                        score >= 90 -> CompatibilityGreen
+                        score >= 70 -> SunYellow
+                        score >= 50 -> Color(0xFFFF9800)
+                        else -> Color(0xFFE57373)
+                    }
+                    
+                    Row(verticalAlignment = Alignment.Bottom) {
+                        Text(
+                            text = "${score.roundToInt()}",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = scoreColor
+                        )
+                        Text(
+                            text = "%",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = scoreColor.copy(alpha = 0.7f)
+                        )
+                    }
+                    Text(
+                        text = "Compatibility",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = RainyGray
+                    )
+                }
+                
+                // Points section
+                Column(horizontalAlignment = Alignment.End) {
+                    Row(verticalAlignment = Alignment.Bottom) {
+                        Text(
+                            text = "$totalPoints",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = SunYellow
+                        )
+                        if (dailyPoints > 0) {
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "+$dailyPoints",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = CompatibilityGreen
+                            )
+                        }
+                    }
+                    Text(
+                        text = "Total Points",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = RainyGray
+                    )
+                }
             }
-        }
-    }
-}
-
-@Composable
-fun LoadingWeatherCard() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = WeatherCardBackground
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(60.dp),
-                color = MaterialTheme.colorScheme.primary,
-                strokeWidth = 4.dp
-            )
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             
+            // Reasoning
             Text(
-                text = stringResource(R.string.loading),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            
-            Text(
-                text = stringResource(R.string.getting_weather_data),
-                style = MaterialTheme.typography.bodyMedium,
-                color = RainyGray
+                text = reasoning,
+                style = MaterialTheme.typography.bodySmall,
+                color = RainyGray,
+                maxLines = 2
             )
         }
     }
