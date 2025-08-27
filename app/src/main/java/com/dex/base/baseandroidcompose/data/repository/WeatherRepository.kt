@@ -37,6 +37,9 @@ class WeatherRepository {
                 
                 // Fetch from API
                 Logger.d("Fetching weather data for city: $cityName")
+                Logger.d("Sending city name to API: '$cityName'")
+                Logger.d("API URL parameters - cityName: $cityName, apiKey: ${WeatherApiService.API_KEY.take(8)}..., units: metric, lang: vi")
+                
                 val response = apiService.getCurrentWeatherByCity(
                     cityName = cityName,
                     apiKey = WeatherApiService.API_KEY

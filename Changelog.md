@@ -1,6 +1,40 @@
 # Changelog
 
+## [2025-08-27] - Weather Loading & Error States Implementation
+
+### Added
+- ✅ **LoadingWeatherCard**: Hiển thị trạng thái loading với CircularProgressIndicator và text "Loading..." + "Getting weather data"
+- ✅ **ErrorWeatherCard**: Hiển thị thông báo lỗi với icon error và nút "Retry" khi API thất bại
+- ✅ **Enhanced Weather State Management**: Cải thiện logic xử lý trạng thái loading, error và success trong WeatherHomeScreen
+- ✅ **String Resources**: Thêm các chuỗi "loading", "getting_weather_data", "error_title", "retry" vào strings.xml
+- ✅ **Debug Logging**: Thêm các log debug vào WeatherViewModel để theo dõi luồng dữ liệu
+
+### Fixed
+- ✅ **Smart Cast Error**: Sửa lỗi Kotlin smart cast với uiState.error trong ErrorWeatherCard
+- ✅ **Duplicate String Resources**: Loại bỏ các chuỗi trùng lặp trong strings.xml
+- ✅ **Build Issues**: Khắc phục các lỗi compilation và resource merging
+
+### Technical Details
+- Sử dụng `when` expression để xử lý các trạng thái UI khác nhau
+- Implement proper error handling với fallback "Unknown error"
+- Tích hợp refreshWeather() function cho retry mechanism
+- Tuân thủ Material Design 3 guidelines cho UI components
+
 ## [Latest] - 2024-12-19
+
+### Fixed - Location Storage Bug
+- ✅ **User Location Storage Fix**: Sửa lỗi lưu trữ và hiển thị địa điểm người dùng
+  - **Problem**: App tự động gán country = "Vietnam" cho mọi location, không phù hợp với user ở nước khác
+  - **Root Cause**: Hard-coded country và default location trong UserProfile creation
+  - **Solution**: 
+    - Removed hard-coded country assignment, chỉ lưu city name mà user nhập
+    - Updated Location object: country = "", latitude/longitude = 0.0, timezone = ""
+    - Fixed display logic để tránh hiển thị dấu phẩy thừa khi country rỗng
+  - **Changes**:
+    - UserProfileScreen.kt: Modified Location creation logic
+    - WeatherHomeScreen.kt: Updated location display với conditional formatting
+    - Smart display: "City, Country" nếu có country, chỉ "City" nếu country rỗng
+  - **Benefits**: Accurate location storage, flexible international support, clean UI display
 
 ### Enhanced - Weather Location Integration
 - ✅ **Dynamic Weather Location Display**: Tích hợp hiển thị địa chỉ từ dữ liệu người dùng

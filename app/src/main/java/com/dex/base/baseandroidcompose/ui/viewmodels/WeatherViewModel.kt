@@ -45,6 +45,7 @@ class WeatherViewModel @Inject constructor(
                 
                 weatherResult.fold(
                     onSuccess = { weatherData ->
+                        Logger.d("WeatherViewModel: Weather data received successfully: ${weatherData.location}")
                         Logger.d("Weather data received successfully: $weatherData")
                         
                         val userProfile = _userProfile.value
@@ -81,6 +82,7 @@ class WeatherViewModel @Inject constructor(
                             dailyInsights = insights,
                             error = null
                         )
+                        Logger.d("WeatherViewModel: UI state updated successfully, isLoading = false")
                         Logger.d("UI State updated with weather data successfully")
                     },
                     onFailure = { exception ->
@@ -112,10 +114,13 @@ class WeatherViewModel @Inject constructor(
     
     fun loadWeatherByCoordinates(lat: Double, lon: Double) {
         viewModelScope.launch {
+            Logger.d("WeatherViewModel: Starting loadWeatherByCoordinates for lat=$lat, lon=$lon")
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            Logger.d("WeatherViewModel: Set isLoading = true")
             
             try {
                 val weatherResult = weatherRepository.getCurrentWeatherByCoordinates(lat, lon)
+                Logger.d("WeatherViewModel: Got weather result from repository")
                 weatherResult.fold(
                     onSuccess = { weatherData ->
                         val userProfile = _userProfile.value
@@ -151,10 +156,12 @@ class WeatherViewModel @Inject constructor(
                         )
                     },
                     onFailure = { exception ->
+                        Logger.e("WeatherViewModel: Failed to load weather data: ${exception.message}")
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
                             error = exception.message ?: "Failed to load weather data"
                         )
+                        Logger.d("WeatherViewModel: UI state updated with error, isLoading = false")
                     }
                 )
                 
@@ -185,13 +192,27 @@ class WeatherViewModel @Inject constructor(
             
             // Load weather data based on user location
             if (profile != null) {
-                // Load weather for user's location
-                loadWeatherByCoordinates(
-                    lat = profile.location.latitude,
-                    lon = profile.location.longitude
-                )
+                Logger.d("User profile found: city=${profile.location.city}, lat=${profile.location.latitude}, lon=${profile.location.longitude}")
+                // Check if we have valid coordinates or use city name
+                if (profile.location.latitude != 0.0 && profile.location.longitude != 0.0) {
+                    // Load weather by coordinates if available
+                    Logger.d("Loading weather by coordinates: lat=${profile.location.latitude}, lon=${profile.location.longitude}")
+                    loadWeatherByCoordinates(
+                        lat = profile.location.latitude,
+                        lon = profile.location.longitude
+                    )
+                } else if (profile.location.city.isNotBlank()) {
+                    // Load weather by city name if coordinates are not available
+                    Logger.d("Loading weather by city name: ${profile.location.city}")
+                    loadWeatherData(profile.location.city)
+                } else {
+                    // Fallback to default location
+                    Logger.d("No valid location data, using default: Hanoi")
+                    loadWeatherData("Hanoi")
+                }
             } else {
                 // Load default location if no user profile
+                Logger.d("No user profile found, using default location: Hanoi")
                 loadWeatherData("Hanoi")
             }
             

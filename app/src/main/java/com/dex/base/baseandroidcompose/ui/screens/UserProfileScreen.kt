@@ -118,11 +118,11 @@ fun UserProfileScreen(
                         id = userProfile?.id ?: UUID.randomUUID().toString(),
                         age = ageInt,
                         location = Location(
-                            city = location.ifBlank { "Ho Chi Minh City" },
-                            country = "Vietnam",
-                            latitude = 10.8231,
-                            longitude = 106.6297,
-                            timezone = "Asia/Ho_Chi_Minh"
+                            city = location.ifBlank { "" },
+                            country = "",
+                            latitude = 0.0,
+                            longitude = 0.0,
+                            timezone = ""
                         ),
                         occupation = selectedOccupation,
                         preferences = userProfile?.preferences ?: WeatherPreferences(),
@@ -342,7 +342,11 @@ fun ProfileDataCard(
             ProfileInfoRow(
                 icon = Icons.Default.LocationOn,
                 label = stringResource(R.string.location),
-                value = "${userProfile.location.city}, ${userProfile.location.country}",
+                value = if (userProfile.location.country.isNotBlank()) {
+                    "${userProfile.location.city}, ${userProfile.location.country}"
+                } else {
+                    userProfile.location.city
+                },
                 iconColor = MaterialTheme.colorScheme.tertiary
             )
         }

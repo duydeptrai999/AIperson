@@ -1,5 +1,91 @@
 # Help.md - Hướng dẫn sử dụng tính năng
 
+## Weather Loading & Error States (2025-08-27)
+
+### Tính năng Loading State
+**Mô tả**: Hiển thị trạng thái loading khi ứng dụng đang tải dữ liệu thời tiết từ API
+
+**Cách hoạt động**:
+- Khi `uiState.isLoading = true`, `LoadingWeatherCard` sẽ được hiển thị
+- Card chứa CircularProgressIndicator và text "Loading..." + "Getting weather data"
+- Sử dụng Material Design 3 với WeatherCardBackground color
+- Tự động ẩn khi dữ liệu được tải xong
+
+**UI Components**:
+- `LoadingWeatherCard()`: Composable hiển thị loading state
+- Sử dụng string resources từ `strings.xml`
+
+### Tính năng Error Handling
+**Mô tả**: Xử lý và hiển thị lỗi khi API thời tiết thất bại
+
+**Cách hoạt động**:
+- Khi `uiState.error != null`, `ErrorWeatherCard` sẽ được hiển thị
+- Card chứa icon error, thông báo lỗi và nút "Retry"
+- Người dùng có thể nhấn "Retry" để thử tải lại dữ liệu
+- Sử dụng fallback "Unknown error" nếu error message null
+
+**UI Components**:
+- `ErrorWeatherCard(error: String, onRetry: () -> Unit)`: Composable hiển thị error state
+- Tích hợp với `viewModel.refreshWeather()` function
+- Material Design 3 styling với proper elevation và colors
+
+### State Management Logic
+**Cấu trúc**:
+```kotlin
+when {
+    uiState.isLoading -> LoadingWeatherCard()
+    uiState.error != null -> ErrorWeatherCard(...)
+    else -> CurrentWeatherCard(...)
+}
+```
+
+**Flow**:
+1. **Loading**: API call bắt đầu → `isLoading = true` → Hiển thị LoadingWeatherCard
+2. **Success**: API trả về data → `isLoading = false, error = null` → Hiển thị CurrentWeatherCard
+3. **Error**: API thất bại → `isLoading = false, error = message` → Hiển thị ErrorWeatherCard
+4. **Retry**: User nhấn retry → Quay lại step 1
+
+### String Resources
+**Các chuỗi đã thêm**:
+- `loading`: "Loading..."
+- `getting_weather_data`: "Getting weather data"
+- `error_title`: "Error"
+- `retry`: "Retry"
+
+**Sử dụng**: `stringResource(R.string.loading)` trong Composable functions
+
+---
+
+## 📍 User Location Storage - Lưu trữ địa điểm người dùng linh hoạt
+
+### Mô tả tính năng
+Tính năng lưu trữ địa điểm người dùng đã được cải tiến để hỗ trợ linh hoạt người dùng ở bất kỳ quốc gia nào. Hệ thống không còn tự động gán country mặc định mà chỉ lưu thông tin city mà người dùng nhập vào.
+
+### Cách hoạt động
+
+**1. Flexible Location Input**:
+- User chỉ cần nhập tên thành phố trong trường "Location"
+- Hệ thống không tự động gán country = "Vietnam" nữa
+- Location object được tạo với: city = user_input, country = "", coordinates = 0.0
+
+**2. Smart Display Logic**:
+- Nếu có country: hiển thị "City, Country"
+- Nếu không có country: chỉ hiển thị "City"
+- Tránh hiển thị dấu phẩy thừa khi country rỗng
+
+**3. International Support**:
+- Phù hợp với người dùng ở bất kỳ quốc gia nào
+- Không bị ràng buộc vào một quốc gia cụ thể
+- Clean UI display cho mọi trường hợp
+
+### Benefits cho người dùng
+- **Flexible Input**: Chỉ cần nhập tên thành phố, không bị ép buộc country
+- **International Friendly**: Phù hợp với user ở mọi quốc gia
+- **Clean Display**: UI hiển thị gọn gàng, không có thông tin thừa
+- **Accurate Storage**: Lưu đúng thông tin mà user muốn
+
+---
+
 ## 🌤️ Weather Location Integration - Tích hợp địa chỉ người dùng với thời tiết
 
 ### Mô tả tính năng

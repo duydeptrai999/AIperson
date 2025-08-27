@@ -57,7 +57,7 @@ data class Clouds(
 data class Sys(
     @SerializedName("type") val type: Int? = null,
     @SerializedName("id") val id: Int? = null,
-    @SerializedName("country") val country: String,
+    @SerializedName("country") val country: String? = null,
     @SerializedName("sunrise") val sunrise: Long,
     @SerializedName("sunset") val sunset: Long
 )
@@ -86,7 +86,7 @@ data class WeatherData(
         fun fromWeatherResponse(response: WeatherResponse): WeatherData {
             return WeatherData(
                 location = response.name,
-                country = response.sys.country,
+                country = response.sys.country ?: "Unknown",
                 temperature = response.main.temp,
                 feelsLike = response.main.feelsLike,
                 description = response.weather.firstOrNull()?.description ?: "",

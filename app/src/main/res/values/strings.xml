@@ -2,6 +2,7 @@
     <string name="app_name">BaseAndroidCompose</string>
     <string name="app_display_name">Base Android Compose</string>
     <string name="loading">Loading...</string>
+    <string name="getting_weather_data">Getting weather data</string>
     <string name="ads_disclaimer">This action may contain ads</string>
 
     <string name="please_watch_ad_to_get_result">Please watch ad to get result!</string>
@@ -19,6 +20,7 @@
     <string name="retry">Retry</string>
     <string name="processing">Processing...</string>
     <string name="coming_soon">Coming soon!</string>
+    <string name="unknown_country">Unknown</string>
     <string name="camera_permission_is_needed_to_take_photos">Camera permission is needed to take photos</string>
     <string name="no_internet_title">No Internet Connection</string>
     <string name="no_internet_message">This app requires an internet connection. Please check your internet connection and try again.</string>

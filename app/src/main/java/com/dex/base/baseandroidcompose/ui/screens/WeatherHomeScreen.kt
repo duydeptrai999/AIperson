@@ -160,10 +160,23 @@ fun WeatherHomeScreen(
             
             // Current Weather Card
             item {
-                CurrentWeatherCard(
-                    weatherData = uiState.weatherData,
-                    onNavigateToDetails = onNavigateToDetail
-                )
+                when {
+                    uiState.isLoading -> {
+                        LoadingWeatherCard()
+                    }
+                    uiState.error != null -> {
+                        ErrorWeatherCard(
+                            error = uiState.error ?: "Unknown error",
+                            onRetry = { viewModel.refreshWeather() }
+                        )
+                    }
+                    else -> {
+                        CurrentWeatherCard(
+                            weatherData = uiState.weatherData,
+                            onNavigateToDetails = onNavigateToDetail
+                        )
+                    }
+                }
             }
             
             // Enhanced Compatibility Score Card
@@ -364,7 +377,11 @@ fun LocationCard(
                 )
                 Text(
                     text = if (userProfile != null) {
-                        "${userProfile.location.city}, ${userProfile.location.country}"
+                        if (userProfile.location.country.isNotBlank()) {
+                                "${userProfile.location.city}, ${userProfile.location.country}"
+                            } else {
+                                userProfile.location.city
+                            }
                     } else {
                         "Ho Chi Minh City, Vietnam" // Default fallback
                     },
@@ -373,6 +390,107 @@ fun LocationCard(
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun ErrorWeatherCard(
+    error: String,
+    onRetry: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = WeatherCardBackground
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = Icons.Default.Error,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier.size(60.dp)
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(
+                text = stringResource(R.string.error_title),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.error
+            )
+            
+            Text(
+                text = error,
+                style = MaterialTheme.typography.bodyMedium,
+                color = RainyGray,
+                textAlign = TextAlign.Center
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Button(
+                onClick = onRetry,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Text(
+                    text = stringResource(R.string.retry),
+                    color = Color.White
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun LoadingWeatherCard() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = WeatherCardBackground
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(60.dp),
+                color = MaterialTheme.colorScheme.primary,
+                strokeWidth = 4.dp
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(
+                text = stringResource(R.string.loading),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            
+            Text(
+                text = stringResource(R.string.getting_weather_data),
+                style = MaterialTheme.typography.bodyMedium,
+                color = RainyGray
+            )
         }
     }
 }

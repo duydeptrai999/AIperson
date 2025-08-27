@@ -1,3 +1,30 @@
+# Codebase Structure
+
+This document provides an overview of the codebase structure and main components.
+
+## Recent Updates (2025-08-27)
+
+### UI/Screens Module
+- **WeatherHomeScreen.kt** (Enhanced State Management)
+  - `LoadingWeatherCard()`: Hiển thị loading state với CircularProgressIndicator
+  - `ErrorWeatherCard(error: String, onRetry: () -> Unit)`: Xử lý error state với retry functionality
+  - Enhanced `when` logic cho state management (loading/error/success)
+  - Improved error handling với smart cast resolution
+
+### Resources Module
+- **strings.xml** (Updated String Resources)
+  - `loading`: "Loading..."
+  - `getting_weather_data`: "Getting weather data"
+  - `error_title`: "Error"
+  - `retry`: "Retry"
+  - Removed duplicate string entries
+
+### ViewModels Module
+- **WeatherViewModel.kt** (Enhanced Debugging)
+  - Added comprehensive logging trong `loadWeatherByCoordinates()`
+  - Debug tracking cho data flow và state updates
+  - Improved error handling và state management
+
 ## Core Architecture
 
 ### Unified SplashActivity
@@ -50,4 +77,4 @@
 - **Methods**:
   - **setRefreshCallback()**: Set callback function để refresh native ad
   - **showNewNativeAd()**: Trigger refresh native ad mới
-- **Usage**: Được sử dụng trong IntroScreen để refresh native ad khi slide thay đổi 
+- **Usage**: Được sử dụng trong IntroScreen để refresh native ad khi slide thay đổi
