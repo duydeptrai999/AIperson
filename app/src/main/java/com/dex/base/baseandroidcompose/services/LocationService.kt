@@ -2,8 +2,11 @@ package com.dex.base.baseandroidcompose.services
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.os.Looper
+import java.util.Locale
 import com.dex.base.baseandroidcompose.utils.LocationPermissionHandler
 import com.dex.base.baseandroidcompose.utils.Logger
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -16,6 +19,8 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -35,6 +40,10 @@ class LocationService(private val context: Context) {
     
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(context)
+    }
+    
+    private val geocoder: Geocoder by lazy {
+        Geocoder(context, Locale.getDefault())
     }
     
     private var locationCallback: LocationCallback? = null
@@ -270,6 +279,136 @@ class LocationService(private val context: Context) {
     }
     
     /**
+     * Chuyển đổi địa chỉ thành tọa độ GPS (Geocoding)
+     * @param address Địa chỉ cần chuyển đổi
+     * @param maxResults Số lượng kết quả tối đa (default: 1)
+     * @return Pair<latitude, longitude> hoặc null nếu không tìm thấy
+     */
+    suspend fun getCoordinatesFromAddress(
+        address: String,
+        maxResults: Int = 1
+    ): Pair<Double, Double>? {
+        if (address.isBlank()) {
+            Logger.e("Address is empty")
+            return null
+        }
+        
+        return withContext(Dispatchers.IO) {
+            try {
+                if (!Geocoder.isPresent()) {
+                    Logger.e("Geocoder is not available on this device")
+                    return@withContext null
+                }
+                
+                val addresses = geocoder.getFromLocationName(address, maxResults)
+                if (addresses?.isNotEmpty() == true) {
+                    val location = addresses[0]
+                    val lat = location.latitude
+                    val lng = location.longitude
+                    Logger.d("Geocoding success: $address -> ($lat, $lng)")
+                    Pair(lat, lng)
+                } else {
+                    Logger.w("No coordinates found for address: $address")
+                    null
+                }
+            } catch (e: Exception) {
+                Logger.e("Geocoding error: ${e.message}")
+                null
+            }
+        }
+    }
+    
+    /**
+     * Chuyển đổi tọa độ GPS thành địa chỉ (Reverse Geocoding)
+     * @param latitude Vĩ độ
+     * @param longitude Kinh độ
+     * @param maxResults Số lượng kết quả tối đa (default: 1)
+     * @return Địa chỉ đầy đủ hoặc null nếu không tìm thấy
+     */
+    suspend fun getAddressFromCoordinates(
+        latitude: Double,
+        longitude: Double,
+        maxResults: Int = 1
+    ): String? {
+        return withContext(Dispatchers.IO) {
+            try {
+                if (!Geocoder.isPresent()) {
+                    Logger.e("Geocoder is not available on this device")
+                    return@withContext null
+                }
+                
+                val addresses = geocoder.getFromLocation(latitude, longitude, maxResults)
+                if (addresses?.isNotEmpty() == true) {
+                    val address = addresses[0]
+                    val fullAddress = address.getAddressLine(0) ?: buildAddressString(address)
+                    Logger.d("Reverse geocoding success: ($latitude, $longitude) -> $fullAddress")
+                    fullAddress
+                } else {
+                    Logger.w("No address found for coordinates: ($latitude, $longitude)")
+                    null
+                }
+            } catch (e: Exception) {
+                Logger.e("Reverse geocoding error: ${e.message}")
+                null
+            }
+        }
+    }
+    
+    /**
+     * Lấy thông tin địa chỉ chi tiết từ tọa độ
+     * @param latitude Vĩ độ
+     * @param longitude Kinh độ
+     * @return AddressInfo object chứa thông tin chi tiết
+     */
+    suspend fun getDetailedAddressFromCoordinates(
+        latitude: Double,
+        longitude: Double
+    ): AddressInfo? {
+        return withContext(Dispatchers.IO) {
+            try {
+                if (!Geocoder.isPresent()) {
+                    Logger.e("Geocoder is not available on this device")
+                    return@withContext null
+                }
+                
+                val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+                if (addresses?.isNotEmpty() == true) {
+                    val address = addresses[0]
+                    AddressInfo(
+                        fullAddress = address.getAddressLine(0) ?: buildAddressString(address),
+                        street = address.thoroughfare ?: "",
+                        city = address.locality ?: address.subLocality ?: "",
+                        state = address.adminArea ?: "",
+                        country = address.countryName ?: "",
+                        postalCode = address.postalCode ?: "",
+                        latitude = latitude,
+                        longitude = longitude
+                    )
+                } else {
+                    null
+                }
+            } catch (e: Exception) {
+                Logger.e("Detailed reverse geocoding error: ${e.message}")
+                null
+            }
+        }
+    }
+    
+    /**
+     * Xây dựng chuỗi địa chỉ từ Address object
+     */
+    private fun buildAddressString(address: Address): String {
+        val parts = mutableListOf<String>()
+        
+        address.thoroughfare?.let { parts.add(it) }
+        address.locality?.let { parts.add(it) }
+        address.adminArea?.let { parts.add(it) }
+        address.countryName?.let { parts.add(it) }
+        
+        return parts.joinToString(", ")
+    }
+    
+    /**
      * Cleanup resources
      */
     fun cleanup() {
@@ -288,5 +427,36 @@ data class LocationResult(
     companion object {
         fun success(location: Location) = LocationResult(location, null, true)
         fun error(message: String) = LocationResult(null, message, false)
+    }
+}
+
+/**
+ * Data class chứa thông tin địa chỉ chi tiết
+ */
+data class AddressInfo(
+    val fullAddress: String,
+    val street: String,
+    val city: String,
+    val state: String,
+    val country: String,
+    val postalCode: String,
+    val latitude: Double,
+    val longitude: Double
+) {
+    /**
+     * Lấy địa chỉ ngắn gọn (thành phố, quốc gia)
+     */
+    fun getShortAddress(): String {
+        val parts = mutableListOf<String>()
+        if (city.isNotBlank()) parts.add(city)
+        if (country.isNotBlank()) parts.add(country)
+        return parts.joinToString(", ")
+    }
+    
+    /**
+     * Kiểm tra xem địa chỉ có hợp lệ không
+     */
+    fun isValid(): Boolean {
+        return fullAddress.isNotBlank() && latitude != 0.0 && longitude != 0.0
     }
 }

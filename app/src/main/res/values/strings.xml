@@ -96,4 +96,19 @@
     <string name="location_error_message">Could not determine your current location. Please check your GPS settings and try again.</string>
     <string name="location_timeout">Location request timed out</string>
     <string name="location_unavailable">Location service unavailable</string>
+    
+    <!-- Validation Messages -->
+    <string name="validation_error_title">Please Complete Your Profile</string>
+    <string name="validation_age_required">Age is required</string>
+    <string name="validation_location_required">Location is required</string>
+    <string name="validation_age_invalid">Please enter a valid age (1-120)</string>
+    <string name="validation_complete_all_fields">Please fill in all required fields to save your profile</string>
+    <string name="validation_age_hint">Enter age between 1-120</string>
+    <string name="validation_location_hint">Enter your city or use GPS</string>
+    
+    <!-- Geocoding Strings -->
+    <string name="enter_location_or_address">Enter location or address</string>
+    <string name="search_address">Search address</string>
+    <string name="geocoding_failed">Could not convert location to address</string>
+    <string name="address_not_found">Address not found. Please try a different address.</string>
 </resources>

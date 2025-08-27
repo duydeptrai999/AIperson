@@ -70,6 +70,11 @@ fun UserProfileScreen(
     var selectedOccupation by remember { mutableStateOf(Occupation.OFFICE_WORKER) }
     var location by remember { mutableStateOf("") }
     
+    // Validation states
+    var ageError by remember { mutableStateOf<String?>(null) }
+    var locationError by remember { mutableStateOf<String?>(null) }
+    var showValidationError by remember { mutableStateOf(false) }
+    
     // Animation states
     val animatedVisibilityState = remember { MutableTransitionState(false) }
     animatedVisibilityState.targetState = true
@@ -81,7 +86,40 @@ fun UserProfileScreen(
             selectedOccupation = profile.occupation
             location = profile.location.city
             isEditMode = false // Reset edit mode when profile loads
+            // Clear validation errors when profile loads
+            ageError = null
+            locationError = null
+            showValidationError = false
         }
+    }
+    
+    // Validation function
+    fun validateForm(): Boolean {
+        var isValid = true
+        
+        // Validate age
+        if (age.isBlank()) {
+            ageError = "Age is required"
+            isValid = false
+        } else {
+            val ageInt = age.toIntOrNull()
+            if (ageInt == null || ageInt < 1 || ageInt > 120) {
+                ageError = "Please enter a valid age (1-120)"
+                isValid = false
+            } else {
+                ageError = null
+            }
+        }
+        
+        // Validate location
+        if (location.isBlank()) {
+            locationError = "Location is required"
+            isValid = false
+        } else {
+            locationError = null
+        }
+        
+        return isValid
     }
     
     // Determine if we have existing profile
@@ -121,93 +159,117 @@ fun UserProfileScreen(
             // Edit/Create Form
             ProfileEditForm(
                 age = age,
-                onAgeChange = { age = it },
+                onAgeChange = { 
+                    age = it
+                    // Clear age error when user starts typing
+                    if (ageError != null) ageError = null
+                    if (showValidationError) showValidationError = false
+                },
                 selectedOccupation = selectedOccupation,
                 onOccupationChange = { selectedOccupation = it },
                 location = location,
-                onLocationChange = { location = it },
+                onLocationChange = { 
+                    location = it
+                    // Clear location error when user starts typing
+                    if (locationError != null) locationError = null
+                    if (showValidationError) showValidationError = false
+                },
                 hasExistingProfile = hasExistingProfile,
                 isLoading = isLoading,
+                ageError = ageError,
+                locationError = locationError,
+                showValidationError = showValidationError,
                 onSave = {
-                    val ageInt = age.toIntOrNull() ?: 25
-                
-                // Check if location contains coordinates (lat, lng format)
-                if (location.contains(",") && location.split(",").size == 2) {
-                    try {
-                        val coords = location.split(",")
-                        val lat = coords[0].trim().toDouble()
-                        val lng = coords[1].trim().toDouble()
+                    if (validateForm()) {
+                        val ageInt = age.toInt()
                         
-                        if (userProfile != null) {
-                            // Update existing profile with GPS coordinates
-                            userViewModel.updateUserLocation(lat, lng)
+                        // Check if location contains coordinates (lat, lng format)
+                        if (location.contains(",") && location.split(",").size == 2) {
+                            try {
+                                val coords = location.split(",")
+                                val lat = coords[0].trim().toDouble()
+                                val lng = coords[1].trim().toDouble()
+                                
+                                if (userProfile != null) {
+                                    // Update existing profile with GPS coordinates
+                                    userViewModel.updateUserLocation(lat, lng)
+                                } else {
+                                    // Create new profile with GPS coordinates
+                                    userViewModel.createUserProfileWithLocation(
+                                        age = ageInt,
+                                        occupation = selectedOccupation,
+                                        latitude = lat,
+                                        longitude = lng
+                                    )
+                                }
+                            } catch (e: NumberFormatException) {
+                                // Fallback to city name if coordinates parsing fails
+                                if (userProfile != null) {
+                                    userViewModel.updateUserLocationCity(location)
+                                } else {
+                                    val newProfile = UserProfile(
+                                        id = UUID.randomUUID().toString(),
+                                        age = ageInt,
+                                        location = Location(
+                                            city = location.ifBlank { "" },
+                                            country = "",
+                                            latitude = 0.0,
+                                            longitude = 0.0,
+                                            timezone = ""
+                                        ),
+                                        occupation = selectedOccupation,
+                                        preferences = WeatherPreferences(),
+                                        pointBalance = 0,
+                                        totalPointsEarned = 0,
+                                        level = 1,
+                                        createdAt = System.currentTimeMillis(),
+                                        lastUpdated = System.currentTimeMillis()
+                                    )
+                                    userViewModel.saveUserProfile(newProfile)
+                                }
+                            }
                         } else {
-                            // Create new profile with GPS coordinates
-                            userViewModel.createUserProfileWithLocation(
-                                age = ageInt,
-                                occupation = selectedOccupation,
-                                latitude = lat,
-                                longitude = lng
-                            )
+                            // Handle city name input
+                            if (userProfile != null) {
+                                userViewModel.updateUserLocationCity(location)
+                            } else {
+                                val newProfile = UserProfile(
+                                    id = UUID.randomUUID().toString(),
+                                    age = ageInt,
+                                    location = Location(
+                                        city = location.ifBlank { "" },
+                                        country = "",
+                                        latitude = 0.0,
+                                        longitude = 0.0,
+                                        timezone = ""
+                                    ),
+                                    occupation = selectedOccupation,
+                                    preferences = WeatherPreferences(),
+                                    pointBalance = 0,
+                                    totalPointsEarned = 0,
+                                    level = 1,
+                                    createdAt = System.currentTimeMillis(),
+                                    lastUpdated = System.currentTimeMillis()
+                                )
+                                userViewModel.saveUserProfile(newProfile)
+                            }
                         }
-                    } catch (e: NumberFormatException) {
-                        // Fallback to city name if coordinates parsing fails
-                        if (userProfile != null) {
-                            userViewModel.updateUserLocationCity(location)
-                        } else {
-                            val newProfile = UserProfile(
-                                id = UUID.randomUUID().toString(),
-                                age = ageInt,
-                                location = Location(
-                                    city = location.ifBlank { "" },
-                                    country = "",
-                                    latitude = 0.0,
-                                    longitude = 0.0,
-                                    timezone = ""
-                                ),
-                                occupation = selectedOccupation,
-                                preferences = WeatherPreferences(),
-                                pointBalance = 0,
-                                totalPointsEarned = 0,
-                                level = 1,
-                                createdAt = System.currentTimeMillis(),
-                                lastUpdated = System.currentTimeMillis()
-                            )
-                            userViewModel.saveUserProfile(newProfile)
+                        if (!hasExistingProfile) {
+                            onProfileSaved()
                         }
-                    }
-                } else {
-                    // Handle city name input
-                    if (userProfile != null) {
-                        userViewModel.updateUserLocationCity(location)
                     } else {
-                        val newProfile = UserProfile(
-                            id = UUID.randomUUID().toString(),
-                            age = ageInt,
-                            location = Location(
-                                city = location.ifBlank { "" },
-                                country = "",
-                                latitude = 0.0,
-                                longitude = 0.0,
-                                timezone = ""
-                            ),
-                            occupation = selectedOccupation,
-                            preferences = WeatherPreferences(),
-                            pointBalance = 0,
-                            totalPointsEarned = 0,
-                            level = 1,
-                            createdAt = System.currentTimeMillis(),
-                            lastUpdated = System.currentTimeMillis()
-                        )
-                        userViewModel.saveUserProfile(newProfile)
-                    }
-                }
-                    if (!hasExistingProfile) {
-                        onProfileSaved()
+                        // Show validation error
+                        showValidationError = true
                     }
                 },
                 onCancel = if (hasExistingProfile) {
-                    { isEditMode = false }
+                    { 
+                        isEditMode = false
+                        // Clear validation errors when canceling
+                        ageError = null
+                        locationError = null
+                        showValidationError = false
+                    }
                 } else null
             )
         } else {
@@ -275,6 +337,10 @@ fun LocationInputWithGPS(
     var showGpsDialog by remember { mutableStateOf(false) }
     var showPermissionDeniedDialog by remember { mutableStateOf(false) }
     var showLocationLoadingDialog by remember { mutableStateOf(false) }
+    var showGeocodingLoadingDialog by remember { mutableStateOf(false) }
+    
+    // Geocoding states
+    var geocodingError by remember { mutableStateOf<String?>(null) }
     
     // Permission launcher
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -291,8 +357,22 @@ fun LocationInputWithGPS(
                     locationService = locationService,
                     onLocationReceived = { lat, lng ->
                         showLocationLoadingDialog = false
-                        // Convert coordinates to city name (simplified)
-                        onLocationChange("$lat, $lng")
+                        // Use reverse geocoding to get address from coordinates
+                        scope.launch {
+                            showGeocodingLoadingDialog = true
+                            geocodingError = null
+                            
+                            val address = locationService.getAddressFromCoordinates(lat, lng)
+                            showGeocodingLoadingDialog = false
+                            
+                            if (address != null) {
+                                onLocationChange(address)
+                            } else {
+                                // Fallback to coordinates if geocoding fails
+                                onLocationChange("$lat, $lng")
+                                geocodingError = context.getString(R.string.geocoding_failed)
+                            }
+                        }
                     },
                     onGpsDisabled = {
                         showLocationLoadingDialog = false
@@ -314,9 +394,12 @@ fun LocationInputWithGPS(
         // Location Input Field
         OutlinedTextField(
             value = location,
-            onValueChange = onLocationChange,
+            onValueChange = { newValue ->
+                onLocationChange(newValue)
+                geocodingError = null // Clear error when user types
+            },
             label = { Text(stringResource(R.string.location)) },
-            placeholder = { Text(stringResource(R.string.enter_location)) },
+            placeholder = { Text(stringResource(R.string.enter_location_or_address)) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.LocationOn,
@@ -324,10 +407,55 @@ fun LocationInputWithGPS(
                     tint = MaterialTheme.colorScheme.tertiary
                 )
             },
+            trailingIcon = {
+                // Geocoding button - convert address to coordinates
+                IconButton(
+                    onClick = {
+                        if (location.isNotBlank() && !location.contains(",")) {
+                            // Only geocode if it looks like an address (not coordinates)
+                            scope.launch {
+                                showGeocodingLoadingDialog = true
+                                geocodingError = null
+                                
+                                val coordinates = locationService.getCoordinatesFromAddress(location)
+                                showGeocodingLoadingDialog = false
+                                
+                                if (coordinates != null) {
+                                    // Get address back to ensure consistency
+                                    val address = locationService.getAddressFromCoordinates(
+                                        coordinates.first, 
+                                        coordinates.second
+                                    )
+                                    onLocationChange(address ?: "${coordinates.first}, ${coordinates.second}")
+                                } else {
+                                    geocodingError = context.getString(R.string.address_not_found)
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(R.string.search_address),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
+            isError = geocodingError != null
         )
+        
+        // Show geocoding error if any
+        geocodingError?.let { error ->
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
         
         Spacer(modifier = Modifier.height(12.dp))
         
@@ -350,7 +478,22 @@ fun LocationInputWithGPS(
                                 locationService = locationService,
                                 onLocationReceived = { lat, lng ->
                                     showLocationLoadingDialog = false
-                                    onLocationChange("$lat, $lng")
+                                    // Use reverse geocoding to get address from coordinates
+                                    scope.launch {
+                                        showGeocodingLoadingDialog = true
+                                        geocodingError = null
+                                        
+                                        val address = locationService.getAddressFromCoordinates(lat, lng)
+                                        showGeocodingLoadingDialog = false
+                                        
+                                        if (address != null) {
+                                            onLocationChange(address)
+                                        } else {
+                                            // Fallback to coordinates if geocoding fails
+                                            onLocationChange("$lat, $lng")
+                                            geocodingError = context.getString(R.string.geocoding_failed)
+                                        }
+                                    }
                                 },
                                 onGpsDisabled = {
                                     showLocationLoadingDialog = false
@@ -426,6 +569,13 @@ fun LocationInputWithGPS(
     if (showLocationLoadingDialog) {
         LocationLoadingDialog(
             onDismiss = { showLocationLoadingDialog = false }
+        )
+    }
+    
+    // Geocoding Loading Dialog
+    if (showGeocodingLoadingDialog) {
+        LocationLoadingDialog(
+            onDismiss = { showGeocodingLoadingDialog = false }
         )
     }
 }
@@ -694,6 +844,9 @@ fun ProfileEditForm(
     onLocationChange: (String) -> Unit,
     hasExistingProfile: Boolean,
     isLoading: Boolean,
+    ageError: String? = null,
+    locationError: String? = null,
+    showValidationError: Boolean = false,
     onSave: () -> Unit,
     onCancel: (() -> Unit)? = null
 ) {
@@ -751,7 +904,9 @@ fun ProfileEditForm(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(16.dp),
+                isError = ageError != null,
+                supportingText = ageError?.let { { Text(it, color = MaterialTheme.colorScheme.error) } }
             )
             
             // Occupation Dropdown with icon
@@ -803,69 +958,120 @@ fun ProfileEditForm(
             }
             
             // Location Input with GPS button
-            LocationInputWithGPS(
-                location = location,
-                onLocationChange = onLocationChange
-            )
-            
-            // Action Buttons with modern design
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = if (onCancel != null) Arrangement.spacedBy(16.dp) else Arrangement.Center
-            ) {
-                // Cancel Button (only show if editing existing profile)
-                onCancel?.let {
-                    OutlinedButton(
-                        onClick = it,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp),
-                        enabled = !isLoading,
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            stringResource(R.string.cancel),
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                }
+            Column {
+                LocationInputWithGPS(
+                    location = location,
+                    onLocationChange = onLocationChange
+                )
                 
-                // Save/Update Button
-                Button(
-                    onClick = onSave,
-                    modifier = if (onCancel != null) Modifier.weight(1f).height(56.dp) else Modifier.fillMaxWidth().height(56.dp),
-                    enabled = !isLoading && age.isNotBlank() && location.isNotBlank(),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    if (isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            strokeWidth = 2.dp,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    } else {
-                        Icon(
-                            imageVector = if (hasExistingProfile) Icons.Default.Update else Icons.Default.Save,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            stringResource(
-                                if (hasExistingProfile) R.string.update_profile 
-                                else R.string.save_profile
-                            ),
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
+                // Location error display
+                locationError?.let { error ->
+                    Text(
+                        text = error,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                    )
                 }
             }
+            
+            // Validation Error Card
+             if (showValidationError) {
+                 Card(
+                     modifier = Modifier.fillMaxWidth(),
+                     colors = CardDefaults.cardColors(
+                         containerColor = MaterialTheme.colorScheme.errorContainer
+                     ),
+                     shape = RoundedCornerShape(12.dp)
+                 ) {
+                     Row(
+                         modifier = Modifier
+                             .fillMaxWidth()
+                             .padding(16.dp),
+                         verticalAlignment = Alignment.CenterVertically
+                     ) {
+                         Icon(
+                             imageVector = Icons.Default.Warning,
+                             contentDescription = null,
+                             tint = MaterialTheme.colorScheme.onErrorContainer,
+                             modifier = Modifier.size(24.dp)
+                         )
+                         Spacer(modifier = Modifier.width(12.dp))
+                         Column {
+                             Text(
+                                 text = stringResource(R.string.validation_error_title),
+                                 style = MaterialTheme.typography.titleSmall,
+                                 fontWeight = FontWeight.SemiBold,
+                                 color = MaterialTheme.colorScheme.onErrorContainer
+                             )
+                             Text(
+                                 text = stringResource(R.string.validation_complete_all_fields),
+                                 style = MaterialTheme.typography.bodySmall,
+                                 color = MaterialTheme.colorScheme.onErrorContainer
+                             )
+                         }
+                     }
+                 }
+             }
+             
+             // Action Buttons with modern design
+             Row(
+                 modifier = Modifier.fillMaxWidth(),
+                 horizontalArrangement = if (onCancel != null) Arrangement.spacedBy(16.dp) else Arrangement.Center
+             ) {
+                 // Cancel Button (only show if editing existing profile)
+                 onCancel?.let {
+                     OutlinedButton(
+                         onClick = it,
+                         modifier = Modifier
+                             .weight(1f)
+                             .height(56.dp),
+                         enabled = !isLoading,
+                         shape = RoundedCornerShape(16.dp)
+                     ) {
+                         Icon(
+                             imageVector = Icons.Default.Close,
+                             contentDescription = null,
+                             modifier = Modifier.size(20.dp)
+                         )
+                         Spacer(modifier = Modifier.width(8.dp))
+                         Text(
+                             stringResource(R.string.cancel),
+                             fontWeight = FontWeight.Medium
+                         )
+                     }
+                 }
+                 
+                 // Save/Update Button
+                 Button(
+                     onClick = onSave,
+                     modifier = if (onCancel != null) Modifier.weight(1f).height(56.dp) else Modifier.fillMaxWidth().height(56.dp),
+                     enabled = !isLoading,
+                     shape = RoundedCornerShape(16.dp)
+                 ) {
+                     if (isLoading) {
+                         CircularProgressIndicator(
+                             modifier = Modifier.size(20.dp),
+                             strokeWidth = 2.dp,
+                             color = MaterialTheme.colorScheme.onPrimary
+                         )
+                     } else {
+                         Icon(
+                             imageVector = if (hasExistingProfile) Icons.Default.Update else Icons.Default.Save,
+                             contentDescription = null,
+                             modifier = Modifier.size(20.dp)
+                         )
+                         Spacer(modifier = Modifier.width(8.dp))
+                         Text(
+                             stringResource(
+                                 if (hasExistingProfile) R.string.update_profile 
+                                 else R.string.save_profile
+                             ),
+                             fontWeight = FontWeight.Medium
+                         )
+                     }
+                 }
+             }
         }
     }
 }
