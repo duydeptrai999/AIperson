@@ -1,5 +1,51 @@
 # Help.md - Hướng dẫn sử dụng tính năng
 
+## Geocoding Feature - Optimized Address Display (2025-01-17)
+
+### Tính năng Geocoding Tối Ưu
+**Mô tả**: Chuyển đổi địa chỉ thành tọa độ GPS và ngược lại, chỉ hiển thị thông tin cần thiết
+
+**Cách hoạt động**:
+- **Forward Geocoding**: Nhập địa chỉ → Nhấn nút Search → Chuyển thành tọa độ GPS
+- **Reverse Geocoding**: Nhấn "Use Current Location" → GPS → Chuyển thành địa chỉ
+- **Tối ưu hiển thị**: Chỉ hiển thị Thành phố/Huyện, Tỉnh/Bang, Đất nước
+
+**UI Components**:
+- `LocationInputWithGPS()`: Component chính xử lý input và GPS
+- Nút Search icon trong OutlinedTextField
+- Loading dialog khi đang geocoding
+- Error handling với thông báo lỗi
+
+**Thông tin hiển thị**:
+- ✅ **Locality** (Thành phố/Huyện)
+- ✅ **AdminArea** (Tỉnh/Bang)
+- ✅ **Country** (Đất nước)
+- ❌ **Street/Thoroughfare** (Tên đường) - Đã loại bỏ
+- ❌ **Postal Code** (Mã bưu điện) - Đã loại bỏ
+
+**Ví dụ hiển thị**:
+- Trước: "123 Nguyễn Văn A, Phường 1, Quận 1, TP.HCM, 70000, Vietnam"
+- Sau: "Quận 1, TP.HCM, Vietnam"
+
+**Error Handling**:
+- Timeout sau 10 giây
+- Thông báo lỗi khi không tìm thấy địa chỉ
+- Fallback hiển thị tọa độ nếu reverse geocoding thất bại
+
+**String Resources**:
+- `enter_location_or_address`: "Enter location or address"
+- `search_address`: "Search address"
+- `geocoding_failed`: "Could not convert location to address"
+- `address_not_found`: "Address not found. Please try a different address."
+
+### LocationService Functions
+**Các hàm chính**:
+- `getCoordinatesFromAddress(address: String)`: Chuyển địa chỉ → tọa độ
+- `getAddressFromCoordinates(lat: Double, lng: Double)`: Chuyển tọa độ → địa chỉ
+- `buildAddressString(address: Address)`: Tạo chuỗi địa chỉ tối ưu
+
+---
+
 ## Weather Loading & Error States (2025-08-27)
 
 ### Tính năng Loading State

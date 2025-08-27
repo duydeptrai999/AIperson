@@ -29,6 +29,8 @@ class WeatherViewModel @Inject constructor(
     
     init {
         loadUserProfile()
+        // Listen to user profile changes for auto-update
+        observeUserProfileChanges()
         // Weather data will be loaded when user profile is available
         // If no user profile, load default location
     }
@@ -182,45 +184,72 @@ class WeatherViewModel @Inject constructor(
     }
     
     /**
-     * Load user profile from repository
+     * Observe user profile changes for auto-update
+     */
+    private fun observeUserProfileChanges() {
+        viewModelScope.launch {
+            userRepository.userProfile.collect { profile ->
+                val previousProfile = _userProfile.value
+                _userProfile.value = profile
+                
+                // Check if location has changed
+                val locationChanged = previousProfile?.location != profile?.location
+                
+                if (locationChanged && profile != null) {
+                    Logger.d("User location changed, reloading weather data")
+                    loadWeatherDataForProfile(profile)
+                }
+            }
+        }
+    }
+    
+    /**
+     * Load user profile from repository (initial load)
      */
     private fun loadUserProfile() {
         viewModelScope.launch {
-            // Get current profile value instead of collecting continuously
+            // Get current profile value for initial load
             val profile = userRepository.getCurrentUserProfile()
             _userProfile.value = profile
             
             // Load weather data based on user location
             if (profile != null) {
-                Logger.d("User profile found: city=${profile.location.city}, lat=${profile.location.latitude}, lon=${profile.location.longitude}")
-                // Check if we have valid coordinates or use city name
-                if (profile.location.latitude != 0.0 && profile.location.longitude != 0.0) {
-                    // Load weather by coordinates if available
-                    Logger.d("Loading weather by coordinates: lat=${profile.location.latitude}, lon=${profile.location.longitude}")
-                    loadWeatherByCoordinates(
-                        lat = profile.location.latitude,
-                        lon = profile.location.longitude
-                    )
-                } else if (profile.location.city.isNotBlank()) {
-                    // Load weather by city name if coordinates are not available
-                    Logger.d("Loading weather by city name: ${profile.location.city}")
-                    loadWeatherData(profile.location.city)
-                } else {
-                    // Fallback to default location
-                    Logger.d("No valid location data, using default: Hanoi")
-                    loadWeatherData("Hanoi")
-                }
+                loadWeatherDataForProfile(profile)
             } else {
                 // Load default location if no user profile
                 Logger.d("No user profile found, using default location: Hanoi")
                 loadWeatherData("Hanoi")
             }
-            
-            // If we have weather data and profile, recalculate compatibility
-            val currentWeatherData = _uiState.value.weatherData
-            if (currentWeatherData != null && profile != null) {
-                calculateAndUpdateCompatibility(currentWeatherData, profile)
-            }
+        }
+    }
+    
+    /**
+     * Load weather data based on user profile location
+     */
+    private fun loadWeatherDataForProfile(profile: UserProfile) {
+        Logger.d("User profile found: city=${profile.location.city}, lat=${profile.location.latitude}, lon=${profile.location.longitude}")
+        // Check if we have valid coordinates or use city name
+        if (profile.location.latitude != 0.0 && profile.location.longitude != 0.0) {
+            // Load weather by coordinates if available
+            Logger.d("Loading weather by coordinates: lat=${profile.location.latitude}, lon=${profile.location.longitude}")
+            loadWeatherByCoordinates(
+                lat = profile.location.latitude,
+                lon = profile.location.longitude
+            )
+        } else if (profile.location.city.isNotBlank()) {
+            // Load weather by city name if coordinates are not available
+            Logger.d("Loading weather by city name: ${profile.location.city}")
+            loadWeatherData(profile.location.city)
+        } else {
+            // Fallback to default location
+            Logger.d("No valid location data, using default: Hanoi")
+            loadWeatherData("Hanoi")
+        }
+        
+        // If we have weather data and profile, recalculate compatibility
+        val currentWeatherData = _uiState.value.weatherData
+        if (currentWeatherData != null) {
+            calculateAndUpdateCompatibility(currentWeatherData, profile)
         }
     }
     

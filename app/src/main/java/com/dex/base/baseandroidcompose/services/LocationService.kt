@@ -340,7 +340,7 @@ class LocationService(private val context: Context) {
                 val addresses = geocoder.getFromLocation(latitude, longitude, maxResults)
                 if (addresses?.isNotEmpty() == true) {
                     val address = addresses[0]
-                    val fullAddress = address.getAddressLine(0) ?: buildAddressString(address)
+                    val fullAddress = buildAddressString(address)
                     Logger.d("Reverse geocoding success: ($latitude, $longitude) -> $fullAddress")
                     fullAddress
                 } else {
@@ -375,12 +375,12 @@ class LocationService(private val context: Context) {
                 if (addresses?.isNotEmpty() == true) {
                     val address = addresses[0]
                     AddressInfo(
-                        fullAddress = address.getAddressLine(0) ?: buildAddressString(address),
-                        street = address.thoroughfare ?: "",
-                        city = address.locality ?: address.subLocality ?: "",
+                        fullAddress = buildAddressString(address),
+                        street = "", // Không sử dụng street
+                        city = address.locality ?: "", // Chỉ lấy locality, không lấy subLocality
                         state = address.adminArea ?: "",
                         country = address.countryName ?: "",
-                        postalCode = address.postalCode ?: "",
+                        postalCode = "", // Không sử dụng postal code
                         latitude = latitude,
                         longitude = longitude
                     )
@@ -396,12 +396,14 @@ class LocationService(private val context: Context) {
     
     /**
      * Xây dựng chuỗi địa chỉ từ Address object
+     * Chỉ lấy thành phố/huyện, tỉnh/bang và đất nước
      */
     private fun buildAddressString(address: Address): String {
         val parts = mutableListOf<String>()
         
-        address.thoroughfare?.let { parts.add(it) }
+        // Lấy thành phố/xã, huyện, tỉnh/bang và đất nước
         address.locality?.let { parts.add(it) }
+        address.subAdminArea?.let { parts.add(it) }
         address.adminArea?.let { parts.add(it) }
         address.countryName?.let { parts.add(it) }
         

@@ -1,5 +1,43 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- Thêm tính năng Geocoding và Reverse Geocoding vào LocationService
+- Hàm `getCoordinatesFromAddress()` để chuyển địa chỉ thành tọa độ GPS
+- Hàm `getAddressFromCoordinates()` để chuyển tọa độ GPS thành địa chỉ
+- Hàm `getDetailedAddressFromCoordinates()` để lấy thông tin địa chỉ chi tiết
+- Data class `AddressInfo` để chứa thông tin địa chỉ đầy đủ
+- Error handling và timeout cho các tính năng geocoding
+- Tối ưu hóa hiển thị địa chỉ để chỉ hiển thị Huyện/Thành phố, Tỉnh/Bang, Đất nước
+- Loại bỏ `subLocality` khỏi các trường được hiển thị và khỏi đối tượng `AddressInfo`
+- Loại bỏ `address.getAddressLine(0)` fallback để tránh hiển thị thông tin chi tiết không mong muốn
+
+---
+
+## [2025-01-17] - Geocoding Address Display Optimization
+
+### Enhanced
+- ✅ **Optimized Address Display**: Tối ưu hóa hiển thị địa chỉ chỉ còn thông tin cần thiết
+  - **Before**: "123 Nguyễn Văn A, Phường 1, Quận 1, TP.HCM, 70000, Vietnam"
+  - **After**: "Quận 1, TP.HCM, Vietnam"
+  - **Removed**: Street names (thoroughfare), postal codes và subLocality để giao diện gọn gàng hơn
+- ✅ **buildAddressString Function**: Cập nhật logic chỉ lấy locality, adminArea và countryName
+- ✅ **AddressInfo Object**: Loại bỏ street, postalCode và subLocality fields khỏi reverse geocoding result
+
+### Technical Details
+- Modified `buildAddressString()` trong LocationService.kt
+- Updated AddressInfo creation để consistent với address format mới
+- Maintained backward compatibility với existing geocoding functions
+- Build successful với no compilation errors
+
+### User Experience
+- Địa chỉ hiển thị ngắn gọn, dễ đọc hơn
+- Tập trung vào thông tin địa lý quan trọng (thành phố, tỉnh, quốc gia)
+- Phù hợp với mục đích sử dụng cho weather app
+
+---
+
 ## [2025-08-27] - Weather Loading & Error States Implementation
 
 ### Added
