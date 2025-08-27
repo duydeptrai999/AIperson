@@ -1,6 +1,35 @@
 # Changelog
 
-## [Latest] - Weather Home Screen UI Optimization
+## [Latest] - Health Advice Card Implementation
+
+### [2025-01-17] - Health Advice Card Implementation
+
+**Yêu cầu**: Chuyển đổi AI Score Card thành Health Advice Card để hiển thị lời khuyên sức khỏe dựa trên thời tiết
+
+**Các bước thực hiện**:
+- Tạo data class `HealthAdvice` với các thuộc tính: icon, title, advice, tip, color
+- Tạo function `generateHealthAdvice()` để tạo lời khuyên dựa trên dữ liệu thời tiết
+- Chuyển đổi `CompactScorePointsCard` thành `HealthAdviceCard`
+- Cập nhật logic hiển thị từ điểm số AI sang lời khuyên sức khỏe
+- Thêm import `FontStyle` để hỗ trợ italic text
+- Sửa lỗi type inference với range operator
+
+**Kết quả đạt được**:
+- ✅ Thẻ hiển thị lời khuyên sức khỏe thông minh dựa trên điều kiện thời tiết
+- ✅ UI hiện đại với icon emoji và màu sắc phù hợp
+- ✅ Lời khuyên cụ thể cho từng tình huống thời tiết (nắng, mưa, lạnh, nóng)
+- ✅ Tips hữu ích cho sức khỏe người dùng
+- ✅ Tích hợp mượt mà với giao diện Weather Home Screen
+
+**Chi tiết kỹ thuật**:
+- Thêm import `androidx.compose.ui.text.font.FontStyle`
+- Sử dụng when expression để xử lý các điều kiện thời tiết
+- Áp dụng màu sắc theme phù hợp (CompatibilityGreen, SunYellow, etc.)
+- Responsive design với typography Material Design
+
+---
+
+## [Previous] - Weather Home Screen UI Optimization
 
 ### ✅ Completed
 - **Yêu cầu**: Chỉnh sửa WeatherHomeScreen.kt để giao diện đẹp hơn, thon gọn hơn nhưng vẫn đầy đủ thông tin

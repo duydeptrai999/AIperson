@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -93,19 +94,12 @@ fun WeatherHomeScreen(
                 }
             }
             
-            // Combined Score & Points Card
+            // Health Advice Card
             item {
-                val compatibility = uiState.compatibility
-                if (compatibility != null) {
-                    CompactScorePointsCard(
-                        score = compatibility.compatibilityScore,
-                        reasoning = compatibility.reasoning.joinToString(" • "),
-                        totalPoints = userProfile?.pointBalance ?: 0,
-                        dailyPoints = compatibility.pointsEarned,
-                        isNewPointsEarned = isNewPointsEarned,
-                        pointsScale = pointsScale
-                    )
-                }
+                HealthAdviceCard(
+                    weatherData = uiState.weatherData,
+                    pointsScale = pointsScale
+                )
             }
         }
     }
@@ -399,27 +393,23 @@ fun CompactWeatherDetail(
 }
 
 @Composable
-fun CompactScorePointsCard(
-    score: Float,
-    reasoning: String,
-    totalPoints: Int,
-    dailyPoints: Int,
-    isNewPointsEarned: Boolean,
+fun HealthAdviceCard(
+    weatherData: WeatherData?,
     pointsScale: Float
 ) {
+    // Generate health advice based on weather conditions
+    val healthAdvice = generateHealthAdvice(weatherData)
+    
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .scale(pointsScale),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isNewPointsEarned) 
-                SunYellow.copy(alpha = 0.1f) 
-            else 
-                WeatherCardBackground
+            containerColor = WeatherCardBackground
         ),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = if (isNewPointsEarned) 8.dp else 4.dp
+            defaultElevation = 4.dp
         )
     ) {
         Column(
@@ -430,105 +420,148 @@ fun CompactScorePointsCard(
             // Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "🎯 AI Score & Points",
+                    text = healthAdvice.icon,
+                    style = MaterialTheme.typography.headlineMedium
+                )
+                
+                Spacer(modifier = Modifier.width(8.dp))
+                
+                Text(
+                    text = "AI Health Advice",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                
-                val level = (totalPoints / 1000) + 1
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = SunYellow.copy(alpha = 0.2f)
-                ) {
-                    Text(
-                        text = "Lv.$level",
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.Bold,
-                        color = SunYellow,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                    )
-                }
             }
             
             Spacer(modifier = Modifier.height(12.dp))
             
-            // Score and Points Row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Score section
-                Column {
-                    val scoreColor = when {
-                        score >= 90 -> CompatibilityGreen
-                        score >= 70 -> SunYellow
-                        score >= 50 -> Color(0xFFFF9800)
-                        else -> Color(0xFFE57373)
-                    }
-                    
-                    Row(verticalAlignment = Alignment.Bottom) {
-                        Text(
-                            text = "${score.roundToInt()}",
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = scoreColor
-                        )
-                        Text(
-                            text = "%",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = scoreColor.copy(alpha = 0.7f)
-                        )
-                    }
-                    Text(
-                        text = "Compatibility",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = RainyGray
-                    )
-                }
-                
-                // Points section
-                Column(horizontalAlignment = Alignment.End) {
-                    Row(verticalAlignment = Alignment.Bottom) {
-                        Text(
-                            text = "$totalPoints",
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = SunYellow
-                        )
-                        if (dailyPoints > 0) {
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "+$dailyPoints",
-                                style = MaterialTheme.typography.titleSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = CompatibilityGreen
-                            )
-                        }
-                    }
-                    Text(
-                        text = "Total Points",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = RainyGray
-                    )
-                }
-            }
+            // Health advice content
+            Text(
+                text = healthAdvice.title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+                color = healthAdvice.color
+            )
             
             Spacer(modifier = Modifier.height(8.dp))
             
-            // Reasoning
             Text(
-                text = reasoning,
-                style = MaterialTheme.typography.bodySmall,
-                color = RainyGray,
-                maxLines = 2
+                text = healthAdvice.advice,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                lineHeight = 20.sp
             )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            // Additional tips
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = "Tip",
+                    tint = healthAdvice.color,
+                    modifier = Modifier.size(16.dp)
+                )
+                
+                Spacer(modifier = Modifier.width(4.dp))
+                
+                Text(
+                     text = healthAdvice.tip,
+                     style = MaterialTheme.typography.bodySmall,
+                     color = RainyGray,
+                     fontStyle = FontStyle.Italic
+                 )
+            }
         }
+    }
+}
+
+data class HealthAdvice(
+    val icon: String,
+    val title: String,
+    val advice: String,
+    val tip: String,
+    val color: Color
+)
+
+fun generateHealthAdvice(weatherData: WeatherData?): HealthAdvice {
+    if (weatherData == null) {
+        return HealthAdvice(
+            icon = "🏥",
+            title = "Stay Healthy",
+            advice = "Keep yourself hydrated and maintain a balanced diet for optimal health.",
+            tip = "Regular exercise boosts immunity",
+            color = CompatibilityGreen
+        )
+    }
+    
+    val temp = weatherData.temperature
+    val humidity = weatherData.humidity
+    val description = weatherData.description.lowercase()
+    
+    return when {
+        temp > 35 -> HealthAdvice(
+            icon = "🌡️",
+            title = "Heat Warning",
+            advice = "Very hot weather! Stay indoors during peak hours, drink plenty of water, and wear light-colored clothing.",
+            tip = "Avoid outdoor activities between 10 AM - 4 PM",
+            color = Color(0xFFE57373)
+        )
+        
+        temp > 30 -> HealthAdvice(
+            icon = "☀️",
+            title = "Hot Weather Care",
+            advice = "Hot day ahead! Stay hydrated, use sunscreen, and take breaks in shade when outdoors.",
+            tip = "Drink water every 15-20 minutes when active",
+            color = Color(0xFFFF9800)
+        )
+        
+        temp < 10 -> HealthAdvice(
+            icon = "🧥",
+            title = "Cold Weather Protection",
+            advice = "Cold weather! Dress in layers, protect extremities, and stay warm to prevent hypothermia.",
+            tip = "Warm up before going outside",
+            color = DeepSkyBlue
+        )
+        
+        humidity > 80 -> HealthAdvice(
+            icon = "💧",
+            title = "High Humidity Alert",
+            advice = "High humidity can make you feel hotter. Stay in air-conditioned spaces and avoid strenuous activities.",
+            tip = "Use dehumidifier indoors if possible",
+            color = Color(0xFF42A5F5)
+        )
+        
+        description.contains("rain") -> HealthAdvice(
+            icon = "☔",
+            title = "Rainy Day Health",
+            advice = "Rainy weather! Stay dry, boost your mood with indoor activities, and be careful of slippery surfaces.",
+            tip = "Vitamin D supplement may help on cloudy days",
+            color = Color(0xFF5C6BC0)
+        )
+        
+        description.contains("clear") && temp >= 20 && temp <= 28 -> HealthAdvice(
+            icon = "🌞",
+            title = "Perfect Weather",
+            advice = "Ideal weather conditions! Great time for outdoor activities, exercise, and fresh air.",
+            tip = "Perfect day for a walk or outdoor workout",
+            color = CompatibilityGreen
+        )
+        
+        else -> HealthAdvice(
+            icon = "🌤️",
+            title = "General Wellness",
+            advice = "Moderate weather conditions. Maintain regular exercise, balanced diet, and adequate sleep.",
+            tip = "Listen to your body and adjust activities accordingly",
+            color = SunYellow
+        )
     }
 }
 
