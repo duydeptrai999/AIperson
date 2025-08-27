@@ -2,6 +2,32 @@
 
 ## [Latest] - 2024-12-19
 
+### Enhanced - Weather Location Integration
+- ✅ **Dynamic Weather Location Display**: Tích hợp hiển thị địa chỉ từ dữ liệu người dùng
+  - **WeatherHomeScreen Enhancement**: LocationCard hiện hiển thị địa chỉ từ UserProfile thay vì hard-code
+  - **Dynamic Location Loading**: WeatherViewModel tự động load thời tiết dựa trên vị trí người dùng
+  - **Smart Fallback**: Sử dụng "Ho Chi Minh City, Vietnam" làm default khi chưa có user profile
+  - **Changes**:
+    - Modified `LocationCard` component để nhận `userProfile` parameter
+    - Updated display logic: `"${userProfile.location.city}, ${userProfile.location.country}"`
+    - Enhanced `WeatherViewModel.loadUserProfile()` để load weather theo coordinates
+    - Automatic weather refresh khi user profile location thay đổi
+  - **Benefits**: Personalized weather experience, accurate location display, seamless user data integration
+  - **User Experience**: Weather data và location display đồng bộ với thông tin người dùng đã nhập
+
+### Fixed - Critical ANR Bug
+- ✅ **UserRepository ANR Issue Resolution**: Sửa lỗi "Application Not Responding" khi lưu user profile
+  - **Problem**: App crash với ANR error khi save user profile nhiều lần
+  - **Root Cause**: `SharedPreferences.apply()` blocking UI thread trong multiple save operations
+  - **Solution**: Implement `Dispatchers.IO` cho background thread execution trong `saveUserProfile()`
+  - **Changes**: 
+    - Added `withContext(Dispatchers.IO)` wrapper cho SharedPreferences operations
+    - Changed `apply()` to `commit()` trong IO thread cho immediate write guarantee
+    - Ensured StateFlow updates happen on main thread cho UI consistency
+    - Added proper coroutine imports (`Dispatchers`, `withContext`)
+  - **Benefits**: Eliminated ANR, improved app responsiveness, maintained data integrity
+  - **Testing**: Verified smooth save operations without UI blocking
+
 ### Enhanced - Major UI/UX Improvements
 - ✅ **UserProfileScreen UI/UX Redesign**: Cải tiến toàn diện giao diện người dùng
   - **Modern Visual Design**: Gradient background, enhanced cards với shadow effects

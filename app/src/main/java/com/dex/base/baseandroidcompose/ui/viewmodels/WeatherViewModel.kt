@@ -29,7 +29,8 @@ class WeatherViewModel @Inject constructor(
     
     init {
         loadUserProfile()
-        loadWeatherData("Hanoi")
+        // Weather data will be loaded when user profile is available
+        // If no user profile, load default location
     }
     
     fun loadWeatherData(city: String) {
@@ -178,14 +179,26 @@ class WeatherViewModel @Inject constructor(
      */
     private fun loadUserProfile() {
         viewModelScope.launch {
-            userRepository.userProfile.collect { profile ->
-                _userProfile.value = profile
-                
-                // If we have weather data and profile, recalculate compatibility
-                val currentWeatherData = _uiState.value.weatherData
-                if (currentWeatherData != null && profile != null) {
-                    calculateAndUpdateCompatibility(currentWeatherData, profile)
-                }
+            // Get current profile value instead of collecting continuously
+            val profile = userRepository.getCurrentUserProfile()
+            _userProfile.value = profile
+            
+            // Load weather data based on user location
+            if (profile != null) {
+                // Load weather for user's location
+                loadWeatherByCoordinates(
+                    lat = profile.location.latitude,
+                    lon = profile.location.longitude
+                )
+            } else {
+                // Load default location if no user profile
+                loadWeatherData("Hanoi")
+            }
+            
+            // If we have weather data and profile, recalculate compatibility
+            val currentWeatherData = _uiState.value.weatherData
+            if (currentWeatherData != null && profile != null) {
+                calculateAndUpdateCompatibility(currentWeatherData, profile)
             }
         }
     }

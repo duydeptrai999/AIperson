@@ -36,12 +36,11 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                // Collect from repository's StateFlow
-                userRepository.userProfile.collect { profile ->
-                    _userProfile.value = profile
-                    _error.value = null
-                    _isLoading.value = false
-                }
+                // Get current profile value instead of collecting continuously
+                val profile = userRepository.getCurrentUserProfile()
+                _userProfile.value = profile
+                _error.value = null
+                _isLoading.value = false
             } catch (e: Exception) {
                 _error.value = e.message
                 _isLoading.value = false

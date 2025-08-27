@@ -1,5 +1,35 @@
 # Help.md - Hướng dẫn sử dụng tính năng
 
+## 🌤️ Weather Location Integration - Tích hợp địa chỉ người dùng với thời tiết
+
+### Mô tả tính năng
+Tính năng tích hợp thông minh giữa dữ liệu người dùng và hiển thị thời tiết. WeatherHomeScreen hiện tự động hiển thị địa chỉ từ thông tin người dùng đã nhập và load dữ liệu thời tiết tương ứng với vị trí đó.
+
+### Cách hoạt động
+
+**1. Dynamic Location Display**:
+- LocationCard trong WeatherHomeScreen hiển thị `"${userProfile.location.city}, ${userProfile.location.country}"`
+- Thay thế hard-code "Ho Chi Minh City, Vietnam" bằng dữ liệu thực từ user profile
+- Smart fallback: hiển thị default location khi chưa có user profile
+
+**2. Automatic Weather Loading**:
+- WeatherViewModel tự động detect khi user profile thay đổi
+- Load weather data dựa trên coordinates (`latitude`, `longitude`) từ user location
+- Refresh weather data ngay khi user cập nhật location trong profile
+
+**3. Seamless Integration**:
+- Real-time sync giữa UserViewModel và WeatherViewModel
+- Compatibility calculation tự động với location mới
+- Personalized weather experience dựa trên vị trí người dùng
+
+### Benefits cho người dùng
+- **Accurate Location**: Hiển thị chính xác địa chỉ người dùng đã nhập
+- **Relevant Weather**: Thời tiết tương ứng với vị trí thực tế của người dùng
+- **Auto-sync**: Không cần manual refresh, tự động cập nhật khi thay đổi location
+- **Personalized Experience**: Weather insights và recommendations phù hợp với vị trí
+
+---
+
 ## 👤 UserProfileScreen - Enhanced UI/UX với Material Design 3
 
 ### Mô tả tính năng

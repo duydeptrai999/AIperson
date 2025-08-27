@@ -153,7 +153,9 @@ fun WeatherHomeScreen(
             
             // Location Card
             item {
-                LocationCard()
+                LocationCard(
+                    userProfile = userProfile
+                )
             }
             
             // Current Weather Card
@@ -330,6 +332,7 @@ fun QuickStatItem(
 
 @Composable
 fun LocationCard(
+    userProfile: UserProfile?,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -360,7 +363,11 @@ fun LocationCard(
                     color = RainyGray
                 )
                 Text(
-                    text = "Ho Chi Minh City, Vietnam", // TODO: Get from location service
+                    text = if (userProfile != null) {
+                        "${userProfile.location.city}, ${userProfile.location.country}"
+                    } else {
+                        "Ho Chi Minh City, Vietnam" // Default fallback
+                    },
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface
