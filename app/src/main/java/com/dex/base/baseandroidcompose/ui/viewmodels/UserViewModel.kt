@@ -2,6 +2,7 @@ package com.dex.base.baseandroidcompose.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dex.base.baseandroidcompose.data.models.Location
 import com.dex.base.baseandroidcompose.data.models.UserProfile
 import com.dex.base.baseandroidcompose.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -136,5 +137,114 @@ class UserViewModel @Inject constructor(
      */
     fun getCurrentUserProfile(): UserProfile? {
         return _userProfile.value
+    }
+
+    /**
+     * Update user location with GPS coordinates
+     */
+    fun updateUserLocation(latitude: Double, longitude: Double, cityName: String = "") {
+        viewModelScope.launch {
+            try {
+                val currentProfile = _userProfile.value
+                if (currentProfile != null) {
+                    val updatedLocation = currentProfile.location.copy(
+                        latitude = latitude,
+                        longitude = longitude,
+                        city = if (cityName.isNotBlank()) cityName else currentProfile.location.city
+                    )
+                    
+                    val updatedProfile = currentProfile.copy(
+                        location = updatedLocation,
+                        lastUpdated = System.currentTimeMillis()
+                    )
+                    
+                    val result = userRepository.saveUserProfile(updatedProfile)
+                    if (result.isSuccess) {
+                        _userProfile.value = updatedProfile
+                        _error.value = null
+                    } else {
+                        _error.value = result.exceptionOrNull()?.message ?: "Failed to update location"
+                    }
+                } else {
+                    _error.value = "No user profile found to update location"
+                }
+            } catch (e: Exception) {
+                _error.value = e.message
+            }
+        }
+    }
+
+    /**
+     * Update user location with city name only
+     */
+    fun updateUserLocationCity(cityName: String) {
+        viewModelScope.launch {
+            try {
+                val currentProfile = _userProfile.value
+                if (currentProfile != null) {
+                    val updatedLocation = currentProfile.location.copy(
+                        city = cityName,
+                        // Reset coordinates when manually entering city name
+                        latitude = 0.0,
+                        longitude = 0.0
+                    )
+                    
+                    val updatedProfile = currentProfile.copy(
+                        location = updatedLocation,
+                        lastUpdated = System.currentTimeMillis()
+                    )
+                    
+                    val result = userRepository.saveUserProfile(updatedProfile)
+                    if (result.isSuccess) {
+                        _userProfile.value = updatedProfile
+                        _error.value = null
+                    } else {
+                        _error.value = result.exceptionOrNull()?.message ?: "Failed to update location"
+                    }
+                } else {
+                    _error.value = "No user profile found to update location"
+                }
+            } catch (e: Exception) {
+                _error.value = e.message
+            }
+        }
+    }
+
+    /**
+     * Create new user profile with GPS location
+     */
+    fun createUserProfileWithLocation(
+        age: Int,
+        occupation: com.dex.base.baseandroidcompose.data.models.Occupation,
+        latitude: Double,
+        longitude: Double,
+        cityName: String = ""
+    ) {
+        viewModelScope.launch {
+            try {
+                val newProfile = UserProfile(
+                    id = java.util.UUID.randomUUID().toString(),
+                    age = age,
+                    location = Location(
+                        city = cityName,
+                        country = "",
+                        latitude = latitude,
+                        longitude = longitude,
+                        timezone = ""
+                    ),
+                    occupation = occupation,
+                    preferences = com.dex.base.baseandroidcompose.data.models.WeatherPreferences(),
+                    pointBalance = 0,
+                    totalPointsEarned = 0,
+                    level = 1,
+                    createdAt = System.currentTimeMillis(),
+                    lastUpdated = System.currentTimeMillis()
+                )
+                
+                saveUserProfile(newProfile)
+            } catch (e: Exception) {
+                _error.value = e.message
+            }
+        }
     }
 }

@@ -92,6 +92,9 @@ dependencies {
     implementation(libs.firebase.config)
     //implementation(libs.firebase.crashlytics)
 
+    // Google Play Services Location
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

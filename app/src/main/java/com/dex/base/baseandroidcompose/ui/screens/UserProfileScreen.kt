@@ -1,5 +1,11 @@
 package com.dex.base.baseandroidcompose.ui.screens
 
+import android.Manifest
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -13,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,6 +27,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import com.dex.base.baseandroidcompose.utils.LocationPermissionHandler
+import com.dex.base.baseandroidcompose.utils.LocationAction
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,7 +42,13 @@ import com.dex.base.baseandroidcompose.data.models.Location
 import com.dex.base.baseandroidcompose.data.models.Occupation
 import com.dex.base.baseandroidcompose.data.models.UserProfile
 import com.dex.base.baseandroidcompose.data.models.WeatherPreferences
+import com.dex.base.baseandroidcompose.services.LocationService
+import com.dex.base.baseandroidcompose.ui.components.LocationPermissionDialog
+import com.dex.base.baseandroidcompose.ui.components.GpsDisabledDialog
+import com.dex.base.baseandroidcompose.ui.components.PermissionDeniedDialog
+import com.dex.base.baseandroidcompose.ui.components.LocationLoadingDialog
 import com.dex.base.baseandroidcompose.ui.viewmodels.UserViewModel
+import kotlinx.coroutines.launch
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -114,25 +130,78 @@ fun UserProfileScreen(
                 isLoading = isLoading,
                 onSave = {
                     val ageInt = age.toIntOrNull() ?: 25
-                    val newProfile = UserProfile(
-                        id = userProfile?.id ?: UUID.randomUUID().toString(),
-                        age = ageInt,
-                        location = Location(
-                            city = location.ifBlank { "" },
-                            country = "",
-                            latitude = 0.0,
-                            longitude = 0.0,
-                            timezone = ""
-                        ),
-                        occupation = selectedOccupation,
-                        preferences = userProfile?.preferences ?: WeatherPreferences(),
-                        pointBalance = userProfile?.pointBalance ?: 0,
-                        totalPointsEarned = userProfile?.totalPointsEarned ?: 0,
-                        level = userProfile?.level ?: 1,
-                        createdAt = userProfile?.createdAt ?: System.currentTimeMillis(),
-                        lastUpdated = System.currentTimeMillis()
-                    )
-                    userViewModel.saveUserProfile(newProfile)
+                
+                // Check if location contains coordinates (lat, lng format)
+                if (location.contains(",") && location.split(",").size == 2) {
+                    try {
+                        val coords = location.split(",")
+                        val lat = coords[0].trim().toDouble()
+                        val lng = coords[1].trim().toDouble()
+                        
+                        if (userProfile != null) {
+                            // Update existing profile with GPS coordinates
+                            userViewModel.updateUserLocation(lat, lng)
+                        } else {
+                            // Create new profile with GPS coordinates
+                            userViewModel.createUserProfileWithLocation(
+                                age = ageInt,
+                                occupation = selectedOccupation,
+                                latitude = lat,
+                                longitude = lng
+                            )
+                        }
+                    } catch (e: NumberFormatException) {
+                        // Fallback to city name if coordinates parsing fails
+                        if (userProfile != null) {
+                            userViewModel.updateUserLocationCity(location)
+                        } else {
+                            val newProfile = UserProfile(
+                                id = UUID.randomUUID().toString(),
+                                age = ageInt,
+                                location = Location(
+                                    city = location.ifBlank { "" },
+                                    country = "",
+                                    latitude = 0.0,
+                                    longitude = 0.0,
+                                    timezone = ""
+                                ),
+                                occupation = selectedOccupation,
+                                preferences = WeatherPreferences(),
+                                pointBalance = 0,
+                                totalPointsEarned = 0,
+                                level = 1,
+                                createdAt = System.currentTimeMillis(),
+                                lastUpdated = System.currentTimeMillis()
+                            )
+                            userViewModel.saveUserProfile(newProfile)
+                        }
+                    }
+                } else {
+                    // Handle city name input
+                    if (userProfile != null) {
+                        userViewModel.updateUserLocationCity(location)
+                    } else {
+                        val newProfile = UserProfile(
+                            id = UUID.randomUUID().toString(),
+                            age = ageInt,
+                            location = Location(
+                                city = location.ifBlank { "" },
+                                country = "",
+                                latitude = 0.0,
+                                longitude = 0.0,
+                                timezone = ""
+                            ),
+                            occupation = selectedOccupation,
+                            preferences = WeatherPreferences(),
+                            pointBalance = 0,
+                            totalPointsEarned = 0,
+                            level = 1,
+                            createdAt = System.currentTimeMillis(),
+                            lastUpdated = System.currentTimeMillis()
+                        )
+                        userViewModel.saveUserProfile(newProfile)
+                    }
+                }
                     if (!hasExistingProfile) {
                         onProfileSaved()
                     }
@@ -185,6 +254,203 @@ fun UserProfileScreen(
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LocationInputWithGPS(
+    location: String,
+    onLocationChange: (String) -> Unit
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    
+    // Location service and permission handler
+    val locationService = remember { LocationService(context) }
+    // LocationPermissionHandler is an object, no need to instantiate
+    
+    // Dialog states
+    var showPermissionDialog by remember { mutableStateOf(false) }
+    var showGpsDialog by remember { mutableStateOf(false) }
+    var showPermissionDeniedDialog by remember { mutableStateOf(false) }
+    var showLocationLoadingDialog by remember { mutableStateOf(false) }
+    
+    // Permission launcher
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineLocationGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseLocationGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+        
+        if (fineLocationGranted || coarseLocationGranted) {
+            // Permission granted, check GPS and get location
+            scope.launch {
+                getCurrentLocation(
+                    context = context,
+                    locationService = locationService,
+                    onLocationReceived = { lat, lng ->
+                        showLocationLoadingDialog = false
+                        // Convert coordinates to city name (simplified)
+                        onLocationChange("$lat, $lng")
+                    },
+                    onGpsDisabled = {
+                        showLocationLoadingDialog = false
+                        showGpsDialog = true
+                    },
+                    onError = {
+                        showLocationLoadingDialog = false
+                    }
+                )
+            }
+        } else {
+            // Permission denied
+            // For simplicity, show permission dialog
+            showPermissionDialog = true
+        }
+    }
+    
+    Column {
+        // Location Input Field
+        OutlinedTextField(
+            value = location,
+            onValueChange = onLocationChange,
+            label = { Text(stringResource(R.string.location)) },
+            placeholder = { Text(stringResource(R.string.enter_location)) },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.tertiary
+                )
+            },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            shape = RoundedCornerShape(16.dp)
+        )
+        
+        Spacer(modifier = Modifier.height(12.dp))
+        
+        // Use Current Location Button
+        OutlinedButton(
+            onClick = {
+                val locationStatus = LocationPermissionHandler.getLocationStatus(context)
+                when (locationStatus.getRequiredAction()) {
+                    com.dex.base.baseandroidcompose.utils.LocationAction.REQUEST_PERMISSIONS -> {
+                        showPermissionDialog = true
+                    }
+                    com.dex.base.baseandroidcompose.utils.LocationAction.ENABLE_GPS -> {
+                        showGpsDialog = true
+                    }
+                    com.dex.base.baseandroidcompose.utils.LocationAction.READY -> {
+                        showLocationLoadingDialog = true
+                        scope.launch {
+                            getCurrentLocation(
+                                context = context,
+                                locationService = locationService,
+                                onLocationReceived = { lat, lng ->
+                                    showLocationLoadingDialog = false
+                                    onLocationChange("$lat, $lng")
+                                },
+                                onGpsDisabled = {
+                                    showLocationLoadingDialog = false
+                                    showGpsDialog = true
+                                },
+                                onError = {
+                                    showLocationLoadingDialog = false
+                                }
+                            )
+                        }
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.MyLocation,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = stringResource(R.string.use_current_location),
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+    
+    // Permission Dialog
+    if (showPermissionDialog) {
+        LocationPermissionDialog(
+            onDismiss = { showPermissionDialog = false },
+            onRequestPermission = {
+                showPermissionDialog = false
+                permissionLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                )
+            }
+        )
+    }
+    
+    // GPS Disabled Dialog
+    if (showGpsDialog) {
+        GpsDisabledDialog(
+            onDismiss = { showGpsDialog = false },
+            onEnableGps = {
+                showGpsDialog = false
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                context.startActivity(intent)
+            }
+        )
+    }
+    
+    // Permission Denied Dialog
+    if (showPermissionDeniedDialog) {
+        PermissionDeniedDialog(
+            onDismiss = { showPermissionDeniedDialog = false },
+            onOpenSettings = {
+                showPermissionDeniedDialog = false
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", context.packageName, null)
+                }
+                context.startActivity(intent)
+            }
+        )
+    }
+    
+    // Location Loading Dialog
+    if (showLocationLoadingDialog) {
+        LocationLoadingDialog(
+            onDismiss = { showLocationLoadingDialog = false }
+        )
+    }
+}
+
+private suspend fun getCurrentLocation(
+    context: android.content.Context,
+    locationService: LocationService,
+    onLocationReceived: (Double, Double) -> Unit,
+    onGpsDisabled: () -> Unit,
+    onError: () -> Unit
+) {
+    if (!LocationPermissionHandler.isGpsEnabled(context)) {
+        onGpsDisabled()
+        return
+    }
+    
+    try {
+        val location = locationService.getCurrentLocation()
+        if (location != null) {
+            onLocationReceived(location.latitude, location.longitude)
+        } else {
+            onError()
+        }
+    } catch (e: Exception) {
+        onError()
     }
 }
 
@@ -536,22 +802,10 @@ fun ProfileEditForm(
                 }
             }
             
-            // Location Input with icon
-            OutlinedTextField(
-                value = location,
-                onValueChange = onLocationChange,
-                label = { Text(stringResource(R.string.location)) },
-                placeholder = { Text(stringResource(R.string.enter_location)) },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.LocationOn,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.tertiary
-                    )
-                },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                shape = RoundedCornerShape(16.dp)
+            // Location Input with GPS button
+            LocationInputWithGPS(
+                location = location,
+                onLocationChange = onLocationChange
             )
             
             // Action Buttons with modern design

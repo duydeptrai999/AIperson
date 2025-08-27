@@ -78,4 +78,22 @@
     <string name="profile">Profile</string>
     <string name="rewards">Rewards</string>
     <string name="details">Details</string>
+    
+    <!-- Location Permission Strings -->
+    <string name="location_permission_required">Location Permission Required</string>
+    <string name="location_permission_message">We need access to your location to provide accurate weather information for your current area.</string>
+    <string name="allow">Allow</string>
+    <string name="gps_disabled_title">GPS is Disabled</string>
+    <string name="gps_disabled_message">Please enable GPS in your device settings to get your current location for weather updates.</string>
+    <string name="enable_gps">Enable GPS</string>
+    <string name="permission_denied_title">Permission Denied</string>
+    <string name="permission_denied_message">Location permission is required to get weather for your current location. Please enable it in app settings.</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="getting_location">Getting Your Location</string>
+    <string name="please_wait">Please wait while we find your location...</string>
+    <string name="use_current_location">Use Current Location</string>
+    <string name="location_error">Unable to get location</string>
+    <string name="location_error_message">Could not determine your current location. Please check your GPS settings and try again.</string>
+    <string name="location_timeout">Location request timed out</string>
+    <string name="location_unavailable">Location service unavailable</string>
 </resources>
