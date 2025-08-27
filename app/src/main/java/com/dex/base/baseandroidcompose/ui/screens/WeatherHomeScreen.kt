@@ -126,8 +126,16 @@ fun CompactTopBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
+                val currentHour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
+                val (greeting, greetingIcon) = when (currentHour) {
+                    in 5..11 -> "Good Morning!" to "🌅"
+                    in 12..17 -> "Good Afternoon!" to "☀️"
+                    in 18..21 -> "Good Evening!" to "🌇"
+                    else -> "Good Night!" to "🌙"
+                }
+                
                 Text(
-                    text = "Good Morning! 🌤️",
+                    text = "$greeting $greetingIcon",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -304,16 +312,58 @@ fun CompactWeatherCard(
                         )
                     }
                     
-                    // Weather icon
+                    // Weather icon with time-based logic
+                    val currentHour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
                     val weatherIcon = when {
-                        weatherData.description.contains("clear", ignoreCase = true) -> "☀️"
-                        weatherData.description.contains("cloud", ignoreCase = true) -> "☁️"
-                        weatherData.description.contains("rain", ignoreCase = true) -> "🌧️"
-                        weatherData.description.contains("snow", ignoreCase = true) -> "❄️"
+                        weatherData.description.contains("thunderstorm", ignoreCase = true) -> "⛈️"
+                        weatherData.description.contains("drizzle", ignoreCase = true) -> "🌦️"
+                        weatherData.description.contains("rain", ignoreCase = true) -> {
+                            when {
+                                weatherData.description.contains("heavy", ignoreCase = true) -> "🌧️"
+                                weatherData.description.contains("light", ignoreCase = true) -> "🌦️"
+                                else -> "🌧️"
+                            }
+                        }
+                        weatherData.description.contains("snow", ignoreCase = true) -> {
+                            when {
+                                weatherData.description.contains("heavy", ignoreCase = true) -> "❄️"
+                                weatherData.description.contains("light", ignoreCase = true) -> "🌨️"
+                                else -> "❄️"
+                            }
+                        }
                         weatherData.description.contains("mist", ignoreCase = true) || 
                         weatherData.description.contains("fog", ignoreCase = true) -> "🌫️"
-                        weatherData.description.contains("thunderstorm", ignoreCase = true) -> "⛈️"
-                        else -> "🌤️"
+                        weatherData.description.contains("haze", ignoreCase = true) -> "😶‍🌫️"
+                        weatherData.description.contains("dust", ignoreCase = true) || 
+                        weatherData.description.contains("sand", ignoreCase = true) -> "🌪️"
+                        weatherData.description.contains("clear", ignoreCase = true) -> {
+                            when (currentHour) {
+                                in 6..11 -> "🌅"  // Morning
+                                in 12..17 -> "☀️"  // Afternoon
+                                in 18..19 -> "🌇"  // Evening
+                                else -> "🌙"       // Night
+                            }
+                        }
+                        weatherData.description.contains("cloud", ignoreCase = true) -> {
+                            when {
+                                weatherData.description.contains("few", ignoreCase = true) -> {
+                                    when (currentHour) {
+                                        in 6..18 -> "🌤️"  // Partly cloudy day
+                                        else -> "☁️"       // Cloudy night
+                                    }
+                                }
+                                weatherData.description.contains("scattered", ignoreCase = true) -> "⛅"
+                                weatherData.description.contains("broken", ignoreCase = true) || 
+                                weatherData.description.contains("overcast", ignoreCase = true) -> "☁️"
+                                else -> "☁️"
+                            }
+                        }
+                        else -> {
+                            when (currentHour) {
+                                in 6..18 -> "🌤️"  // Default day
+                                else -> "🌙"       // Default night
+                            }
+                        }
                     }
                     
                     Text(
@@ -492,9 +542,15 @@ data class HealthAdvice(
 )
 
 fun generateHealthAdvice(weatherData: WeatherData?): HealthAdvice {
+    val currentHour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
+    
     if (weatherData == null) {
+        val defaultIcon = when (currentHour) {
+            in 6..18 -> "🏥"
+            else -> "🌙"
+        }
         return HealthAdvice(
-            icon = "🏥",
+            icon = defaultIcon,
             title = "Stay Healthy",
             advice = "Keep yourself hydrated and maintain a balanced diet for optimal health.",
             tip = "Regular exercise boosts immunity",
@@ -508,7 +564,7 @@ fun generateHealthAdvice(weatherData: WeatherData?): HealthAdvice {
     
     return when {
         temp > 35 -> HealthAdvice(
-            icon = "🌡️",
+            icon = "🥵",
             title = "Heat Warning",
             advice = "Very hot weather! Stay indoors during peak hours, drink plenty of water, and wear light-colored clothing.",
             tip = "Avoid outdoor activities between 10 AM - 4 PM",
@@ -516,11 +572,24 @@ fun generateHealthAdvice(weatherData: WeatherData?): HealthAdvice {
         )
         
         temp > 30 -> HealthAdvice(
-            icon = "☀️",
+            icon = when (currentHour) {
+                in 6..11 -> "🌅"
+                in 12..17 -> "☀️"
+                in 18..19 -> "🌇"
+                else -> "🌙"
+            },
             title = "Hot Weather Care",
             advice = "Hot day ahead! Stay hydrated, use sunscreen, and take breaks in shade when outdoors.",
             tip = "Drink water every 15-20 minutes when active",
             color = Color(0xFFFF9800)
+        )
+        
+        temp < 5 -> HealthAdvice(
+            icon = "🥶",
+            title = "Freezing Weather Alert",
+            advice = "Extremely cold! Limit outdoor exposure, dress in multiple layers, and watch for signs of frostbite.",
+            tip = "Cover all exposed skin when going outside",
+            color = Color(0xFF1976D2)
         )
         
         temp < 10 -> HealthAdvice(
@@ -529,6 +598,22 @@ fun generateHealthAdvice(weatherData: WeatherData?): HealthAdvice {
             advice = "Cold weather! Dress in layers, protect extremities, and stay warm to prevent hypothermia.",
             tip = "Warm up before going outside",
             color = DeepSkyBlue
+        )
+        
+        description.contains("thunderstorm") -> HealthAdvice(
+            icon = "⛈️",
+            title = "Storm Safety",
+            advice = "Thunderstorm warning! Stay indoors, avoid windows, and unplug electronics. Do not use water.",
+            tip = "Wait 30 minutes after last thunder before going outside",
+            color = Color(0xFF7B1FA2)
+        )
+        
+        description.contains("snow") -> HealthAdvice(
+            icon = "❄️",
+            title = "Snow Day Precautions",
+            advice = "Snowy conditions! Wear appropriate footwear, drive carefully, and stay warm and dry.",
+            tip = "Shovel snow in small amounts to avoid strain",
+            color = Color(0xFF0277BD)
         )
         
         humidity > 80 -> HealthAdvice(
@@ -540,23 +625,58 @@ fun generateHealthAdvice(weatherData: WeatherData?): HealthAdvice {
         )
         
         description.contains("rain") -> HealthAdvice(
-            icon = "☔",
+            icon = when {
+                description.contains("heavy") -> "🌧️"
+                description.contains("light") -> "🌦️"
+                else -> "☔"
+            },
             title = "Rainy Day Health",
             advice = "Rainy weather! Stay dry, boost your mood with indoor activities, and be careful of slippery surfaces.",
             tip = "Vitamin D supplement may help on cloudy days",
             color = Color(0xFF5C6BC0)
         )
         
+        description.contains("fog") || description.contains("mist") -> HealthAdvice(
+            icon = "🌫️",
+            title = "Foggy Conditions",
+            advice = "Limited visibility due to fog. Drive slowly, use headlights, and be extra cautious.",
+            tip = "Allow extra time for travel in foggy conditions",
+            color = Color(0xFF78909C)
+        )
+        
         description.contains("clear") && temp >= 20 && temp <= 28 -> HealthAdvice(
-            icon = "🌞",
+            icon = when (currentHour) {
+                in 6..11 -> "🌅"
+                in 12..17 -> "☀️"
+                in 18..19 -> "🌇"
+                else -> "🌙"
+            },
             title = "Perfect Weather",
             advice = "Ideal weather conditions! Great time for outdoor activities, exercise, and fresh air.",
             tip = "Perfect day for a walk or outdoor workout",
             color = CompatibilityGreen
         )
         
+        description.contains("cloud") -> HealthAdvice(
+            icon = when {
+                description.contains("few") && currentHour in 6..18 -> "🌤️"
+                description.contains("few") -> "☁️"
+                description.contains("scattered") -> "⛅"
+                else -> "☁️"
+            },
+            title = "Cloudy Day",
+            advice = "Cloudy weather provides natural UV protection. Good day for outdoor activities without harsh sun.",
+            tip = "Still use sunscreen as UV rays can penetrate clouds",
+            color = Color(0xFF90A4AE)
+        )
+        
         else -> HealthAdvice(
-            icon = "🌤️",
+            icon = when (currentHour) {
+                in 6..11 -> "🌅"
+                in 12..17 -> "🌤️"
+                in 18..21 -> "🌇"
+                else -> "🌙"
+            },
             title = "General Wellness",
             advice = "Moderate weather conditions. Maintain regular exercise, balanced diet, and adequate sleep.",
             tip = "Listen to your body and adjust activities accordingly",
