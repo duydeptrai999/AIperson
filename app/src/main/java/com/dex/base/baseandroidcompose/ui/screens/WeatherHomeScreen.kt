@@ -138,18 +138,7 @@ fun WeatherHomeScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Daily AI Insights Card (New Priority Feature)
-            item {
-                val compatibility = uiState.compatibility
-                if (compatibility != null) {
-                    DailyAIInsightsCard(
-                        score = compatibility.compatibilityScore,
-                        pointsEarned = compatibility.pointsEarned,
-                        userAge = userProfile?.age ?: 25,
-                        userOccupation = userProfile?.occupation?.displayName ?: "Unknown"
-                    )
-                }
-            }
+
             
             // Location Card
             item {
@@ -209,139 +198,9 @@ fun WeatherHomeScreen(
     }
 }
 
-@Composable
-fun DailyAIInsightsCard(
-    score: Float,
-    pointsEarned: Int,
-    userAge: Int,
-    userOccupation: String
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        text = "🤖 AI Daily Insights",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                    Text(
-                        text = "Personalized for you",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
-                    )
-                }
-                
-                Box(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(CircleShape)
-                        .background(
-                            brush = Brush.radialGradient(
-                                colors = listOf(
-                                    RewardGold,
-                                    RewardGold.copy(alpha = 0.7f)
-                                )
-                            )
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "+$pointsEarned",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            // AI Analysis based on user profile
-            val analysisText = when {
-                userAge < 25 && score > 80 -> "Perfect weather for outdoor activities! Great for your active lifestyle."
-                userOccupation.contains("Developer", ignoreCase = true) && score > 75 -> "Ideal conditions for your commute to work. Low humidity won't affect your devices."
-                userAge > 50 && score > 70 -> "Comfortable weather conditions. Perfect for your daily routine."
-                score < 50 -> "Weather might be challenging today. Consider indoor activities."
-                else -> "Good weather conditions for your daily activities."
-            }
-            
-            Text(
-                text = analysisText,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                lineHeight = 24.sp
-            )
-            
-            Spacer(modifier = Modifier.height(12.dp))
-            
-            // Quick stats row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                QuickStatItem(
-                    icon = "🎯",
-                    label = "Match",
-                    value = "${score.roundToInt()}%"
-                )
-                QuickStatItem(
-                    icon = "👤",
-                    label = "Age",
-                    value = "$userAge"
-                )
-                QuickStatItem(
-                    icon = "💼",
-                    label = "Profile",
-                    value = userOccupation.take(8)
-                )
-            }
-        }
-    }
-}
 
-@Composable
-fun QuickStatItem(
-    icon: String,
-    label: String,
-    value: String
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = icon,
-            fontSize = 20.sp
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
-        )
-    }
-}
+
+
 
 @Composable
 fun LocationCard(
