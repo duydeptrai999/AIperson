@@ -2,10 +2,18 @@ package com.dex.base.baseandroidcompose.di
 
 import com.dex.base.baseandroidcompose.data.ai.WeatherCompatibilityEngine
 import com.dex.base.baseandroidcompose.data.repository.WeatherRepository
+import com.dex.base.baseandroidcompose.data.api.AIHealthService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import android.content.Context
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -22,5 +30,36 @@ object AppModule {
     @Singleton
     fun provideWeatherCompatibilityEngine(): WeatherCompatibilityEngine {
         return WeatherCompatibilityEngine()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        
+        return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .build()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://ai.dreamapi.net/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideAIHealthService(retrofit: Retrofit): AIHealthService {
+        return retrofit.create(AIHealthService::class.java)
     }
 }

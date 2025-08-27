@@ -6,6 +6,7 @@ import com.dex.base.baseandroidcompose.data.ai.WeatherCompatibilityEngine
 import com.dex.base.baseandroidcompose.data.models.*
 import com.dex.base.baseandroidcompose.data.repository.WeatherRepository
 import com.dex.base.baseandroidcompose.data.repository.UserRepository
+import com.dex.base.baseandroidcompose.data.api.AIHealthRepository
 import com.dex.base.baseandroidcompose.utils.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class WeatherViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository,
     private val userRepository: UserRepository,
-    private val compatibilityEngine: WeatherCompatibilityEngine
+    private val compatibilityEngine: WeatherCompatibilityEngine,
+    private val aiHealthRepository: AIHealthRepository
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(WeatherUiState())
@@ -84,6 +86,16 @@ class WeatherViewModel @Inject constructor(
                             dailyInsights = insights,
                             error = null
                         )
+                        
+                        // Load AI health advice if user profile is available
+                        if (userProfile != null) {
+                            loadAIHealthAdvice(weatherData, userProfile)
+                        }
+                        
+                        // Load AI health advice if user profile is available
+                        if (userProfile != null) {
+                            loadAIHealthAdvice(weatherData, userProfile)
+                        }
                         Logger.d("WeatherViewModel: UI state updated successfully, isLoading = false")
                         Logger.d("UI State updated with weather data successfully")
                     },
@@ -461,6 +473,62 @@ class WeatherViewModel @Inject constructor(
         return java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date())
     }
     
+    /**
+     * Load AI health advice based on weather and user profile
+     */
+    private fun loadAIHealthAdvice(weatherData: WeatherData, userProfile: UserProfile) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(
+                isLoadingHealthAdvice = true,
+                healthAdviceError = null
+            )
+            
+            try {
+                val result = aiHealthRepository.getHealthAdvice(
+                    weatherData = weatherData,
+                    userProfile = userProfile,
+                    conversationId = _uiState.value.aiHealthAdvice?.conversationId
+                )
+                
+                result.fold(
+                    onSuccess = { healthAdvice ->
+                        Logger.d("AI Health advice loaded successfully")
+                        _uiState.value = _uiState.value.copy(
+                            isLoadingHealthAdvice = false,
+                            aiHealthAdvice = healthAdvice,
+                            healthAdviceError = null
+                        )
+                    },
+                    onFailure = { exception ->
+                        Logger.e("Failed to load AI health advice: ${exception.message}")
+                        _uiState.value = _uiState.value.copy(
+                            isLoadingHealthAdvice = false,
+                            healthAdviceError = exception.message ?: "Failed to load health advice"
+                        )
+                    }
+                )
+            } catch (e: Exception) {
+                Logger.e("Exception loading AI health advice: ${e.message}")
+                _uiState.value = _uiState.value.copy(
+                    isLoadingHealthAdvice = false,
+                    healthAdviceError = e.message ?: "Unknown error occurred"
+                )
+            }
+        }
+    }
+    
+    /**
+     * Refresh AI health advice
+     */
+    fun refreshHealthAdvice() {
+        val weatherData = _uiState.value.weatherData
+        val userProfile = _userProfile.value
+        
+        if (weatherData != null && userProfile != null) {
+            loadAIHealthAdvice(weatherData, userProfile)
+        }
+    }
+    
     private fun createMockUserProfile(): UserProfile {
         return UserProfile(
             id = "user_001",
@@ -492,5 +560,8 @@ data class WeatherUiState(
     val weatherData: WeatherData? = null,
     val compatibility: WeatherCompatibility? = null,
     val dailyInsights: DailyAIInsights? = null,
+    val aiHealthAdvice: AIHealthAdvice? = null,
+    val isLoadingHealthAdvice: Boolean = false,
+    val healthAdviceError: String? = null,
     val error: String? = null
 )

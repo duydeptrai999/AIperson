@@ -7,6 +7,12 @@ Luôn log các thông tin khi request và response để debug.
 [weather-basic-workflow.mdc](../.cursor/rules/weather-basic-workflow.mdc) - đây là các api cơ bản, sử dụng trong các ứng dụng đơn giản bổ xung thêm thời tiết
 [weather-detailed-workflow.mdc](../.cursor/rules/weather-detailed-workflow.mdc) - tài liệu api đầy đủ
 
+## Đây là API key
+API Health:
+✅ API Generate: app-Sk0XODho8WD6R1BRg4NGpPwD
+✅ API Chat: app-Sk0XODho8WD6R1BRg4NGpPwD
+
+
 ## Chat AI & Generate Text AI
 
 Sử dụng API chat cho tất cả các tương tác AI. API này hỗ trợ tiếp tục cuộc trò chuyện thông qua conversation_id, nếu là 1 cuộc trò chuyện mới hoặc không có request trước đó thì conversation_id = null.
