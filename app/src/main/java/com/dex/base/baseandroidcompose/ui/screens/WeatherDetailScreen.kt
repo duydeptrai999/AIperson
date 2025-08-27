@@ -132,10 +132,12 @@ fun WeatherDetailScreen(
                 // Compatibility Analysis Card
                 uiState.compatibility?.let { compatibility ->
                     item {
-                        CompatibilityAnalysisCard(
-                            compatibility = compatibility,
-                            userProfile = userProfile
-                        )
+                        userProfile?.let { profile ->
+                            CompatibilityAnalysisCard(
+                                compatibility = compatibility,
+                                userProfile = profile
+                            )
+                        }
                     }
                 }
                 

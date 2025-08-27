@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.dex.base.baseandroidcompose.data.ai.WeatherCompatibilityEngine
 import com.dex.base.baseandroidcompose.data.models.*
 import com.dex.base.baseandroidcompose.data.repository.WeatherRepository
+import com.dex.base.baseandroidcompose.data.repository.UserRepository
 import com.dex.base.baseandroidcompose.utils.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,16 +17,18 @@ import javax.inject.Inject
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository,
+    private val userRepository: UserRepository,
     private val compatibilityEngine: WeatherCompatibilityEngine
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(WeatherUiState())
     val uiState: StateFlow<WeatherUiState> = _uiState.asStateFlow()
     
-    private val _userProfile = MutableStateFlow(createMockUserProfile())
-    val userProfile: StateFlow<UserProfile> = _userProfile.asStateFlow()
+    private val _userProfile = MutableStateFlow<UserProfile?>(null)
+    val userProfile: StateFlow<UserProfile?> = _userProfile.asStateFlow()
     
     init {
+        loadUserProfile()
         loadWeatherData("Hanoi")
     }
     
@@ -43,22 +46,31 @@ class WeatherViewModel @Inject constructor(
                     onSuccess = { weatherData ->
                         Logger.d("Weather data received successfully: $weatherData")
                         
-                        val compatibility = compatibilityEngine.calculateCompatibility(
-                            weatherData = weatherData,
-                            userProfile = _userProfile.value
-                        )
+                        val userProfile = _userProfile.value
+                        val compatibility = if (userProfile != null) {
+                            compatibilityEngine.calculateCompatibility(
+                                weatherData = weatherData,
+                                userProfile = userProfile
+                            )
+                        } else {
+                            null
+                        }
                         Logger.d("Compatibility calculated: $compatibility")
                 
-                        // Update user points
-                        val updatedProfile = _userProfile.value.copy(
-                            pointBalance = _userProfile.value.pointBalance + compatibility.pointsEarned,
-                            totalPointsEarned = _userProfile.value.totalPointsEarned + compatibility.pointsEarned
-                        )
-                        _userProfile.value = updatedProfile
-                        Logger.d("User profile updated with points: ${compatibility.pointsEarned}")
-                        
-                        // Generate daily insights
-                        val insights = generateDailyInsights(weatherData, compatibility, updatedProfile)
+                        val insights = if (userProfile != null && compatibility != null) {
+                            // Update user points
+                            val updatedProfile = userProfile.copy(
+                                pointBalance = userProfile.pointBalance + compatibility.pointsEarned,
+                                totalPointsEarned = userProfile.totalPointsEarned + compatibility.pointsEarned
+                            )
+                            _userProfile.value = updatedProfile
+                            Logger.d("User profile updated with points: ${compatibility.pointsEarned}")
+                            
+                            // Generate daily insights
+                            generateDailyInsights(weatherData, compatibility, updatedProfile)
+                        } else {
+                            null
+                        }
                         Logger.d("Daily insights generated: $insights")
                         
                         _uiState.value = _uiState.value.copy(
@@ -105,20 +117,29 @@ class WeatherViewModel @Inject constructor(
                 val weatherResult = weatherRepository.getCurrentWeatherByCoordinates(lat, lon)
                 weatherResult.fold(
                     onSuccess = { weatherData ->
-                        val compatibility = compatibilityEngine.calculateCompatibility(
-                            weatherData = weatherData,
-                            userProfile = _userProfile.value
-                        )
+                        val userProfile = _userProfile.value
+                        val compatibility = if (userProfile != null) {
+                            compatibilityEngine.calculateCompatibility(
+                                weatherData = weatherData,
+                                userProfile = userProfile
+                            )
+                        } else {
+                            null
+                        }
                         
-                        // Update user points
-                        val updatedProfile = _userProfile.value.copy(
-                            pointBalance = _userProfile.value.pointBalance + compatibility.pointsEarned,
-                            totalPointsEarned = _userProfile.value.totalPointsEarned + compatibility.pointsEarned
-                        )
-                        _userProfile.value = updatedProfile
-                        
-                        // Generate daily insights
-                        val insights = generateDailyInsights(weatherData, compatibility, updatedProfile)
+                        val insights = if (userProfile != null && compatibility != null) {
+                            // Update user points
+                            val updatedProfile = userProfile.copy(
+                                pointBalance = userProfile.pointBalance + compatibility.pointsEarned,
+                                totalPointsEarned = userProfile.totalPointsEarned + compatibility.pointsEarned
+                            )
+                            _userProfile.value = updatedProfile
+                            
+                            // Generate daily insights
+                            generateDailyInsights(weatherData, compatibility, updatedProfile)
+                        } else {
+                            null
+                        }
                         
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
@@ -152,25 +173,103 @@ class WeatherViewModel @Inject constructor(
         }
     }
     
-    fun updateUserProfile(profile: UserProfile) {
-        _userProfile.value = profile
-        // Recalculate compatibility with new profile
-        val currentWeather = _uiState.value.weatherData
-        if (currentWeather != null) {
-            viewModelScope.launch {
-                val compatibility = compatibilityEngine.calculateCompatibility(
-                    weatherData = currentWeather,
-                    userProfile = profile
-                )
+    /**
+     * Load user profile from repository
+     */
+    private fun loadUserProfile() {
+        viewModelScope.launch {
+            userRepository.userProfile.collect { profile ->
+                _userProfile.value = profile
                 
-                val insights = generateDailyInsights(currentWeather, compatibility, profile)
-                
-                _uiState.value = _uiState.value.copy(
-                    compatibility = compatibility,
-                    dailyInsights = insights
-                )
+                // If we have weather data and profile, recalculate compatibility
+                val currentWeatherData = _uiState.value.weatherData
+                if (currentWeatherData != null && profile != null) {
+                    calculateAndUpdateCompatibility(currentWeatherData, profile)
+                }
             }
         }
+    }
+    
+    /**
+     * Save user profile to repository
+     */
+    fun saveUserProfile(userProfile: UserProfile) {
+        viewModelScope.launch {
+            try {
+                _uiState.value = _uiState.value.copy(isLoading = true)
+                
+                val result = userRepository.saveUserProfile(userProfile)
+                
+                if (result.isSuccess) {
+                    Logger.d("User profile saved successfully")
+                    
+                    // Recalculate compatibility with new profile
+                    val currentWeatherData = _uiState.value.weatherData
+                    if (currentWeatherData != null) {
+                        calculateAndUpdateCompatibility(currentWeatherData, userProfile)
+                    }
+                } else {
+                    Logger.e("Failed to save user profile: ${result.exceptionOrNull()?.message}")
+                }
+                
+            } catch (e: Exception) {
+                Logger.e("Error saving user profile: ${e.message}")
+            } finally {
+                _uiState.value = _uiState.value.copy(isLoading = false)
+            }
+        }
+    }
+    
+    /**
+     * Update user profile (legacy method for compatibility)
+     */
+    fun updateUserProfile(newProfile: UserProfile) {
+        saveUserProfile(newProfile)
+    }
+    
+    /**
+     * Calculate and update compatibility
+     */
+    private fun calculateAndUpdateCompatibility(weatherData: WeatherData, userProfile: UserProfile) {
+        val compatibility = compatibilityEngine.calculateCompatibility(
+            weatherData = weatherData,
+            userProfile = userProfile
+        )
+        
+        val updatedProfile = userProfile.copy(
+            pointBalance = userProfile.pointBalance + compatibility.pointsEarned,
+            totalPointsEarned = userProfile.totalPointsEarned + compatibility.pointsEarned
+        )
+        
+        // Save updated profile with new points
+        viewModelScope.launch {
+            userRepository.saveUserProfile(updatedProfile)
+        }
+        
+        val dailyInsights = generateDailyInsights(
+            weatherData = weatherData,
+            compatibility = compatibility,
+            userProfile = updatedProfile
+        )
+        
+        _uiState.value = _uiState.value.copy(
+            compatibility = compatibility,
+            dailyInsights = dailyInsights
+        )
+    }
+    
+    /**
+     * Get current user profile or create default one
+     */
+    fun getCurrentUserProfileOrDefault(): UserProfile {
+        return _userProfile.value ?: UserProfile.getDefaultProfile()
+    }
+    
+    /**
+     * Check if user has completed profile setup
+     */
+    fun hasUserProfile(): Boolean {
+        return userRepository.hasUserProfile()
     }
     
     private fun generateDailyInsights(

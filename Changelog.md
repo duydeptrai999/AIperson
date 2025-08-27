@@ -2,7 +2,20 @@
 
 ## [Latest] - 2024-12-19
 
+### Removed
+- ✅ **ProfileTipsCard Component**: Xóa component ProfileTipsCard khỏi UserProfileScreen.kt theo yêu cầu
+  - **Removed Function**: Xóa hoàn toàn function ProfileTipsCard() (dòng 474-532)
+  - **Removed Call**: Xóa việc gọi ProfileTipsCard() trong UserProfileScreen
+  - **UI Cleanup**: Giao diện UserProfile giờ gọn gàng hơn, tập trung vào form nhập liệu
+  - **Build Success**: Đã compile thành công sau khi xóa component
+
 ### Fixed
+- ✅ **Null Safety Issues**: Sửa tất cả lỗi null safety trong WeatherDetailScreen.kt và WeatherHomeScreen.kt
+  - **WeatherDetailScreen.kt**: Thêm null check cho userProfile trong CompatibilityAnalysisCard
+  - **WeatherHomeScreen.kt**: Sửa lỗi nullable receiver cho occupation.displayName, age, pointBalance
+  - **Type Safety**: Thêm default values cho các nullable parameters (age: 25, occupation: "Unknown", points: 0)
+  - **Operator Call Fix**: Sửa lỗi operator call trên nullable receiver Int? (dòng 119) với safe call và default values
+  - **Build Success**: Đã compile thành công không còn lỗi Kotlin
 - ✅ **API Key Configuration**: Cập nhật OpenWeatherMap API key (927565d05e50545fc0077d2bdd4d5855) vào WeatherApiService.kt
 - ✅ **WeatherDetailScreen.kt**: Sửa lỗi 'Unresolved reference getScoreColor' bằng cách di chuyển hàm lên đầu file
 - ✅ **Environment Configuration**: Cập nhật .env.example với cấu hình OpenWeatherMap API đúng

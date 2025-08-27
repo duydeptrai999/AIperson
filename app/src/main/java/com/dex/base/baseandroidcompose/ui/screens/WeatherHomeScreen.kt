@@ -48,7 +48,7 @@ fun WeatherHomeScreen(
     var isRefreshing by remember { mutableStateOf(false) }
     var isNewPointsEarned by remember { mutableStateOf(false) }
     var currentWeatherScore by remember { mutableStateOf(uiState.compatibility?.compatibilityScore ?: 0f) }
-    var totalPoints by remember { mutableStateOf(userProfile.totalPointsEarned) }
+    var totalPoints by remember { mutableStateOf(userProfile?.totalPointsEarned ?: 0) }
     var dailyPointsEarned by remember { mutableStateOf(0) }
     
     // Animation for points
@@ -81,7 +81,7 @@ fun WeatherHomeScreen(
                         style = MaterialTheme.typography.titleLarge
                     )
                     Text(
-                        text = "Perfect weather for ${userProfile.occupation.displayName}",
+                        text = "Perfect weather for ${userProfile?.occupation?.displayName ?: "everyone"}",
                         style = MaterialTheme.typography.bodySmall,
                         color = RainyGray
                     )
@@ -116,7 +116,7 @@ fun WeatherHomeScreen(
                             currentWeatherScore >= 30 -> 3
                             else -> 1
                         }
-                        totalPoints += dailyPointsEarned
+                        totalPoints = (totalPoints ?: 0) + dailyPointsEarned
                         isNewPointsEarned = true
                         isRefreshing = false
                     }
@@ -145,8 +145,8 @@ fun WeatherHomeScreen(
                     DailyAIInsightsCard(
                         score = compatibility.compatibilityScore,
                         pointsEarned = compatibility.pointsEarned,
-                        userAge = userProfile.age,
-                        userOccupation = userProfile.occupation.displayName
+                        userAge = userProfile?.age ?: 25,
+                        userOccupation = userProfile?.occupation?.displayName ?: "Unknown"
                     )
                 }
             }
@@ -170,8 +170,8 @@ fun WeatherHomeScreen(
                 if (compatibility != null) {
                     EnhancedCompatibilityScoreCard(
                         score = compatibility.compatibilityScore,
-                        userAge = userProfile.age,
-                        userOccupation = userProfile.occupation.displayName,
+                        userAge = userProfile?.age ?: 25,
+                        userOccupation = userProfile?.occupation?.displayName ?: "Unknown",
                         reasoning = compatibility.reasoning.joinToString("\n"),
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -181,10 +181,10 @@ fun WeatherHomeScreen(
             // Enhanced Points Display Card
             item {
                 EnhancedPointsDisplayCard(
-                    totalPoints = userProfile.pointBalance,
+                    totalPoints = userProfile?.pointBalance ?: 0,
                     dailyPointsEarned = uiState.compatibility?.pointsEarned ?: 0,
                     isNewPointsEarned = isNewPointsEarned,
-                    animatedPoints = userProfile.pointBalance.toFloat(),
+                    animatedPoints = userProfile?.pointBalance?.toFloat() ?: 0f,
                     onNavigateToRewards = { /* Rewards navigation handled by bottom nav */ }
                 )
             }

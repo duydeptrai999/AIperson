@@ -20,6 +20,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.dex.base.baseandroidcompose.ui.screens.WeatherHomeScreen
 import com.dex.base.baseandroidcompose.ui.screens.WeatherDetailScreen
+import com.dex.base.baseandroidcompose.ui.screens.UserProfileScreen
+import com.dex.base.baseandroidcompose.ui.viewmodels.UserViewModel
 import com.dex.base.baseandroidcompose.ui.viewmodels.WeatherViewModel
 import com.dex.base.baseandroidcompose.data.models.UserLevel
 import com.dex.base.baseandroidcompose.data.models.UserProfile
@@ -34,6 +36,7 @@ fun WeatherNavGraph(
     startDestination: String = NavigationRoutes.HOME
 ) {
     val weatherViewModel: WeatherViewModel = hiltViewModel()
+    val userViewModel: UserViewModel = hiltViewModel()
     
     Scaffold(
         bottomBar = {
@@ -138,11 +141,12 @@ fun WeatherNavGraph(
                 }
             ) {
                 RewardsScreen(
-                    viewModel = weatherViewModel
+                    weatherViewModel = weatherViewModel,
+                    userViewModel = userViewModel
                 )
             }
             
-            // Profile Screen (Placeholder)
+            // Profile Screen
             composable(
                 route = NavigationRoutes.PROFILE,
                 enterTransition = {
@@ -152,8 +156,16 @@ fun WeatherNavGraph(
                     ) + fadeIn(animationSpec = tween(300))
                 }
             ) {
-                ProfileScreen(
-                    viewModel = weatherViewModel
+                UserProfileScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onProfileSaved = {
+                        // Navigate back after saving profile
+                        navController.popBackStack()
+                    },
+                    weatherViewModel = weatherViewModel,
+                    userViewModel = userViewModel
                 )
             }
         }
@@ -165,9 +177,10 @@ fun WeatherNavGraph(
  */
 @Composable
 fun RewardsScreen(
-    viewModel: WeatherViewModel
+    weatherViewModel: WeatherViewModel,
+    userViewModel: UserViewModel = hiltViewModel()
 ) {
-    val userProfile by viewModel.userProfile.collectAsState()
+    val userProfile by userViewModel.userProfile.collectAsState()
     
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -200,7 +213,7 @@ fun RewardsScreen(
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = "${userProfile.pointBalance} điểm",
+                        text = "${userProfile?.pointBalance ?: 0} điểm",
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -208,12 +221,12 @@ fun RewardsScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                     
                     Text(
-                        text = "Cấp độ: ${UserLevel.getLevelFromPoints(userProfile.totalPointsEarned).title}",
+                        text = "Cấp độ: ${userProfile?.let { UserLevel.getLevelFromPoints(it.totalPointsEarned).title } ?: "Chưa xác định"}",
                         style = MaterialTheme.typography.bodyMedium
                     )
                     
                     LinearProgressIndicator(
-                        progress = UserLevel.getProgressToNextLevel(userProfile.totalPointsEarned),
+                        progress = userProfile?.let { UserLevel.getProgressToNextLevel(it.totalPointsEarned) } ?: 0f,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 8.dp)
@@ -235,72 +248,6 @@ fun RewardsScreen(
 /**
  * Profile Screen Placeholder
  */
-@Composable
-fun ProfileScreen(
-    viewModel: WeatherViewModel
-) {
-    val userProfile by viewModel.userProfile.collectAsState()
-    
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "Hồ sơ cá nhân",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                )
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(
-                        text = "Thông tin cá nhân",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    
-                    Spacer(modifier = Modifier.height(8.dp))
-                    
-                    Text(
-                        text = "Tuổi: ${userProfile.age}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    
-                    Text(
-                        text = "Nghề nghiệp: ${userProfile.occupation.displayName}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    
-                    Text(
-                        text = "Vị trí: ${userProfile.location.city}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Text(
-                text = "Chỉnh sửa hồ sơ sẽ được triển khai trong phiên bản tiếp theo",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
-}
 
 /**
  * Enhanced Navigation Graph with Deep Links
@@ -312,6 +259,7 @@ fun EnhancedWeatherNavGraph(
     startDestination: String = NavigationRoutes.HOME
 ) {
     val weatherViewModel: WeatherViewModel = hiltViewModel()
+    val userViewModel: UserViewModel = hiltViewModel()
     var fabExpanded by remember { mutableStateOf(false) }
     
     Scaffold(
@@ -369,14 +317,27 @@ fun EnhancedWeatherNavGraph(
                 LaunchedEffect(Unit) {
                     fabExpanded = false
                 }
-                RewardsScreen(viewModel = weatherViewModel)
+                RewardsScreen(
+                    weatherViewModel = weatherViewModel,
+                    userViewModel = userViewModel
+                )
             }
             
             composable(NavigationRoutes.PROFILE) {
                 LaunchedEffect(Unit) {
                     fabExpanded = false
                 }
-                ProfileScreen(viewModel = weatherViewModel)
+                UserProfileScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onProfileSaved = {
+                        // Navigate back after saving profile
+                        navController.popBackStack()
+                    },
+                    weatherViewModel = weatherViewModel,
+                    userViewModel = userViewModel
+                )
             }
         }
     }
