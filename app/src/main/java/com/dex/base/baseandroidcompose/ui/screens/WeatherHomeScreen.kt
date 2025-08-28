@@ -585,28 +585,44 @@ fun HealthAdviceCard(
                 aiHealthAdvice != null -> {
                     // Success state with AI data
                     Column {
-                        // Status and Assessment
+                        // Status and Assessment Score
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = aiHealthAdvice.statusMessage,
-                                style = MaterialTheme.typography.titleSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = getHealthColor(aiHealthAdvice.assessmentScore)
-                            )
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = aiHealthAdvice.statusMessage,
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = getHealthColor(aiHealthAdvice.assessmentScore)
+                                )
+                                Text(
+                                    text = aiHealthAdvice.assessmentLevel,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                )
+                            }
                             
-                            Text(
-                                text = "${aiHealthAdvice.assessmentScore}/10",
-                                style = MaterialTheme.typography.titleSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = getHealthColor(aiHealthAdvice.assessmentScore)
-                            )
+                            // Assessment Score Badge
+                            Card(
+                                colors = CardDefaults.cardColors(
+                                    containerColor = getHealthColor(aiHealthAdvice.assessmentScore).copy(alpha = 0.2f)
+                                ),
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Text(
+                                    text = "${aiHealthAdvice.assessmentScore}/10",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = getHealthColor(aiHealthAdvice.assessmentScore),
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                                )
+                            }
                         }
                         
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
                         
                         // Health Analysis
                         Card(
@@ -614,142 +630,127 @@ fun HealthAdviceCard(
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
                             ),
-                            shape = RoundedCornerShape(8.dp)
+                            shape = RoundedCornerShape(12.dp)
                         ) {
-                            Text(
-                                text = aiHealthAdvice.healthAnalysis,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                lineHeight = 20.sp,
+                            Column(
                                 modifier = Modifier.padding(12.dp)
-                            )
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "📊",
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = "Phân tích tình trạng sức khỏe",
+                                        style = MaterialTheme.typography.titleSmall,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = aiHealthAdvice.healthAnalysis,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    lineHeight = 20.sp
+                                )
+                            }
                         }
                         
                         if (aiHealthAdvice.recommendations.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(12.dp))
                             
-                            // Recommendations
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "💡",
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text(
-                                    text = "Khuyến nghị cho hôm nay:",
-                                    style = MaterialTheme.typography.titleSmall,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
+                            // Recommendations with specific categories
+                            val shouldDoRecommendations = aiHealthAdvice.recommendations.filter { 
+                                it.title.contains("nên làm", ignoreCase = true) || 
+                                it.title.contains("Hoạt động nên làm", ignoreCase = true)
+                            }
+                            val shouldAvoidRecommendations = aiHealthAdvice.recommendations.filter { 
+                                it.title.contains("cần tránh", ignoreCase = true) || 
+                                it.title.contains("Hoạt động cần tránh", ignoreCase = true)
+                            }
+                            val endOfDayRecommendations = aiHealthAdvice.recommendations.filter { 
+                                it.title.contains("cuối ngày", ignoreCase = true) || 
+                                it.title.contains("Kế hoạch từ giờ đến cuối ngày", ignoreCase = true)
                             }
                             
-                            Spacer(modifier = Modifier.height(8.dp))
+                            // Should Do Activities
+                            if (shouldDoRecommendations.isNotEmpty()) {
+                                RecommendationSection(
+                                    icon = "✅",
+                                    title = "Hoạt động nên làm",
+                                    recommendations = shouldDoRecommendations,
+                                    backgroundColor = Color(0xFF4CAF50).copy(alpha = 0.1f),
+                                    titleColor = Color(0xFF4CAF50)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
                             
-                            aiHealthAdvice.recommendations.take(3).forEach { recommendation ->
-                                Card(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                                    ),
-                                    shape = RoundedCornerShape(8.dp)
-                                ) {
-                                    Column(
-                                        modifier = Modifier.padding(12.dp)
-                                    ) {
-                                        Text(
-                                            text = recommendation.title,
-                                            style = MaterialTheme.typography.titleSmall,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = MaterialTheme.colorScheme.primary
-                                        )
-                                        Spacer(modifier = Modifier.height(4.dp))
-                                        Text(
-                                            text = recommendation.content,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
-                                        )
-                                    }
-                                }
-                                Spacer(modifier = Modifier.height(6.dp))
+                            // Should Avoid Activities
+                            if (shouldAvoidRecommendations.isNotEmpty()) {
+                                RecommendationSection(
+                                    icon = "⚠️",
+                                    title = "Hoạt động cần tránh",
+                                    recommendations = shouldAvoidRecommendations,
+                                    backgroundColor = Color(0xFFFF9800).copy(alpha = 0.1f),
+                                    titleColor = Color(0xFFFF9800)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+                            
+                            // End of Day Plan
+                            if (endOfDayRecommendations.isNotEmpty()) {
+                                RecommendationSection(
+                                    icon = "🌅",
+                                    title = "Kế hoạch từ giờ đến cuối ngày",
+                                    recommendations = endOfDayRecommendations,
+                                    backgroundColor = Color(0xFF2196F3).copy(alpha = 0.1f),
+                                    titleColor = Color(0xFF2196F3)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+                            
+                            // Other recommendations (fallback)
+                            val otherRecommendations = aiHealthAdvice.recommendations.filter { recommendation ->
+                                !shouldDoRecommendations.contains(recommendation) &&
+                                !shouldAvoidRecommendations.contains(recommendation) &&
+                                !endOfDayRecommendations.contains(recommendation)
+                            }
+                            
+                            if (otherRecommendations.isNotEmpty()) {
+                                RecommendationSection(
+                                    icon = "💡",
+                                    title = "Khuyến nghị khác",
+                                    recommendations = otherRecommendations,
+                                    backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                    titleColor = MaterialTheme.colorScheme.primary
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
                             }
                         }
                         
-                        Spacer(modifier = Modifier.height(8.dp))
-                        
                         // Nutritional Advice
                         if (aiHealthAdvice.nutritionalAdvice.isNotBlank()) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "🥗",
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text(
-                                    text = "Dinh dưỡng hôm nay:",
-                                    style = MaterialTheme.typography.titleSmall,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                            
-                            Spacer(modifier = Modifier.height(6.dp))
-                            
-                            Card(
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f)
-                                ),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text(
-                                    text = aiHealthAdvice.nutritionalAdvice,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                                    modifier = Modifier.padding(12.dp)
-                                )
-                            }
-                            
+                            AdviceSection(
+                                icon = "🥗",
+                                title = "Dinh dưỡng hôm nay",
+                                content = aiHealthAdvice.nutritionalAdvice,
+                                backgroundColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f)
+                            )
                             Spacer(modifier = Modifier.height(8.dp))
                         }
                         
                         // Workout Tips
                         if (aiHealthAdvice.workoutTips.isNotBlank()) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "💪",
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text(
-                                    text = "Vận động hôm nay:",
-                                    style = MaterialTheme.typography.titleSmall,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                            
-                            Spacer(modifier = Modifier.height(6.dp))
-                            
-                            Card(
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f)
-                                ),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text(
-                                    text = aiHealthAdvice.workoutTips,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                                    modifier = Modifier.padding(12.dp)
-                                )
-                            }
+                            AdviceSection(
+                                icon = "💪",
+                                title = "Vận động hôm nay",
+                                content = aiHealthAdvice.workoutTips,
+                                backgroundColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f)
+                            )
                         }
                     }
                 }
@@ -765,6 +766,98 @@ fun HealthAdviceCard(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun RecommendationSection(
+    icon: String,
+    title: String,
+    recommendations: List<HealthRecommendation>,
+    backgroundColor: Color,
+    titleColor: Color
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = backgroundColor
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = icon,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = titleColor
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            recommendations.forEach { recommendation ->
+                Text(
+                    text = "• ${recommendation.content}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun AdviceSection(
+    icon: String,
+    title: String,
+    content: String,
+    backgroundColor: Color
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = backgroundColor
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = icon,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Text(
+                text = content,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+            )
         }
     }
 }
