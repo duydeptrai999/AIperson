@@ -105,30 +105,7 @@ fun WeatherNavGraph(
                     }
                 )
             }
-            
-            // Weather Detail Screen
-            composable(
-                route = NavigationRoutes.WEATHER_DETAIL,
-                enterTransition = {
-                    slideInVertically(
-                        initialOffsetY = { it },
-                        animationSpec = tween(400)
-                    ) + fadeIn(animationSpec = tween(400))
-                },
-                exitTransition = {
-                    slideOutVertically(
-                        targetOffsetY = { it },
-                        animationSpec = tween(400)
-                    ) + fadeOut(animationSpec = tween(400))
-                }
-            ) {
-                WeatherDetailScreen(
-                    viewModel = weatherViewModel,
-                    onBackClick = {
-                        navController.popBackStack()
-                    }
-                )
-            }
+
             
             // Rewards Screen (Placeholder)
             composable(
@@ -136,14 +113,12 @@ fun WeatherNavGraph(
                 enterTransition = {
                     slideInHorizontally(
                         initialOffsetX = { it },
+
                         animationSpec = tween(300)
                     ) + fadeIn(animationSpec = tween(300))
                 }
             ) {
-                RewardsScreen(
-                    weatherViewModel = weatherViewModel,
-                    userViewModel = userViewModel
-                )
+
             }
             
             // Profile Screen
@@ -173,75 +148,6 @@ fun WeatherNavGraph(
 /**
  * Rewards Screen Placeholder
  */
-@Composable
-fun RewardsScreen(
-    weatherViewModel: WeatherViewModel,
-    userViewModel: UserViewModel = hiltViewModel()
-) {
-    val userProfile by userViewModel.userProfile.collectAsState()
-    
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "Phần thưởng",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(
-                        text = "Điểm hiện tại",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(
-                        text = "${userProfile?.pointBalance ?: 0} điểm",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    
-                    Spacer(modifier = Modifier.height(8.dp))
-                    
-                    Text(
-                        text = "Cấp độ: ${userProfile?.let { UserLevel.getLevelFromPoints(it.totalPointsEarned).title } ?: "Chưa xác định"}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    
-                    LinearProgressIndicator(
-                        progress = userProfile?.let { UserLevel.getProgressToNextLevel(it.totalPointsEarned) } ?: 0f,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp)
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Text(
-                text = "Phần thưởng sẽ được triển khai trong phiên bản tiếp theo",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
-}
 
 /**
  * Profile Screen Placeholder
@@ -250,91 +156,3 @@ fun RewardsScreen(
 /**
  * Enhanced Navigation Graph with Deep Links
  */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EnhancedWeatherNavGraph(
-    navController: NavHostController = rememberNavController(),
-    startDestination: String = NavigationRoutes.HOME
-) {
-    val weatherViewModel: WeatherViewModel = hiltViewModel()
-    val userViewModel: UserViewModel = hiltViewModel()
-    var fabExpanded by remember { mutableStateOf(false) }
-    
-    Scaffold(
-        bottomBar = {
-            EnhancedWeatherBottomNavigation(
-                navController = navController,
-                notificationCounts = mapOf(
-                    NavigationRoutes.REWARDS to 3,
-                    NavigationRoutes.PROFILE to 1
-                )
-            )
-        },
-        floatingActionButton = {
-            WeatherFAB(
-                onClick = {
-                    weatherViewModel.refreshWeather()
-                },
-                isExpanded = fabExpanded
-            )
-        },
-        floatingActionButtonPosition = FabPosition.End
-    ) { paddingValues ->
-        NavHost(
-            navController = navController,
-            startDestination = startDestination,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            composable(NavigationRoutes.HOME) {
-                LaunchedEffect(Unit) {
-                    fabExpanded = true
-                }
-                WeatherHomeScreen(
-                    viewModel = weatherViewModel,
-                    onNavigateToDetail = {
-                        navController.navigate(NavigationRoutes.WEATHER_DETAIL)
-                    }
-                )
-            }
-            
-            composable(NavigationRoutes.WEATHER_DETAIL) {
-                LaunchedEffect(Unit) {
-                    fabExpanded = false
-                }
-                WeatherDetailScreen(
-                    viewModel = weatherViewModel,
-                    onBackClick = {
-                        navController.popBackStack()
-                    }
-                )
-            }
-            
-            composable(NavigationRoutes.REWARDS) {
-                LaunchedEffect(Unit) {
-                    fabExpanded = false
-                }
-                RewardsScreen(
-                    weatherViewModel = weatherViewModel,
-                    userViewModel = userViewModel
-                )
-            }
-            
-            composable(NavigationRoutes.PROFILE) {
-                LaunchedEffect(Unit) {
-                    fabExpanded = false
-                }
-                UserProfileScreen(
-                    onNavigateBack = {
-                        navController.popBackStack()
-                    },
-                    onProfileSaved = {
-                        // Navigate back after saving profile
-                        navController.popBackStack()
-                    }
-                )
-            }
-        }
-    }
-}

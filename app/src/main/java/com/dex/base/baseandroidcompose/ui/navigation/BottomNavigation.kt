@@ -118,12 +118,6 @@ val bottomNavItems = listOf(
         unselectedIcon = Icons.Outlined.Home
     ),
     BottomNavItem(
-        route = NavigationRoutes.WEATHER_DETAIL,
-        title = "Chi tiết",
-        selectedIcon = Icons.Filled.CloudQueue,
-        unselectedIcon = Icons.Outlined.CloudQueue
-    ),
-    BottomNavItem(
         route = NavigationRoutes.REWARDS,
         title = "Phần thưởng",
         selectedIcon = Icons.Filled.EmojiEvents,
@@ -153,89 +147,7 @@ object NavigationRoutes {
 /**
  * Enhanced Bottom Navigation with badges and notifications
  */
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-fun EnhancedWeatherBottomNavigation(
-    navController: NavController,
-    modifier: Modifier = Modifier,
-    notificationCounts: Map<String, Int> = emptyMap()
-) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-    
-    NavigationBar(
-        modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.surface,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        tonalElevation = 8.dp
-    ) {
-        bottomNavItems.forEach { item ->
-            val isSelected = currentRoute == item.route
-            val notificationCount = notificationCounts[item.route] ?: 0
-            
-            NavigationBarItem(
-                icon = {
-                    Box {
-                        AnimatedContent(
-                            targetState = isSelected,
-                            transitionSpec = {
-                                scaleIn(initialScale = 0.8f) + fadeIn() with 
-                                scaleOut(targetScale = 0.8f) + fadeOut()
-                            },
-                            label = "icon_animation"
-                        ) { selected ->
-                            Icon(
-                                imageVector = if (selected) item.selectedIcon else item.unselectedIcon,
-                                contentDescription = item.title,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                        
-                        // Notification badge
-                        if (notificationCount > 0) {
-                            Badge(
-                                modifier = Modifier.align(Alignment.TopEnd),
-                                containerColor = MaterialTheme.colorScheme.error
-                            ) {
-                                Text(
-                                    text = if (notificationCount > 99) "99+" else notificationCount.toString(),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onError
-                                )
-                            }
-                        }
-                    }
-                },
-                label = {
-                    Text(
-                        text = item.title,
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                    )
-                },
-                selected = isSelected,
-                onClick = {
-                    if (currentRoute != item.route) {
-                        navController.navigate(item.route) {
-                            popUpTo(navController.graph.startDestinationId) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
-                },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-                )
-            )
-        }
-    }
-}
+
 
 /**
  * Floating Action Button for quick actions
