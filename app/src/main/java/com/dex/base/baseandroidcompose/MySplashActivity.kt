@@ -80,7 +80,9 @@ class MySplashActivity : ComponentActivity() {
         enableEdgeToEdge()
         
         Logger.d("onCreate: Starting splash screen")
-        
+        AdManager.initAdsAndUmp(this)
+        Logger.d("AdManager initialized")
+
         setContent {
             BaseAndroidComposeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->

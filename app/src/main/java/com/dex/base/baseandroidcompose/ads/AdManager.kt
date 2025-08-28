@@ -12,6 +12,7 @@ import com.google.android.gms.ads.initialization.InitializationStatus
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.android.ump.ConsentForm
 import com.google.android.ump.ConsentRequestParameters
@@ -47,6 +48,7 @@ object AdManager {
     // Managers
     private val interstitialAdManager = InterstitialAdManager.getInstance()
     private val nativeAdManager = NativeAdManager.getInstance()
+    private val rewardManager = RewardManager.getInstance()
 
     fun fetchAdId(remoteConfig: FirebaseRemoteConfig) {
         ADMOB_APP_ID = remoteConfig.getString("ADMOB_APP_ID")
@@ -93,6 +95,9 @@ object AdManager {
                 
                 // Khởi tạo NativeAdManager sau khi SDK đã sẵn sàng
                 initNativeAds(activity)
+                
+                // Khởi tạo RewardManager sau khi SDK đã sẵn sàng
+                initRewardAds(activity)
             })
 
         // Create a ConsentRequestParameters object
@@ -150,6 +155,21 @@ object AdManager {
             } else {
                 Logger.e("Khởi tạo NativeAds thất bại: $message")
             }
+        }
+    }
+
+    /**
+     * Khởi tạo RewardAds
+     */
+    private fun initRewardAds(context: Context) {
+        Logger.d("Khởi tạo RewardAds")
+        // Khởi tạo RewardManager và preload quảng cáo
+        rewardManager.initialize(context)
+        rewardManager.setOnAdLoadedCallback {
+            Logger.d("Khởi tạo RewardAds thành công")
+        }
+        rewardManager.setOnAdFailedToLoadCallback { error ->
+            Logger.e("Khởi tạo RewardAds thất bại: $error")
         }
     }
 
@@ -225,6 +245,62 @@ object AdManager {
      */
     fun getNativeAdCount(): Int {
         return nativeAdManager.getValidAdCount()
+    }
+
+    // ==================== REWARD AD METHODS ====================
+
+    /**
+     * Preload RewardAd
+     */
+    fun preloadRewardAd(context: Context) {
+        rewardManager.preloadRewardedAd(context)
+    }
+
+    /**
+     * Show RewardAd
+     */
+    fun showRewardAd(
+        activity: Activity,
+        onUserEarnedReward: (RewardItem) -> Unit,
+        onAdClosed: () -> Unit = {},
+        onAdNotReady: () -> Unit = {}
+    ) {
+        rewardManager.showRewardedAd(activity, onUserEarnedReward, onAdClosed, onAdNotReady)
+    }
+
+    /**
+     * Kiểm tra RewardAd có sẵn sàng không
+     */
+    fun isRewardAdReady(): Boolean {
+        return rewardManager.isAdReady()
+    }
+
+    /**
+     * Kiểm tra RewardAd có đang load không
+     */
+    fun isRewardAdLoading(): Boolean {
+        return rewardManager.isAdLoading()
+    }
+
+    /**
+     * Lấy trạng thái RewardAd
+     */
+    fun getRewardAdStatus(): String {
+        return rewardManager.getAdStatus()
+    }
+
+    /**
+     * Retry loading RewardAd
+     */
+    fun retryRewardAd(context: Context) {
+        rewardManager.retryLoadingAd(context)
+    }
+
+    /**
+     * Force reload RewardAd
+     */
+    fun forceReloadRewardAd(context: Context) {
+        rewardManager.forceReload(context)
     }
 
     fun isEnableOpenAd() = isEnableOpenAd

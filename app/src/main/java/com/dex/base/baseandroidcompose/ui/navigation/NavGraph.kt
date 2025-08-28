@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dex.base.baseandroidcompose.ui.screens.WeatherHomeScreen
 import com.dex.base.baseandroidcompose.ui.screens.WeatherDetailScreen
 import com.dex.base.baseandroidcompose.ui.screens.UserProfileScreen
+import com.dex.base.baseandroidcompose.ui.screens.RewardScreen
 import com.dex.base.baseandroidcompose.ui.viewmodels.UserViewModel
 import com.dex.base.baseandroidcompose.ui.viewmodels.WeatherViewModel
 import com.dex.base.baseandroidcompose.data.models.UserLevel
@@ -107,18 +108,27 @@ fun WeatherNavGraph(
             }
 
             
-            // Rewards Screen (Placeholder)
+            // Rewards Screen
             composable(
                 route = NavigationRoutes.REWARDS,
                 enterTransition = {
                     slideInHorizontally(
                         initialOffsetX = { it },
-
                         animationSpec = tween(300)
                     ) + fadeIn(animationSpec = tween(300))
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { -it },
+                        animationSpec = tween(300)
+                    ) + fadeOut(animationSpec = tween(300))
                 }
             ) {
-
+                RewardScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
             }
             
             // Profile Screen
