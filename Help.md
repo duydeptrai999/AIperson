@@ -1,5 +1,48 @@
 # Help.md - Hướng dẫn sử dụng tính năng
 
+## Reward System - Quảng cáo thưởng và điểm (2025-01-17)
+
+### Tính năng Reward System
+**Mô tả**: Hệ thống xem quảng cáo để kiếm điểm, lưu trữ điểm vào Room Database
+
+**Cách hoạt động**:
+- **Xem quảng cáo**: Nhấn nút "Watch" → Xem quảng cáo reward → Nhận điểm
+- **Preload quảng cáo**: Tự động tải trước quảng cáo để sẵn sàng hiển thị
+- **Lưu điểm**: Điểm được lưu vào Room Database và hiển thị real-time
+- **Refresh quảng cáo**: Nhấn "Refresh" để tải lại quảng cáo mới
+
+**Components đã tạo**:
+- `RewardManager.kt`: Quản lý quảng cáo reward với singleton pattern
+- `RewardsViewModel.kt`: Quản lý state và logic business
+- `RewardScreen.kt`: UI màn hình phần thưởng
+- Tích hợp vào `AdManager.kt` để quản lý tập trung
+
+**Tính năng chính**:
+- ✅ **Preload Ads**: Tự động tải trước quảng cáo
+- ✅ **Points System**: Hệ thống điểm với Room Database
+- ✅ **Real-time UI**: Cập nhật trạng thái real-time
+- ✅ **Error Handling**: Xử lý lỗi và retry mechanism
+- ✅ **Loading States**: Hiển thị trạng thái tải
+
+**UI Features**:
+- Card hiển thị số điểm hiện tại
+- Card quảng cáo với nút Watch và Refresh
+- Hiển thị trạng thái quảng cáo (Ready/Loading/Error)
+- Danh sách phần thưởng có thể đổi
+- Thông báo điểm vừa kiếm được
+
+**Database Integration**:
+- Điểm được lưu vào `UserProfile` entity trong Room DB
+- Tự động sync với UI thông qua StateFlow
+- Persistent storage đảm bảo điểm không bị mất
+
+**Error Handling**:
+- Retry mechanism với exponential backoff
+- Hiển thị thông báo lỗi có thể dismiss
+- Fallback khi quảng cáo không tải được
+
+---
+
 ## Geocoding Feature - Optimized Address Display (2025-01-17)
 
 ### Tính năng Geocoding Tối Ưu

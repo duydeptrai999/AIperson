@@ -1,6 +1,33 @@
 # Changelog
 
-## [Latest] - 2024-12-19
+## [Latest] - 2025-01-17
+
+### Added
+- **Reward System Implementation**: Hệ thống xem quảng cáo để kiếm điểm
+  - Tạo `RewardManager.kt` với singleton pattern để quản lý quảng cáo reward
+  - Tạo `RewardsViewModel.kt` để quản lý state và business logic
+  - Cập nhật `RewardScreen.kt` với UI hoàn chỉnh cho tính năng reward
+  - Tích hợp `RewardManager` vào `AdManager.kt` để quản lý tập trung
+  - Cập nhật `NavGraph.kt` để thêm route cho màn hình reward
+  - Preload functionality cho quảng cáo reward
+  - Real-time UI updates với StateFlow
+  - Error handling và retry mechanism
+  - Lưu trữ điểm vào Room Database thông qua UserProfile entity
+  - UI components: Watch button, Refresh button, status indicators
+  - Loading states và error messages
+
+### Fixed
+- Sửa lỗi compile trong `MySplashActivity.kt`: Loại bỏ tham số thừa trong `Logger.d()`
+- Build thành công sau khi khắc phục lỗi "Too many arguments for 'fun d(message: String): Unit'"
+
+### Technical Details
+- Sử dụng MVVM pattern với Hilt dependency injection
+- StateFlow cho reactive programming
+- Singleton pattern cho RewardManager
+- Integration với existing AdManager architecture
+- Room Database integration cho persistent storage
+
+## [Previous] - 2024-12-19
 
 ### Enhanced
 - Improved AI Health Advice API integration:

@@ -5,6 +5,11 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dex.base.baseandroidcompose.ads.AdManager
+import com.dex.base.baseandroidcompose.data.database.UserPointsDao
+import com.dex.base.baseandroidcompose.data.database.PointTransactionDao
+import com.dex.base.baseandroidcompose.data.database.UserPointsEntity
+import com.dex.base.baseandroidcompose.data.database.PointTransactionEntity
+import com.dex.base.baseandroidcompose.data.repository.UserRepository
 import com.dex.base.baseandroidcompose.utils.Logger
 import com.google.android.gms.ads.rewarded.RewardItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +24,11 @@ import javax.inject.Inject
  * Tích hợp với AdManager để xử lý quảng cáo reward
  */
 @HiltViewModel
-class RewardsViewModel @Inject constructor() : ViewModel() {
+class RewardsViewModel @Inject constructor(
+    private val userPointsDao: UserPointsDao,
+    private val pointTransactionDao: PointTransactionDao,
+    private val userRepository: UserRepository
+) : ViewModel() {
 
     // State flows for UI
     private val _adStatus = MutableStateFlow("Not Ready")
@@ -34,14 +43,53 @@ class RewardsViewModel @Inject constructor() : ViewModel() {
     private val _totalAdsWatched = MutableStateFlow(0)
     val totalAdsWatched: StateFlow<Int> = _totalAdsWatched.asStateFlow()
 
-    private val _userPoints = MutableStateFlow(1250) // Default points
+    private val _userPoints = MutableStateFlow(0)
     val userPoints: StateFlow<Int> = _userPoints.asStateFlow()
+    
+    private val _pointsFromAds = MutableStateFlow(0)
+    val pointsFromAds: StateFlow<Int> = _pointsFromAds.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    init {
+        // Load user points when ViewModel is created
+        loadUserPoints()
+    }
+    
+    /**
+     * Load điểm người dùng từ database
+     */
+    private fun loadUserPoints() {
+        viewModelScope.launch {
+            try {
+                val currentUser = userRepository.getCurrentUserProfile()
+                val userId = currentUser?.id ?: "default_user"
+                
+                val userPoints = userPointsDao.getUserPoints(userId)
+                if (userPoints != null) {
+                    _userPoints.value = userPoints.totalPoints
+                    _pointsFromAds.value = userPoints.pointsFromAds
+                } else {
+                    // Create new user points record
+                    val newUserPoints = UserPointsEntity(
+                        userId = userId,
+                        totalPoints = 0,
+                        pointsFromAds = 0
+                    )
+                    userPointsDao.insertOrUpdateUserPoints(newUserPoints)
+                }
+                
+                Logger.d("RewardsViewModel: User points loaded - Total: ${_userPoints.value}, From Ads: ${_pointsFromAds.value}")
+            } catch (e: Exception) {
+                Logger.e("RewardsViewModel: Error loading user points: ${e.message}")
+                _errorMessage.value = e.message
+            }
+        }
+    }
 
     /**
      * Khởi tạo ads khi ViewModel được tạo
@@ -144,10 +192,12 @@ class RewardsViewModel @Inject constructor() : ViewModel() {
             try {
                 val points = rewardItem.amount
                 
-                // Cập nhật state
+                // Save points to database
+                savePointsToDatabase(points)
+                
+                // Update local state
                 _lastEarnedPoints.value = points
                 _totalAdsWatched.value += 1
-                _userPoints.value += points
                 
                 // Callback cho UI
                 onRewardEarned(points)
@@ -159,6 +209,41 @@ class RewardsViewModel @Inject constructor() : ViewModel() {
                 _errorMessage.value = e.message
                 Logger.e("RewardsViewModel: Error handling reward earned: ${e.message}")
             }
+        }
+    }
+    
+    /**
+     * Lưu điểm vào Room Database
+     */
+    private suspend fun savePointsToDatabase(pointsEarned: Int) {
+        try {
+            val currentUser = userRepository.getCurrentUserProfile()
+            val userId = currentUser?.id ?: "default_user"
+            
+            // Add points from ads to database
+            userPointsDao.addPointsFromAds(userId, pointsEarned)
+            
+            // Create transaction record
+            val transaction = PointTransactionEntity(
+                userId = userId,
+                pointsEarned = pointsEarned,
+                transactionType = "AD_REWARD",
+                description = "Points earned from watching rewarded ad"
+            )
+            pointTransactionDao.insertTransaction(transaction)
+            
+            // Update local state from database
+            val updatedUserPoints = userPointsDao.getUserPoints(userId)
+            if (updatedUserPoints != null) {
+                _userPoints.value = updatedUserPoints.totalPoints
+                _pointsFromAds.value = updatedUserPoints.pointsFromAds
+            }
+            
+            Logger.d("RewardsViewModel: Points saved to database - Earned: $pointsEarned, Total: ${_userPoints.value}")
+            
+        } catch (e: Exception) {
+            Logger.e("RewardsViewModel: Error saving points to database: ${e.message}")
+            throw e
         }
     }
 
