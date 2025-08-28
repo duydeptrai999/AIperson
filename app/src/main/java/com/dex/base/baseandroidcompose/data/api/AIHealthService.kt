@@ -46,18 +46,26 @@ class AIHealthRepository @Inject constructor(
         
         private val HEALTH_ADVICE_TEMPLATE = """
         {
-            "statusMessage": "A short status message about the user's health",
-            "assessmentLevel": "A brief assessment level",
-            "assessmentScore": "A numerical score from 1 to 10",
-            "healthAnalysis": "A detailed paragraph analyzing the user's health",
+            "statusMessage": "Tình trạng sức khỏe tổng quan dựa trên thời tiết hiện tại",
+            "assessmentLevel": "Mức độ đánh giá sức khỏe (Tốt/Trung bình/Cần chú ý)",
+            "assessmentScore": "Điểm số từ 1-10 đánh giá tình trạng sức khỏe trong điều kiện thời tiết này",
+            "healthAnalysis": "Phân tích chi tiết về tác động của thời tiết hiện tại đến sức khỏe dựa trên tuổi tác và nghề nghiệp",
             "recommendations": [
                 {
-                    "title": "Recommendation title",
-                    "content": "Detailed explanation"
+                    "title": "Hoạt động nên làm",
+                    "content": "Các hoạt động phù hợp với thời tiết hiện tại"
+                },
+                {
+                    "title": "Hoạt động cần tránh",
+                    "content": "Những việc không nên làm trong điều kiện thời tiết này"
+                },
+                {
+                    "title": "Kế hoạch từ giờ đến cuối ngày",
+                    "content": "Lịch trình hoạt động cụ thể cho thời gian còn lại trong ngày"
                 }
             ],
-            "nutritionalAdvice": "Nutritional advice",
-            "workoutTips": "Exercise advice"
+            "nutritionalAdvice": "Lời khuyên dinh dưỡng phù hợp với thời tiết và độ tuổi",
+            "workoutTips": "Bài tập thể dục phù hợp với điều kiện thời tiết và nghề nghiệp"
         }
         """.trimIndent()
     }
@@ -189,6 +197,7 @@ class AIHealthRepository @Inject constructor(
         
         Hãy đưa ra lời khuyên sức khỏe chi tiết và cụ thể cho tôi trong điều kiện thời tiết này. 
         Bao gồm những hoạt động nên làm, cần tránh, chế độ dinh dưỡng phù hợp và bài tập thể dục phù hợp.
+        Từ giờ đến cuối ngày nên làm gì?
         """.trimIndent()
     }
     
