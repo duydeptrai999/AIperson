@@ -63,27 +63,20 @@ class WeatherViewModel @Inject constructor(
                         }
                         Logger.d("Compatibility calculated: $compatibility")
                 
-                        val insights = if (userProfile != null && compatibility != null) {
-                            // Update user points
+                        // Update user points if compatibility exists
+                        if (userProfile != null && compatibility != null) {
                             val updatedProfile = userProfile.copy(
                                 pointBalance = userProfile.pointBalance + compatibility.pointsEarned,
                                 totalPointsEarned = userProfile.totalPointsEarned + compatibility.pointsEarned
                             )
                             _userProfile.value = updatedProfile
                             Logger.d("User profile updated with points: ${compatibility.pointsEarned}")
-                            
-                            // Generate daily insights
-                            generateDailyInsights(weatherData, compatibility, updatedProfile)
-                        } else {
-                            null
                         }
-                        Logger.d("Daily insights generated: $insights")
                         
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
                             weatherData = weatherData,
                             compatibility = compatibility,
-                            dailyInsights = insights,
                             error = null
                         )
                         
@@ -147,25 +140,19 @@ class WeatherViewModel @Inject constructor(
                             null
                         }
                         
-                        val insights = if (userProfile != null && compatibility != null) {
-                            // Update user points
+                        // Update user points if compatibility exists
+                        if (userProfile != null && compatibility != null) {
                             val updatedProfile = userProfile.copy(
                                 pointBalance = userProfile.pointBalance + compatibility.pointsEarned,
                                 totalPointsEarned = userProfile.totalPointsEarned + compatibility.pointsEarned
                             )
                             _userProfile.value = updatedProfile
-                            
-                            // Generate daily insights
-                            generateDailyInsights(weatherData, compatibility, updatedProfile)
-                        } else {
-                            null
                         }
                         
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
                             weatherData = weatherData,
                             compatibility = compatibility,
-                            dailyInsights = insights,
                             error = null
                         )
                     },
@@ -321,15 +308,8 @@ class WeatherViewModel @Inject constructor(
             userRepository.saveUserProfile(updatedProfile)
         }
         
-        val dailyInsights = generateDailyInsights(
-            weatherData = weatherData,
-            compatibility = compatibility,
-            userProfile = updatedProfile
-        )
-        
         _uiState.value = _uiState.value.copy(
-            compatibility = compatibility,
-            dailyInsights = dailyInsights
+            compatibility = compatibility
         )
     }
     
@@ -347,131 +327,7 @@ class WeatherViewModel @Inject constructor(
         return userRepository.hasUserProfile()
     }
     
-    private fun generateDailyInsights(
-        weatherData: WeatherData,
-        compatibility: WeatherCompatibility,
-        userProfile: UserProfile
-    ): DailyAIInsights {
-        val greeting = generatePersonalizedGreeting(userProfile, weatherData)
-        val quickStats = generateQuickStats(weatherData, compatibility, userProfile)
-        val aiAnalysis = generateAIAnalysis(compatibility)
-        val achievements = generateAchievements(userProfile, compatibility)
-        
-        return DailyAIInsights(
-            date = getCurrentDate(),
-            greeting = greeting,
-            weatherSummary = aiAnalysis,
-            personalizedTips = generateInteractionElements(),
-            healthAdvice = "Hãy uống đủ nước và giữ ấm cơ thể.",
-            activitySuggestions = listOf("Đi bộ trong công viên", "Tập yoga ngoài trời", "Chụp ảnh phong cảnh"),
-            pointsEarned = compatibility.pointsEarned,
-            streakDays = 3, // Mock data
-            achievements = achievements
-        )
-    }
-    
-    private fun generatePersonalizedGreeting(
-        userProfile: UserProfile,
-        weatherData: WeatherData
-    ): String {
-        val timeOfDay = getTimeOfDay()
-        val weatherCondition = weatherData.description.lowercase()
-        
-        return when {
-            weatherData.temperature > 30 -> "$timeOfDay! Hôm nay khá nóng (${weatherData.temperature.toInt()}°C), hãy giữ mát nhé!"
-            weatherData.temperature < 15 -> "$timeOfDay! Trời hơi lạnh (${weatherData.temperature.toInt()}°C), nhớ mặc ấm!"
-            weatherCondition.contains("rain") -> "$timeOfDay! Có mưa hôm nay, đừng quên ô!"
-            weatherCondition.contains("sun") -> "$timeOfDay! Thời tiết đẹp, thích hợp đi dạo!"
-            else -> "$timeOfDay! Chúc bạn một ngày tuyệt vời!"
-        }
-    }
-    
-    private fun generateQuickStats(
-        weatherData: WeatherData,
-        compatibility: WeatherCompatibility,
-        userProfile: UserProfile
-    ): QuickStats {
-        return QuickStats(
-            todayScore = compatibility.compatibilityScore,
-            weeklyAverage = 85.5f, // Mock data
-            pointsToday = compatibility.pointsEarned,
-            totalPoints = userProfile.totalPointsEarned,
-            currentStreak = 3, // Mock data
-            bestStreak = 7 // Mock data
-        )
-    }
-    
-    private fun generateAIAnalysis(compatibility: WeatherCompatibility): String {
-        val score = compatibility.compatibilityScore
-        return when {
-            score >= 80 -> "AI phân tích: Thời tiết hôm nay rất phù hợp với bạn! Điểm tương thích cao nhờ nhiệt độ và độ ẩm lý tưởng."
-            score >= 60 -> "AI phân tích: Thời tiết khá ổn, một số yếu tố có thể ảnh hưởng nhẹ đến hoạt động của bạn."
-            score >= 40 -> "AI phân tích: Thời tiết không hoàn toàn phù hợp, hãy chuẩn bị kỹ trước khi ra ngoài."
-            else -> "AI phân tích: Thời tiết khó khăn hôm nay, nên hạn chế hoạt động ngoài trời."
-        }
-    }
-    
-    private fun generateAchievements(
-        userProfile: UserProfile,
-        compatibility: WeatherCompatibility
-    ): List<Achievement> {
-        val achievements = mutableListOf<Achievement>()
-        
-        // Check for high compatibility achievement
-        if (compatibility.compatibilityScore >= 90) {
-            achievements.add(
-                Achievement(
-                    id = "perfect_day",
-                    title = "Ngày Hoàn Hảo",
-                    description = "Đạt điểm tương thích 90+",
-                    icon = "🌟",
-                    pointsReward = 50,
-                    unlockedAt = getCurrentTimestamp()
-                )
-            )
-        }
-        
-        // Check for points milestone
-        if (userProfile.totalPointsEarned >= 1000) {
-            achievements.add(
-                Achievement(
-                    id = "point_master",
-                    title = "Bậc Thầy Điểm Số",
-                    description = "Đạt 1000+ điểm tổng",
-                    icon = "🏆",
-                    pointsReward = 100,
-                    unlockedAt = getCurrentTimestamp()
-                )
-            )
-        }
-        
-        return achievements
-    }
-    
-    private fun generateInteractionElements(): List<String> {
-        return listOf(
-            "Nhấn để xem chi tiết thời tiết",
-            "Vuốt để làm mới dữ liệu",
-            "Chạm vào điểm số để xem lịch sử"
-        )
-    }
-    
-    private fun getTimeOfDay(): String {
-        val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
-        return when {
-            hour < 12 -> "Chào buổi sáng"
-            hour < 18 -> "Chào buổi chiều"
-            else -> "Chào buổi tối"
-        }
-    }
-    
-    private fun getCurrentTimestamp(): Long {
-        return System.currentTimeMillis()
-    }
-    
-    private fun getCurrentDate(): String {
-        return java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date())
-    }
+
     
     /**
      * Load AI health advice based on weather and user profile
@@ -528,38 +384,13 @@ class WeatherViewModel @Inject constructor(
             loadAIHealthAdvice(weatherData, userProfile)
         }
     }
-    
-    private fun createMockUserProfile(): UserProfile {
-        return UserProfile(
-            id = "user_001",
-            age = 28,
-            location = Location(
-                city = "Ho Chi Minh City",
-                country = "Vietnam",
-                latitude = 10.8231,
-                longitude = 106.6297,
-                timezone = "Asia/Ho_Chi_Minh"
-            ),
-            occupation = Occupation.OFFICE_WORKER,
-            preferences = WeatherPreferences(
-                preferredTemperatureRange = TemperatureRange(22.0, 28.0),
-                preferredHumidityRange = HumidityRange(40, 70),
-                windSensitivity = 0.3f
-            ),
-            pointBalance = 750,
-            totalPointsEarned = 2150,
-            level = 5, // Level based on points
-            createdAt = getCurrentTimestamp(),
-            lastUpdated = getCurrentTimestamp()
-        )
-    }
+
 }
 
 data class WeatherUiState(
     val isLoading: Boolean = false,
     val weatherData: WeatherData? = null,
     val compatibility: WeatherCompatibility? = null,
-    val dailyInsights: DailyAIInsights? = null,
     val aiHealthAdvice: AIHealthAdvice? = null,
     val isLoadingHealthAdvice: Boolean = false,
     val healthAdviceError: String? = null,

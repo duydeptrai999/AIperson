@@ -498,12 +498,21 @@ fun HealthAdviceCard(
                     
                     Spacer(modifier = Modifier.width(8.dp))
                     
-                    Text(
-                        text = "AI Health Advice",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                    Column {
+                        Text(
+                            text = "Lời khuyên sức khỏe hôm nay",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        
+                        val currentTime = java.text.SimpleDateFormat("HH:mm dd/MM", java.util.Locale.getDefault()).format(java.util.Date())
+                        Text(
+                            text = "Cập nhật lúc $currentTime",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    }
                 }
                 
                 if (isLoading) {
@@ -600,69 +609,147 @@ fun HealthAdviceCard(
                         Spacer(modifier = Modifier.height(8.dp))
                         
                         // Health Analysis
-                        Text(
-                            text = aiHealthAdvice.healthAnalysis,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            lineHeight = 20.sp
-                        )
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                text = aiHealthAdvice.healthAnalysis,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                lineHeight = 20.sp,
+                                modifier = Modifier.padding(12.dp)
+                            )
+                        }
                         
                         if (aiHealthAdvice.recommendations.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(12.dp))
                             
                             // Recommendations
-                            Text(
-                                text = "Khuyến nghị:",
-                                style = MaterialTheme.typography.titleSmall,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "💡",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = "Khuyến nghị cho hôm nay:",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
                             
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                             
-                            aiHealthAdvice.recommendations.take(2).forEach { recommendation ->
-                                Row(
+                            aiHealthAdvice.recommendations.take(3).forEach { recommendation ->
+                                Card(
                                     modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.Top
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                                    ),
+                                    shape = RoundedCornerShape(8.dp)
                                 ) {
-                                    Text(
-                                        text = "• ",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.primary
-                                    )
-                                    Text(
-                                        text = "${recommendation.title}: ${recommendation.content}",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                                        modifier = Modifier.weight(1f)
-                                    )
+                                    Column(
+                                        modifier = Modifier.padding(12.dp)
+                                    ) {
+                                        Text(
+                                            text = recommendation.title,
+                                            style = MaterialTheme.typography.titleSmall,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(
+                                            text = recommendation.content,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                                        )
+                                    }
                                 }
-                                Spacer(modifier = Modifier.height(4.dp))
+                                Spacer(modifier = Modifier.height(6.dp))
                             }
                         }
                         
                         Spacer(modifier = Modifier.height(8.dp))
                         
-                        // Additional tips
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Info,
-                                contentDescription = "Tip",
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(16.dp)
-                            )
+                        // Nutritional Advice
+                        if (aiHealthAdvice.nutritionalAdvice.isNotBlank()) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "🥗",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = "Dinh dưỡng hôm nay:",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
                             
-                            Spacer(modifier = Modifier.width(4.dp))
+                            Spacer(modifier = Modifier.height(6.dp))
                             
-                            Text(
-                                text = aiHealthAdvice.nutritionalAdvice.take(100) + if (aiHealthAdvice.nutritionalAdvice.length > 100) "..." else "",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = RainyGray,
-                                fontStyle = FontStyle.Italic
-                            )
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f)
+                                ),
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Text(
+                                    text = aiHealthAdvice.nutritionalAdvice,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                                    modifier = Modifier.padding(12.dp)
+                                )
+                            }
+                            
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
+                        
+                        // Workout Tips
+                        if (aiHealthAdvice.workoutTips.isNotBlank()) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "💪",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = "Vận động hôm nay:",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                            
+                            Spacer(modifier = Modifier.height(6.dp))
+                            
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f)
+                                ),
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Text(
+                                    text = aiHealthAdvice.workoutTips,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                                    modifier = Modifier.padding(12.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -682,157 +769,7 @@ fun HealthAdviceCard(
     }
 }
 
-data class HealthAdvice(
-    val icon: String,
-    val title: String,
-    val advice: String,
-    val tip: String,
-    val color: Color
-)
 
-fun generateHealthAdvice(weatherData: WeatherData?): HealthAdvice {
-    val currentHour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
-    
-    if (weatherData == null) {
-        val defaultIcon = when (currentHour) {
-            in 6..18 -> "🏥"
-            else -> "🌙"
-        }
-        return HealthAdvice(
-            icon = defaultIcon,
-            title = "Stay Healthy",
-            advice = "Keep yourself hydrated and maintain a balanced diet for optimal health.",
-            tip = "Regular exercise boosts immunity",
-            color = CompatibilityGreen
-        )
-    }
-    
-    val temp = weatherData.temperature
-    val humidity = weatherData.humidity
-    val description = weatherData.description.lowercase()
-    
-    return when {
-        temp > 35 -> HealthAdvice(
-            icon = "🥵",
-            title = "Heat Warning",
-            advice = "Very hot weather! Stay indoors during peak hours, drink plenty of water, and wear light-colored clothing.",
-            tip = "Avoid outdoor activities between 10 AM - 4 PM",
-            color = Color(0xFFE57373)
-        )
-        
-        temp > 30 -> HealthAdvice(
-            icon = when (currentHour) {
-                in 6..11 -> "🌅"
-                in 12..17 -> "☀️"
-                in 18..19 -> "🌇"
-                else -> "🌙"
-            },
-            title = "Hot Weather Care",
-            advice = "Hot day ahead! Stay hydrated, use sunscreen, and take breaks in shade when outdoors.",
-            tip = "Drink water every 15-20 minutes when active",
-            color = Color(0xFFFF9800)
-        )
-        
-        temp < 5 -> HealthAdvice(
-            icon = "🥶",
-            title = "Freezing Weather Alert",
-            advice = "Extremely cold! Limit outdoor exposure, dress in multiple layers, and watch for signs of frostbite.",
-            tip = "Cover all exposed skin when going outside",
-            color = Color(0xFF1976D2)
-        )
-        
-        temp < 10 -> HealthAdvice(
-            icon = "🧥",
-            title = "Cold Weather Protection",
-            advice = "Cold weather! Dress in layers, protect extremities, and stay warm to prevent hypothermia.",
-            tip = "Warm up before going outside",
-            color = DeepSkyBlue
-        )
-        
-        description.contains("thunderstorm") -> HealthAdvice(
-            icon = "⛈️",
-            title = "Storm Safety",
-            advice = "Thunderstorm warning! Stay indoors, avoid windows, and unplug electronics. Do not use water.",
-            tip = "Wait 30 minutes after last thunder before going outside",
-            color = Color(0xFF7B1FA2)
-        )
-        
-        description.contains("snow") -> HealthAdvice(
-            icon = "❄️",
-            title = "Snow Day Precautions",
-            advice = "Snowy conditions! Wear appropriate footwear, drive carefully, and stay warm and dry.",
-            tip = "Shovel snow in small amounts to avoid strain",
-            color = Color(0xFF0277BD)
-        )
-        
-        humidity > 80 -> HealthAdvice(
-            icon = "💧",
-            title = "High Humidity Alert",
-            advice = "High humidity can make you feel hotter. Stay in air-conditioned spaces and avoid strenuous activities.",
-            tip = "Use dehumidifier indoors if possible",
-            color = Color(0xFF42A5F5)
-        )
-        
-        description.contains("rain") -> HealthAdvice(
-            icon = when {
-                description.contains("heavy") -> "🌧️"
-                description.contains("light") -> "🌦️"
-                else -> "☔"
-            },
-            title = "Rainy Day Health",
-            advice = "Rainy weather! Stay dry, boost your mood with indoor activities, and be careful of slippery surfaces.",
-            tip = "Vitamin D supplement may help on cloudy days",
-            color = Color(0xFF5C6BC0)
-        )
-        
-        description.contains("fog") || description.contains("mist") -> HealthAdvice(
-            icon = "🌫️",
-            title = "Foggy Conditions",
-            advice = "Limited visibility due to fog. Drive slowly, use headlights, and be extra cautious.",
-            tip = "Allow extra time for travel in foggy conditions",
-            color = Color(0xFF78909C)
-        )
-        
-        description.contains("clear") && temp >= 20 && temp <= 28 -> HealthAdvice(
-            icon = when (currentHour) {
-                in 6..11 -> "🌅"
-                in 12..17 -> "☀️"
-                in 18..19 -> "🌇"
-                else -> "🌙"
-            },
-            title = "Perfect Weather",
-            advice = "Ideal weather conditions! Great time for outdoor activities, exercise, and fresh air.",
-            tip = "Perfect day for a walk or outdoor workout",
-            color = CompatibilityGreen
-        )
-        
-        description.contains("cloud") -> HealthAdvice(
-            icon = when {
-                description.contains("few") && currentHour in 6..18 -> "🌤️"
-                description.contains("few") -> "☁️"
-                description.contains("scattered") -> "⛅"
-                else -> "☁️"
-            },
-            title = "Cloudy Day",
-            advice = "Cloudy weather provides natural UV protection. Good day for outdoor activities without harsh sun.",
-            tip = "Still use sunscreen as UV rays can penetrate clouds",
-            color = Color(0xFF90A4AE)
-        )
-        
-        else -> HealthAdvice(
-            icon = when (currentHour) {
-                in 6..11 -> "🌅"
-                in 12..17 -> "🌤️"
-                in 18..21 -> "🌇"
-                else -> "🌙"
-            },
-            title = "General Wellness",
-            advice = "Moderate weather conditions. Maintain regular exercise, balanced diet, and adequate sleep.",
-            tip = "Listen to your body and adjust activities accordingly",
-            color = SunYellow
-        )
-    }
-}
 
 @Composable
 fun CurrentWeatherCard(

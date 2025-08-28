@@ -462,6 +462,77 @@ Notification Generation → User Interaction → Cache Update
 
 ---
 
+## 🤖 AI Health Advice - Lời Khuyên Sức Khỏe AI Cá Nhân Hóa (2025-01-17)
+
+### Mô tả tính năng
+Tính năng lời khuyên sức khỏe AI đã được cải thiện với khả năng cung cấp lời khuyên cá nhân hóa hàng ngày dựa trên thời tiết hiện tại và thông tin người dùng.
+
+### Cách hoạt động
+
+**1. Thu Thập Dữ Liệu Thông Minh**:
+- **Weather Data**: Nhiệt độ, độ ẩm, tốc độ gió, tầm nhìn từ OpenWeatherMap API
+- **User Profile**: Tuổi, nghề nghiệp, vị trí từ UserProfile
+- **Real-time Processing**: Kết hợp dữ liệu thời tiết và profile để tạo query AI
+
+**2. AI API Integration**:
+- **Structured Query**: Gửi request có cấu trúc đến AI service
+- **Context-Aware**: AI hiểu được ngữ cảnh thời tiết và đặc điểm cá nhân
+- **Vietnamese Response**: Yêu cầu AI trả lời bằng tiếng Việt
+
+**3. Enhanced UI Display**:
+- **Health Score**: Điểm sức khỏe từ 0-100 với color coding
+- **Structured Advice**: Chia thành các section rõ ràng
+  - 📊 **Phân tích sức khỏe**: Đánh giá tổng quan
+  - 🏃 **Hoạt động khuyến nghị**: Gợi ý hoạt động phù hợp
+  - 🥗 **Dinh dưỡng**: Lời khuyên về chế độ ăn
+  - 💪 **Tập luyện**: Gợi ý bài tập phù hợp
+- **Visual Indicators**: Emojis và color schemes cho từng section
+- **Timestamp**: Hiển thị thời gian cập nhật cuối cùng
+
+**4. Smart Refresh System**:
+- **Auto Refresh**: Tự động cập nhật khi thời tiết thay đổi
+- **Manual Refresh**: Nút refresh cho user
+- **Loading States**: Hiển thị trạng thái đang tải
+- **Error Handling**: Xử lý lỗi khi AI service không khả dụng
+
+### Technical Implementation
+
+**API Request Structure**:
+```kotlin
+val query = "Hôm nay thời tiết ${weather.temperature}°C, độ ẩm ${weather.humidity}%, " +
+    "gió ${weather.windSpeed}m/s, tầm nhìn ${weather.visibility}m. " +
+    "Tôi ${userProfile.age} tuổi, nghề ${userProfile.occupation}, sống ở ${userProfile.location.city}. " +
+    "Hãy đưa ra lời khuyên sức khỏe cho hôm nay."
+```
+
+**Response Processing**:
+- Parse AI response thành structured format
+- Extract health score từ response text
+- Organize content theo categories (analysis, activities, nutrition, exercise)
+- Handle fallback khi parsing thất bại
+
+**UI Components**:
+- `HealthAdviceCard()`: Main container với modern design
+- `HealthScoreDisplay()`: Hiển thị điểm số với color coding
+- `AdviceSection()`: Reusable component cho từng section
+- `RefreshButton()`: Nút refresh với loading animation
+
+### Benefits cho người dùng
+- **Personalized Daily Advice**: Lời khuyên cụ thể cho từng ngày
+- **Weather-Aware Health Tips**: Kết hợp thời tiết và sức khỏe
+- **Structured Information**: Thông tin được tổ chức rõ ràng
+- **Vietnamese Interface**: Giao diện thân thiện với người Việt
+- **Real-time Updates**: Luôn có thông tin mới nhất
+- **Visual Appeal**: Design đẹp mắt với emojis và colors
+
+### Error Handling
+- **Network Errors**: Fallback message khi không có internet
+- **AI Service Errors**: Graceful degradation khi AI không khả dụng
+- **Parsing Errors**: Default advice khi không parse được response
+- **User Feedback**: Clear error messages cho user
+
+---
+
 ## Weather Personalized App - AI Thời Tiết Cá Nhân Hóa
 
 ### Mô tả tính năng

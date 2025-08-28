@@ -1,6 +1,56 @@
 # Changelog
 
+## [Latest] - 2024-12-19
+
+### Enhanced
+- Improved AI Health Advice API integration:
+  - Modified buildHealthQuery to include current date/time for daily-specific advice
+  - Enhanced query prompt to request structured output with health score, analysis, recommendations, nutrition and exercise tips
+  - Updated HealthAdviceCard UI with Vietnamese labels ("Lời khuyên sức khỏe hôm nay")
+  - Added dynamic timestamp showing when advice was last updated
+  - Redesigned health analysis and recommendations display with Card components
+  - Added separate sections for nutritional advice (🥗) and workout tips (💪)
+  - Improved visual hierarchy with emojis, proper spacing and color schemes
 ## [Latest] - Health Advice Card Implementation
+
+### [2025-01-17] - Health Advice Card Implementation
+
+**Yêu cầu**: Chuyển đổi AI Score Card thành Health Advice Card để hiển thị lời khuyên sức khỏe dựa trên thời tiết
+
+**Các bước thực hiện**:
+- Tạo data class `HealthAdvice` với các thuộc tính: icon, title, advice, tip, color
+- Tạo function `generateHealthAdvice()` để tạo lời khuyên dựa trên dữ liệu thời tiết
+- Chuyển đổi `CompactScorePointsCard` thành `HealthAdviceCard`
+- Cập nhật logic hiển thị từ điểm số AI sang lời khuyên sức khỏe
+- Thêm import `FontStyle` để hỗ trợ italic text
+- Sửa lỗi type inference với range operator
+
+**Kết quả đạt được**:
+- ✅ Thẻ hiển thị lời khuyên sức khỏe thông minh dựa trên điều kiện thời tiết
+- ✅ UI hiện đại với icon emoji và màu sắc phù hợp
+- ✅ Lời khuyên cụ thể cho từng tình huống thời tiết (nắng, mưa, lạnh, nóng)
+- ✅ Tips hữu ích cho sức khỏe người dùng
+- ✅ Tích hợp mượt mà với giao diện Weather Home Screen
+
+**Chi tiết kỹ thuật**:
+- Thêm import `androidx.compose.ui.text.font.FontStyle`
+- Sử dụng when expression để xử lý các điều kiện thời tiết
+- Áp dụng màu sắc theme phù hợp (CompatibilityGreen, SunYellow, etc.)
+
+### Changed
+- Refactored health advice section to rely solely on API calls
+- Removed local data handling from WeatherViewModel.kt:
+  - Deleted dailyInsights field and all generate functions (generateDailyInsights, generatePersonalizedGreeting, generateQuickStats, generateAIAnalysis, generateAchievements, generateInteractionElements)
+  - Removed helper functions (getTimeOfDay, getCurrentTimestamp, getCurrentDate)
+- Removed local health advice generation from WeatherHomeScreen.kt:
+  - Deleted HealthAdvice data class and generateHealthAdvice function
+  - HealthAdviceCard now uses AIHealthAdvice from API exclusively
+- Simplified codebase architecture for better maintainability
+- Successfully built application after refactoring
+
+---
+
+## [Previous] - Health Advice Card Implementation
 
 ### [2025-01-17] - Health Advice Card Implementation
 
