@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,6 +29,9 @@ class WeatherViewModel @Inject constructor(
     
     private val _userProfile = MutableStateFlow<UserProfile?>(null)
     val userProfile: StateFlow<UserProfile?> = _userProfile.asStateFlow()
+    
+    // Flag to prevent duplicate AI health advice requests
+    private val isLoadingAIHealthAdvice = AtomicBoolean(false)
     
     init {
         loadUserProfile()
@@ -79,11 +83,6 @@ class WeatherViewModel @Inject constructor(
                             compatibility = compatibility,
                             error = null
                         )
-                        
-                        // Load AI health advice if user profile is available
-                        if (userProfile != null) {
-                            loadAIHealthAdvice(weatherData, userProfile)
-                        }
                         
                         // Load AI health advice if user profile is available
                         if (userProfile != null) {
@@ -155,6 +154,11 @@ class WeatherViewModel @Inject constructor(
                             compatibility = compatibility,
                             error = null
                         )
+                        
+                        // Load AI health advice if user profile is available
+                        if (userProfile != null) {
+                            loadAIHealthAdvice(weatherData, userProfile)
+                        }
                     },
                     onFailure = { exception ->
                         Logger.e("WeatherViewModel: Failed to load weather data: ${exception.message}")
@@ -333,6 +337,13 @@ class WeatherViewModel @Inject constructor(
      * Load AI health advice based on weather and user profile
      */
     private fun loadAIHealthAdvice(weatherData: WeatherData, userProfile: UserProfile) {
+        // Prevent duplicate requests using atomic compareAndSet
+        if (!isLoadingAIHealthAdvice.compareAndSet(false, true)) {
+            Logger.d("AI health advice request already in progress, skipping duplicate")
+            return
+        }
+        
+        Logger.d("Loading AI health advice for weather: ${weatherData.description}")
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
                 isLoadingHealthAdvice = true,
@@ -369,6 +380,8 @@ class WeatherViewModel @Inject constructor(
                     isLoadingHealthAdvice = false,
                     healthAdviceError = e.message ?: "Unknown error occurred"
                 )
+            } finally {
+                isLoadingAIHealthAdvice.set(false)
             }
         }
     }
