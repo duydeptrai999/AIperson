@@ -17,7 +17,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
  * API service for AI Health Advice
  */
 interface AIHealthService {
-    
+
     @POST("v1/chat-messages")
     suspend fun getHealthAdvice(
         @Header("Authorization") authorization: String,
@@ -34,16 +34,16 @@ class AIHealthRepository @Inject constructor(
     private val apiService: AIHealthService,
     @ApplicationContext private val context: Context
 ) {
-    
+
     private val sharedPreferences: SharedPreferences by lazy {
         context.getSharedPreferences("ai_health_prefs", Context.MODE_PRIVATE)
     }
-    
+
     companion object {
         private const val API_KEY = "app-Sk0XODho8WD6R1BRg4NGpPwD"
         private const val CHARACTER_ID = "character_01"
         private const val USER_ID_KEY = "user_id"
-        
+
         private val HEALTH_ADVICE_TEMPLATE = """
         {
             "statusMessage": "Tình trạng sức khỏe tổng quan dựa trên thời tiết hiện tại",
@@ -52,23 +52,23 @@ class AIHealthRepository @Inject constructor(
             "recommendations": [
                 {
                     "title": "Hoạt động nên làm",
-                    "content": "Các hoạt động phù hợp với thời tiết hiện tại"
+                    "content": "Các hoạt động phù hợp với thời tiết hiện tại với hướng dẫn cụ thể"
                 },
                 {
                     "title": "Hoạt động cần tránh",
-                    "content": "Những việc không nên làm trong điều kiện thời tiết này"
+                    "content": "Những việc không nên làm trong điều kiện thời tiết này với lý do rõ ràng"
                 },
                 {
                     "title": "Kế hoạch từ giờ đến cuối ngày",
                     "content": "Lịch trình hoạt động cụ thể cho thời gian còn lại trong ngày"
                 }
             ],
-            "nutritionalAdvice": "Lời khuyên dinh dưỡng phù hợp với thời tiết và độ tuổi",
-            "workoutTips": "Bài tập thể dục phù hợp với điều kiện thời tiết và nghề nghiệp"
+            "nutritionalAdvice": "Lời khuyên dinh dưỡng chi tiết phù hợp với thời tiết và độ tuổi, bao gồm thực phẩm cụ thể và lượng nước cần uống",
+            "workoutTips": "Bài tập thể dục cụ thể phù hợp với điều kiện thời tiết và nghề nghiệp, bao gồm thời gian và cường độ"
         }
         """.trimIndent()
     }
-    
+
     suspend fun getHealthAdvice(
         weatherData: WeatherData,
         userProfile: UserProfile,
@@ -100,13 +100,13 @@ class AIHealthRepository @Inject constructor(
                     timezone = userProfile.location.timezone
                 )
             )
-            
+
             // Create query
             val query = buildHealthQuery(weatherData, userProfile)
-            
+
             // Get or generate user ID
             val userId = getUserId()
-            
+
             // Prepare request
             val request = AIHealthAdviceRequest(
                 query = query,
@@ -121,7 +121,7 @@ class AIHealthRepository @Inject constructor(
                     template = HEALTH_ADVICE_TEMPLATE
                 )
             )
-            
+
             // Log request details
             Log.d("AIHealthService", "=== API REQUEST ===")
             Log.d("AIHealthService", "URL: https://ai.dreamapi.net/v1/chat-messages")
@@ -130,23 +130,23 @@ class AIHealthRepository @Inject constructor(
             Log.d("AIHealthService", "Query: $query")
             Log.d("AIHealthService", "User ID: $userId")
             Log.d("AIHealthService", "Character ID: $CHARACTER_ID")
-            
+
             // Make API call
             val response = apiService.getHealthAdvice(
                 authorization = "Bearer $API_KEY",
                 request = request
             )
-            
+
             // Log response details
             Log.d("AIHealthService", "=== API RESPONSE ===")
             Log.d("AIHealthService", "Response Code: ${response.code()}")
             Log.d("AIHealthService", "Response Message: ${response.message()}")
             Log.d("AIHealthService", "Response Headers: ${response.headers()}")
-            
+
             if (response.isSuccessful) {
                 val apiResponse = response.body()
                 Log.d("AIHealthService", "Response Body: ${com.google.gson.Gson().toJson(apiResponse)}")
-                
+
                 if (apiResponse != null) {
                     Log.d("AIHealthService", "Parsing health advice from answer: ${apiResponse.answer}")
                     // Parse the JSON response from answer field
@@ -167,7 +167,7 @@ class AIHealthRepository @Inject constructor(
                 Log.e("AIHealthService", "Error body: $errorBody")
                 Result.failure(Exception("API call failed: ${response.code()} - ${response.message()} - $errorBody"))
             }
-            
+
         } catch (e: Exception) {
             Log.e("AIHealthService", "Exception occurred during API call", e)
             Log.e("AIHealthService", "Exception message: ${e.message}")
@@ -175,7 +175,7 @@ class AIHealthRepository @Inject constructor(
             Result.failure(e)
         }
     }
-    
+
     private fun buildHealthQuery(
         weatherData: WeatherData,
         userProfile: UserProfile
@@ -199,7 +199,7 @@ class AIHealthRepository @Inject constructor(
         Từ giờ đến cuối ngày nên làm gì?
         """.trimIndent()
     }
-    
+
     private fun parseHealthAdviceFromAnswer(
         answer: String,
         conversationId: String
@@ -208,22 +208,40 @@ class AIHealthRepository @Inject constructor(
             // Try to extract JSON from answer (it might be wrapped in ```json blocks)
             val jsonStart = answer.indexOf("{")
             val jsonEnd = answer.lastIndexOf("}")
-            
+
             if (jsonStart != -1 && jsonEnd != -1 && jsonEnd > jsonStart) {
                 val jsonString = answer.substring(jsonStart, jsonEnd + 1)
                 val gson = com.google.gson.Gson()
                 val healthAdvice = gson.fromJson(jsonString, AIHealthAdvice::class.java)
-                healthAdvice.copy(conversationId = conversationId)
+
+                // Calculate assessment score based on assessment level if not provided
+                val calculatedScore = if (healthAdvice.assessmentScore == 0) {
+                    when (healthAdvice.assessmentLevel.lowercase()) {
+                        "tốt", "rất tốt", "xuất sắc" -> 8
+                        "trung bình", "bình thường" -> 6
+                        "cần chú ý", "cần cẩn thận" -> 4
+                        "kém", "nguy hiểm", "rất kém" -> 2
+                        else -> 6 // Default to medium
+                    }
+                } else {
+                    healthAdvice.assessmentScore
+                }
+
+                healthAdvice.copy(
+                    conversationId = conversationId,
+                    assessmentScore = calculatedScore
+                )
             } else {
                 // Fallback: create health advice from plain text
                 createFallbackHealthAdvice(answer, conversationId)
             }
         } catch (e: Exception) {
+            Log.e("AIHealthService", "Error parsing health advice: ${e.message}")
             // Fallback: create health advice from plain text
             createFallbackHealthAdvice(answer, conversationId)
         }
     }
-    
+
     private fun createFallbackHealthAdvice(
         answer: String,
         conversationId: String
@@ -244,7 +262,7 @@ class AIHealthRepository @Inject constructor(
             conversationId = conversationId
         )
     }
-    
+
     /**
      * Get existing user ID or generate a new one
      * First time will generate random ID
@@ -252,7 +270,7 @@ class AIHealthRepository @Inject constructor(
      */
     private fun getUserId(): String {
         val existingUserId = sharedPreferences.getString(USER_ID_KEY, null)
-        
+
         return if (existingUserId == null) {
             // First time - generate new random user ID
             val newUserId = "user-${UUID.randomUUID()}"
