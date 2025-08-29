@@ -48,7 +48,6 @@ class AIHealthRepository @Inject constructor(
         {
             "statusMessage": "Tình trạng sức khỏe tổng quan dựa trên thời tiết hiện tại",
             "assessmentLevel": "Mức độ đánh giá sức khỏe (Tốt/Trung bình/Cần chú ý)",
-            "assessmentScore": "Điểm số từ 1-10 đánh giá tình trạng sức khỏe trong điều kiện thời tiết này",
             "healthAnalysis": "Phân tích chi tiết về tác động của thời tiết hiện tại đến sức khỏe dựa trên tuổi tác và nghề nghiệp",
             "recommendations": [
                 {
