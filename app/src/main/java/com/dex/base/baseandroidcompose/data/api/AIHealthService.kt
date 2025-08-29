@@ -215,21 +215,10 @@ class AIHealthRepository @Inject constructor(
                 val healthAdvice = gson.fromJson(jsonString, AIHealthAdvice::class.java)
 
                 // Calculate assessment score based on assessment level if not provided
-                val calculatedScore = if (healthAdvice.assessmentScore == 0) {
-                    when (healthAdvice.assessmentLevel.lowercase()) {
-                        "tốt", "rất tốt", "xuất sắc" -> 8
-                        "trung bình", "bình thường" -> 6
-                        "cần chú ý", "cần cẩn thận" -> 4
-                        "kém", "nguy hiểm", "rất kém" -> 2
-                        else -> 6 // Default to medium
-                    }
-                } else {
-                    healthAdvice.assessmentScore
-                }
+
 
                 healthAdvice.copy(
                     conversationId = conversationId,
-                    assessmentScore = calculatedScore
                 )
             } else {
                 // Fallback: create health advice from plain text

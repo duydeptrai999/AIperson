@@ -456,6 +456,17 @@ fun getHealthColor(score: Int): Color {
 }
 
 @Composable
+fun getHealthColorFromLevel(level: String): Color {
+    return when (level.lowercase()) {
+        "tốt", "good" -> Color(0xFF4CAF50) // Green
+        "trung bình", "average", "bình thường" -> Color(0xFFFF9800) // Orange
+        "cần chú ý", "warning", "cảnh báo" -> Color(0xFFFF5722) // Red-Orange
+        "nguy hiểm", "danger", "xấu" -> Color(0xFFF44336) // Red
+        else -> Color(0xFFFF9800) // Default Orange
+    }
+}
+
+@Composable
 fun HealthAdviceCard(
     aiHealthAdvice: AIHealthAdvice?,
     isLoading: Boolean,
@@ -596,7 +607,7 @@ fun HealthAdviceCard(
                                     text = aiHealthAdvice.statusMessage,
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold,
-                                    color = getHealthColor(aiHealthAdvice.assessmentScore)
+                                    color = getHealthColorFromLevel(aiHealthAdvice.assessmentLevel)
                                 )
                                 Text(
                                     text = aiHealthAdvice.assessmentLevel,
@@ -605,18 +616,18 @@ fun HealthAdviceCard(
                                 )
                             }
                             
-                            // Assessment Score Badge
+                            // Assessment Level Badge (using level instead of score)
                             Card(
                                 colors = CardDefaults.cardColors(
-                                    containerColor = getHealthColor(aiHealthAdvice.assessmentScore).copy(alpha = 0.2f)
+                                    containerColor = getHealthColorFromLevel(aiHealthAdvice.assessmentLevel).copy(alpha = 0.2f)
                                 ),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
                                 Text(
-                                    text = "${aiHealthAdvice.assessmentScore}/10",
-                                    style = MaterialTheme.typography.titleMedium,
+                                    text = aiHealthAdvice.assessmentLevel,
+                                    style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold,
-                                    color = getHealthColor(aiHealthAdvice.assessmentScore),
+                                    color = getHealthColorFromLevel(aiHealthAdvice.assessmentLevel),
                                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                                 )
                             }
@@ -652,7 +663,10 @@ fun HealthAdviceCard(
                                 }
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    text = aiHealthAdvice.healthAnalysis,
+                                    text = aiHealthAdvice.healthAnalysis
+                                        .replace("\n- ", "\n• ")
+                                        .replace("**", "")
+                                        .trim(),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                     lineHeight = 20.sp
@@ -807,11 +821,19 @@ fun RecommendationSection(
             Spacer(modifier = Modifier.height(8.dp))
             
             recommendations.forEach { recommendation ->
+                // Parse and format the content better
+                val formattedContent = recommendation.content
+                    .replace("\n- ", "\n• ")
+                    .replace("\n**", "\n")
+                    .replace("**", "")
+                    .trim()
+                
                 Text(
-                    text = "• ${recommendation.content}",
+                    text = formattedContent,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    lineHeight = 20.sp,
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
         }
@@ -853,10 +875,19 @@ fun AdviceSection(
             
             Spacer(modifier = Modifier.height(8.dp))
             
+            // Format content for better readability
+            val formattedContent = content
+                .replace("\n- ", "\n• ")
+                .replace("\n**", "\n")
+                .replace("**", "")
+                .replace("\n\n", "\n")
+                .trim()
+            
             Text(
-                text = content,
+                text = formattedContent,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                lineHeight = 20.sp
             )
         }
     }

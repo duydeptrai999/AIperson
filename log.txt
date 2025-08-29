@@ -47,3 +47,4 @@
 2025-08-27 16:36:47.356 12496-12496 AIHealthService         com.dex.base.baseandroidcompose      E  Exception message: timeout
 2025-08-27 16:36:47.356 12496-12496 AIHealthService         com.dex.base.baseandroidcompose      E  Exception type: SocketTimeoutException
 2025-08-27 16:36:47.359 12496-12496 ###LogErro...thAdvice$1 com.dex.base.baseandroidcompose      E  invokeSuspend[503] Failed to load AI health advice: timeout
+                                                                                                    
