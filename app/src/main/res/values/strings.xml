@@ -111,4 +111,28 @@
     <string name="search_address">Search address</string>
     <string name="geocoding_failed">Could not convert location to address</string>
     <string name="address_not_found">Address not found. Please try a different address.</string>
+    
+    <!-- Gamification Strings -->
+    <string name="daily_check_in">Daily Check-in</string>
+    <string name="daily_check_in_description">Check in daily to earn points and build your streak!</string>
+    <string name="check_in">Check In</string>
+    <string name="checked_in">Checked In</string>
+    <string name="current_streak">Current Streak</string>
+    <string name="longest_streak">Longest Streak</string>
+    <string name="streak_bonus">Streak Bonus</string>
+    <string name="days">days</string>
+    <string name="daily_challenges">Daily Challenges</string>
+    <string name="no_challenges_today">No challenges available today</string>
+    <string name="progress">Progress</string>
+    <string name="challenge_daily_checkin">Daily Check-in</string>
+    <string name="challenge_daily_checkin_desc">Check in to the app today</string>
+    <string name="challenge_watch_ads">Watch Ads</string>
+    <string name="challenge_watch_ads_desc">Watch %d rewarded ads</string>
+    <string name="challenge_check_weather">Check Weather</string>
+    <string name="challenge_check_weather_desc">Check the weather forecast</string>
+    <string name="streak_day_1_bonus">Day 1 Bonus: +10 points</string>
+    <string name="streak_day_3_bonus">Day 3 Bonus: +25 points</string>
+    <string name="streak_day_7_bonus">Day 7 Bonus: +50 points</string>
+    <string name="congratulations_check_in">Congratulations! You earned %d points</string>
+    <string name="challenge_completed">Challenge completed! +%d points</string>
 </resources>

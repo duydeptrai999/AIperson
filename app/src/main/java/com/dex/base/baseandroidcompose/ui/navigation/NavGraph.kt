@@ -56,7 +56,8 @@ fun WeatherNavGraph(
             navController = navController,
             startDestination = startDestination,
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(paddingValues),
             enterTransition = {
                 slideInHorizontally(
                     initialOffsetX = { it },

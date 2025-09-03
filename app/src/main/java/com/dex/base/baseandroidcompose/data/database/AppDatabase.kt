@@ -11,15 +11,21 @@ import android.content.Context
 @Database(
     entities = [
         UserPointsEntity::class,
-        PointTransactionEntity::class
+        PointTransactionEntity::class,
+        DailyCheckInEntity::class,
+        UserStreakEntity::class,
+        DailyChallengeEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     
     abstract fun userPointsDao(): UserPointsDao
     abstract fun pointTransactionDao(): PointTransactionDao
+    abstract fun dailyCheckInDao(): DailyCheckInDao
+    abstract fun userStreakDao(): UserStreakDao
+    abstract fun dailyChallengeDao(): DailyChallengeDao
     
     companion object {
         @Volatile

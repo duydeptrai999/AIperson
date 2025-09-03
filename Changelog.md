@@ -17,6 +17,15 @@
   - Loading states và error messages
 
 ### Fixed
+- **LazyColumn Nested Structure Issues**: Sửa lỗi cấu trúc LazyColumn lồng nhau trong RewardScreen.kt
+  - Loại bỏ LazyColumn bên trong không cần thiết
+  - Sửa lỗi @Composable invocations context
+  - Sửa lỗi implicit receiver cho item() function
+- **Lint Issues**: Sửa lỗi UnusedMaterial3ScaffoldPaddingParameter trong NavGraph.kt
+  - Thêm padding(paddingValues) vào NavHost modifier
+- **UI Layout Optimization**: Cải thiện thứ tự hiển thị trong RewardScreen
+  - Di chuyển "Watch Ad for Points" card lên ngay dưới phần hiển thị tổng điểm
+  - Tối ưu user flow để dễ dàng truy cập tính năng xem quảng cáo
 - **Dagger Hilt Dependency Injection Issues**: Sửa lỗi inject ViewModel vào ViewModel
   - Loại bỏ dependency injection của `PreloadedDataViewModel` khỏi `WeatherViewModel`
   - Refactor `WeatherViewModel` để sử dụng trực tiếp các repository thay vì thông qua `PreloadedDataViewModel`
