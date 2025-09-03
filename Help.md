@@ -1,5 +1,36 @@
 # Help.md - Hướng dẫn sử dụng tính năng
 
+## Permission Management System - Quyền Thông báo và Không hạn chế Pin (2025-01-17)
+
+### Tính năng Permission Management
+**Mô tả**: Hệ thống tự động yêu cầu quyền thông báo và tắt tối ưu hóa pin để đảm bảo ứng dụng hoạt động tối ưu
+
+**Các quyền được thêm**:
+- **POST_NOTIFICATIONS**: Quyền gửi thông báo (Android 13+)
+- **VIBRATE**: Quyền rung khi có thông báo
+- **WAKE_LOCK**: Quyền đánh thức thiết bị
+- **REQUEST_IGNORE_BATTERY_OPTIMIZATIONS**: Quyền yêu cầu tắt tối ưu hóa pin
+- **DISABLE_KEYGUARD**: Quyền tắt khóa màn hình
+- **SYSTEM_ALERT_WINDOW**: Quyền hiển thị cửa sổ trên các ứng dụng khác
+
+**Cách hoạt động**:
+1. **Khi khởi động ứng dụng**: Tự động kiểm tra và yêu cầu các quyền cần thiết theo thứ tự
+2. **Notification Permission**: Chỉ yêu cầu trên Android 13+ (API 33+), hiển thị dialog yêu cầu quyền POST_NOTIFICATIONS trước
+3. **Battery Optimization**: Sau khi xử lý quyền thông báo, tự động chuyển hướng đến Settings để tắt tối ưu hóa pin trên Android 6+ (API 23+)
+4. **User Feedback**: Hiển thị Toast thông báo kết quả cấp/từ chối quyền cho từng bước
+
+**Lợi ích**:
+- **Thông báo đáng tin cậy**: Đảm bảo người dùng nhận được thông báo quan trọng
+- **Hoạt động nền ổn định**: Ứng dụng không bị kill bởi hệ thống tối ưu hóa pin
+- **Trải nghiệm người dùng tốt**: Tự động xử lý quyền mà không cần can thiệp thủ công
+
+**Cách sử dụng**:
+- Quyền được yêu cầu tự động khi mở ứng dụng lần đầu
+- Người dùng có thể chấp nhận hoặc từ chối
+- Toast sẽ hiển thị trạng thái cấp quyền
+
+---
+
 ## AI Health Service - Xử lý lỗi 522 và Network Optimization (2025-01-17)
 
 ### Tính năng Network Error Handling

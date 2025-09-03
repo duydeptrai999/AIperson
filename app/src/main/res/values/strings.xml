@@ -135,4 +135,13 @@
     <string name="streak_day_7_bonus">Day 7 Bonus: +50 points</string>
     <string name="congratulations_check_in">Congratulations! You earned %d points</string>
     <string name="challenge_completed">Challenge completed! +%d points</string>
+    
+    <!-- Permission Strings -->
+    <string name="notification_permission_title">Notification Permission</string>
+    <string name="notification_permission_message">This app needs notification permission to send you important updates and reminders.</string>
+    <string name="battery_optimization_title">Battery Optimization</string>
+    <string name="battery_optimization_message">To ensure the app works properly in the background, please disable battery optimization for this app.</string>
+    <string name="permission_granted">Permission granted</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="battery_optimization_disabled">Battery optimization disabled</string>
 </resources>

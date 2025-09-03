@@ -3,6 +3,24 @@
 ## [Latest] - 2025-01-17
 
 ### Added
+- **Permission Management System**: Thêm hệ thống quản lý quyền thông báo và không hạn chế pin
+  - Thêm quyền POST_NOTIFICATIONS, VIBRATE, WAKE_LOCK vào AndroidManifest.xml
+  - Thêm quyền REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, DISABLE_KEYGUARD, SYSTEM_ALERT_WINDOW
+  - Implement runtime permission request trong MainActivity.kt
+  - Tự động yêu cầu quyền thông báo cho Android 13+ (API 33+)
+  - Tự động yêu cầu tắt tối ưu hóa pin cho Android 6+ (API 23+)
+  - Thêm Toast notifications để thông báo trạng thái quyền
+  - Thêm string resources cho các thông báo quyền
+  - Sử dụng ActivityResultContracts để xử lý callback quyền
+
+### Changed
+- **Permission Request Flow Optimization**
+  - Cải thiện thứ tự yêu cầu quyền: POST_NOTIFICATIONS trước, sau đó REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+  - Tối ưu user experience bằng cách yêu cầu quyền tuần tự thay vì đồng thời
+
+## [Previous] - 2025-01-17
+
+### Added
 - **AI Health Service Network Optimization**: Cải tiến xử lý lỗi mạng và retry mechanism
   - Tối ưu timeout configuration trong `AppModule.kt` (connectTimeout: 30s, readTimeout: 120s, writeTimeout: 30s)
   - Thêm `retryOnConnectionFailure(true)` cho OkHttpClient
