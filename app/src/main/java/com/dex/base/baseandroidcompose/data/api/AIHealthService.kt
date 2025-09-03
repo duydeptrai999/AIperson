@@ -12,6 +12,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import java.util.UUID
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
+import java.net.SocketTimeoutException
+import java.io.IOException
 
 /**
  * API service for AI Health Advice
@@ -70,6 +73,19 @@ class AIHealthRepository @Inject constructor(
     }
 
     suspend fun getHealthAdvice(
+        weatherData: WeatherData,
+        userProfile: UserProfile,
+        conversationId: String? = null
+    ): Result<AIHealthAdvice> {
+        return retryWithExponentialBackoff(
+            maxRetries = 3,
+            initialDelayMs = 1000L
+        ) {
+            performHealthAdviceRequest(weatherData, userProfile, conversationId)
+        }
+    }
+
+    private suspend fun performHealthAdviceRequest(
         weatherData: WeatherData,
         userProfile: UserProfile,
         conversationId: String? = null
@@ -165,15 +181,75 @@ class AIHealthRepository @Inject constructor(
                 Log.e("AIHealthService", "API call failed with code ${response.code()}")
                 Log.e("AIHealthService", "Error message: ${response.message()}")
                 Log.e("AIHealthService", "Error body: $errorBody")
-                Result.failure(Exception("API call failed: ${response.code()} - ${response.message()} - $errorBody"))
+                
+                // Xử lý cụ thể cho lỗi 522 (Connection Timed Out)
+                val errorMessage = when (response.code()) {
+                    522 -> "Server timeout - AI service đang quá tải, vui lòng thử lại sau"
+                    503 -> "Service unavailable - AI service tạm thời không khả dụng"
+                    429 -> "Too many requests - Vượt quá giới hạn request"
+                    else -> "API call failed: ${response.code()} - ${response.message()}"
+                }
+                
+                Result.failure(NetworkException(response.code(), errorMessage, errorBody))
             }
 
+        } catch (e: SocketTimeoutException) {
+            Log.e("AIHealthService", "Socket timeout occurred", e)
+            Result.failure(NetworkException(408, "Request timeout - Kết nối quá chậm", e.message))
+        } catch (e: IOException) {
+            Log.e("AIHealthService", "Network IO exception occurred", e)
+            Result.failure(NetworkException(0, "Network error - Lỗi kết nối mạng", e.message))
         } catch (e: Exception) {
             Log.e("AIHealthService", "Exception occurred during API call", e)
             Log.e("AIHealthService", "Exception message: ${e.message}")
             Log.e("AIHealthService", "Exception type: ${e.javaClass.simpleName}")
             Result.failure(e)
         }
+    }
+
+    /**
+     * Retry mechanism với exponential backoff
+     */
+    private suspend fun <T> retryWithExponentialBackoff(
+        maxRetries: Int,
+        initialDelayMs: Long,
+        operation: suspend () -> Result<T>
+    ): Result<T> {
+        var currentDelay = initialDelayMs
+        var lastException: Exception? = null
+
+        repeat(maxRetries) { attempt ->
+            try {
+                val result = operation()
+                if (result.isSuccess) {
+                    return result
+                }
+                
+                // Nếu là lỗi không thể retry (như 401, 403), return ngay
+                val exception = result.exceptionOrNull()
+                if (exception is NetworkException) {
+                    when (exception.code) {
+                        401, 403, 404 -> return result // Không retry cho các lỗi này
+                    }
+                }
+                
+                lastException = exception as? Exception
+                
+            } catch (e: Exception) {
+                lastException = e
+                Log.w("AIHealthService", "Retry attempt ${attempt + 1} failed", e)
+            }
+
+            // Nếu không phải lần thử cuối, delay trước khi retry
+            if (attempt < maxRetries - 1) {
+                Log.d("AIHealthService", "Retrying in ${currentDelay}ms... (attempt ${attempt + 1}/$maxRetries)")
+                delay(currentDelay)
+                currentDelay = (currentDelay * 1.5).toLong() // Exponential backoff
+            }
+        }
+
+        Log.e("AIHealthService", "All retry attempts failed")
+        return Result.failure(lastException ?: Exception("All retry attempts failed"))
     }
 
     private fun buildHealthQuery(
@@ -273,3 +349,12 @@ class AIHealthRepository @Inject constructor(
         }
     }
 }
+
+/**
+ * Custom exception cho network errors
+ */
+class NetworkException(
+    val code: Int,
+    override val message: String,
+    val errorBody: String?
+) : Exception(message)

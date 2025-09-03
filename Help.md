@@ -1,5 +1,66 @@
 # Help.md - Hướng dẫn sử dụng tính năng
 
+## AI Health Service - Xử lý lỗi 522 và Network Optimization (2025-01-17)
+
+### Tính năng Network Error Handling
+**Mô tả**: Cải tiến xử lý lỗi mạng cho AI Health Service, đặc biệt xử lý lỗi 522 (Connection Timeout)
+
+**Vấn đề đã giải quyết**:
+- **Lỗi 522**: Connection Timed Out từ Cloudflare khi server AI không phản hồi kịp thời
+- **Timeout không phù hợp**: Cấu hình timeout cũ không tối ưu cho AI processing
+- **Thiếu retry mechanism**: Không có cơ chế thử lại khi gặp lỗi tạm thời
+
+**Giải pháp đã triển khai**:
+
+**1. Cấu hình Timeout Tối ưu (AppModule.kt)**:
+```kotlin
+.connectTimeout(30, TimeUnit.SECONDS)  // Giảm để phát hiện lỗi sớm
+.readTimeout(120, TimeUnit.SECONDS)    // Tăng cho AI processing
+.writeTimeout(30, TimeUnit.SECONDS)
+.retryOnConnectionFailure(true)        // Tự động retry connection
+```
+
+**2. Retry Mechanism với Exponential Backoff**:
+- **Max retries**: 3 lần thử
+- **Initial delay**: 1 giây
+- **Backoff factor**: 1.5x (1s → 1.5s → 2.25s)
+- **Smart retry**: Không retry cho lỗi 401, 403, 404
+
+**3. Custom Exception Handling**:
+```kotlin
+class NetworkException(val code: Int, message: String, val errorBody: String?)
+```
+
+**4. Specific Error Messages**:
+- **522**: "Server timeout - AI service đang quá tải, vui lòng thử lại sau"
+- **503**: "Service unavailable - AI service tạm thời không khả dụng"
+- **429**: "Too many requests - Vượt quá giới hạn request"
+- **408/Timeout**: "Request timeout - Kết nối quá chậm"
+- **Network IO**: "Network error - Lỗi kết nối mạng"
+
+**Cách hoạt động**:
+1. **Request đầu tiên** → Nếu thành công: trả về kết quả
+2. **Nếu thất bại** → Kiểm tra loại lỗi:
+   - Lỗi có thể retry (522, 503, timeout) → Retry với delay
+   - Lỗi không retry (401, 403, 404) → Trả về lỗi ngay
+3. **Retry với exponential backoff** → Tăng dần thời gian delay
+4. **Sau 3 lần thử** → Trả về lỗi cuối cùng với thông báo rõ ràng
+
+**Lợi ích**:
+- ✅ **Tăng success rate**: Tự động retry khi gặp lỗi tạm thời
+- ✅ **User experience tốt hơn**: Thông báo lỗi rõ ràng, dễ hiểu
+- ✅ **Tối ưu performance**: Timeout phù hợp với từng loại operation
+- ✅ **Robust error handling**: Xử lý đầy đủ các loại lỗi network
+- ✅ **Logging chi tiết**: Dễ debug và monitor
+
+**Testing**:
+- Build successful ✅
+- Retry mechanism hoạt động với exponential backoff
+- Error messages hiển thị đúng theo từng loại lỗi
+- Timeout configuration tối ưu cho AI service
+
+---
+
 ## Reward System - Quảng cáo thưởng và điểm (2025-01-17)
 
 ### Tính năng Reward System

@@ -3,6 +3,15 @@
 ## [Latest] - 2025-01-17
 
 ### Added
+- **AI Health Service Network Optimization**: Cải tiến xử lý lỗi mạng và retry mechanism
+  - Tối ưu timeout configuration trong `AppModule.kt` (connectTimeout: 30s, readTimeout: 120s, writeTimeout: 30s)
+  - Thêm `retryOnConnectionFailure(true)` cho OkHttpClient
+  - Implement retry mechanism với exponential backoff trong `AIHealthService.kt`
+  - Tạo custom `NetworkException` class để xử lý lỗi cụ thể
+  - Thêm specific error handling cho các mã lỗi: 522, 503, 429, 408, SocketTimeout, IOException
+  - Smart retry logic: không retry cho lỗi 401, 403, 404
+  - Exponential backoff với max 3 retries, initial delay 1s, factor 1.5x
+  - Detailed error messages cho từng loại lỗi network
 - **Reward System Implementation**: Hệ thống xem quảng cáo để kiếm điểm
   - Tạo `RewardManager.kt` với singleton pattern để quản lý quảng cáo reward
   - Tạo `RewardsViewModel.kt` để quản lý state và business logic

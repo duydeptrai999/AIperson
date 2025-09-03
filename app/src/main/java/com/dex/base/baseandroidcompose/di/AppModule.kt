@@ -41,9 +41,10 @@ object AppModule {
         
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .connectTimeout(60, TimeUnit.SECONDS)
-            .readTimeout(60, TimeUnit.SECONDS)
-            .writeTimeout(60, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)  // Giảm timeout để phát hiện lỗi sớm hơn
+            .readTimeout(120, TimeUnit.SECONDS)    // Tăng read timeout cho AI processing
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true)        // Tự động retry khi connection fail
             .build()
     }
     
