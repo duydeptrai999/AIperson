@@ -44,6 +44,7 @@ class WeatherViewModel @Inject constructor(
     fun loadWeatherData(city: String) {
         Logger.d("Loading weather data for city: $city")
         viewModelScope.launch {
+            
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             Logger.d("UI State updated - Loading: true")
             
@@ -121,44 +122,16 @@ class WeatherViewModel @Inject constructor(
     fun loadWeatherByCoordinates(lat: Double, lon: Double) {
         viewModelScope.launch {
             Logger.d("WeatherViewModel: Starting loadWeatherByCoordinates for lat=$lat, lon=$lon")
+            
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             Logger.d("WeatherViewModel: Set isLoading = true")
             
             try {
-                val weatherResult = weatherRepository.getCurrentWeatherByCoordinates(lat, lon)
+                val weatherResult = weatherRepository.getCurrentWeatherByCoordinates(latitude = lat, longitude = lon)
                 Logger.d("WeatherViewModel: Got weather result from repository")
                 weatherResult.fold(
                     onSuccess = { weatherData ->
-                        val userProfile = _userProfile.value
-                        val compatibility = if (userProfile != null) {
-                            compatibilityEngine.calculateCompatibility(
-                                weatherData = weatherData,
-                                userProfile = userProfile
-                            )
-                        } else {
-                            null
-                        }
-                        
-                        // Update user points if compatibility exists
-                        if (userProfile != null && compatibility != null) {
-                            val updatedProfile = userProfile.copy(
-                                pointBalance = userProfile.pointBalance + compatibility.pointsEarned,
-                                totalPointsEarned = userProfile.totalPointsEarned + compatibility.pointsEarned
-                            )
-                            _userProfile.value = updatedProfile
-                        }
-                        
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false,
-                            weatherData = weatherData,
-                            compatibility = compatibility,
-                            error = null
-                        )
-                        
-                        // Load AI health advice if user profile is available
-                        if (userProfile != null) {
-                            loadAIHealthAdvice(weatherData, userProfile)
-                        }
+                        updateUIWithWeatherData(weatherData, null)
                     },
                     onFailure = { exception ->
                         Logger.e("WeatherViewModel: Failed to load weather data: ${exception.message}")
@@ -180,9 +153,17 @@ class WeatherViewModel @Inject constructor(
     }
     
     fun refreshWeather() {
-        val currentWeather = _uiState.value.weatherData
-        if (currentWeather != null) {
-            loadWeatherData(currentWeather.location)
+        viewModelScope.launch {
+            Logger.d("Refreshing weather data...")
+            
+            // Refresh weather data based on current user profile
+            val currentProfile = _userProfile.value
+            if (currentProfile != null) {
+                loadWeatherDataForProfile(currentProfile)
+            } else {
+                // Fallback to default location
+                loadWeatherData("Hanoi")
+            }
         }
     }
     
@@ -390,12 +371,84 @@ class WeatherViewModel @Inject constructor(
      * Refresh AI health advice
      */
     fun refreshHealthAdvice() {
-        val weatherData = _uiState.value.weatherData
-        val userProfile = _userProfile.value
+        viewModelScope.launch {
+            Logger.d("Refreshing health advice...")
+            
+            val currentWeatherData = _uiState.value.weatherData
+            val currentUserProfile = _userProfile.value
+            
+            if (currentWeatherData != null && currentUserProfile != null) {
+                _uiState.value = _uiState.value.copy(isLoadingHealthAdvice = true)
+                
+                try {
+                    val healthAdviceResult = aiHealthRepository.getHealthAdvice(
+                        weatherData = currentWeatherData,
+                        userProfile = currentUserProfile
+                    )
+                    
+                    healthAdviceResult.fold(
+                        onSuccess = { healthAdvice ->
+                            _uiState.value = _uiState.value.copy(
+                                aiHealthAdvice = healthAdvice,
+                                isLoadingHealthAdvice = false,
+                                healthAdviceError = null
+                            )
+                        },
+                        onFailure = { exception ->
+                            _uiState.value = _uiState.value.copy(
+                                isLoadingHealthAdvice = false,
+                                healthAdviceError = exception.message ?: "Failed to load health advice"
+                            )
+                        }
+                    )
+                } catch (e: Exception) {
+                    _uiState.value = _uiState.value.copy(
+                        isLoadingHealthAdvice = false,
+                        healthAdviceError = e.message ?: "Unknown error occurred"
+                    )
+                }
+            }
+        }
+    }
+    
+    private fun updateUIWithWeatherData(weatherData: WeatherData, cachedHealthAdvice: AIHealthAdvice?) {
+        Logger.d("Updating UI with weather data: ${weatherData.location}")
         
-        if (weatherData != null && userProfile != null) {
+        val userProfile = _userProfile.value
+        val compatibility = if (userProfile != null) {
+            compatibilityEngine.calculateCompatibility(
+                weatherData = weatherData,
+                userProfile = userProfile
+            )
+        } else {
+            null
+        }
+        Logger.d("Compatibility calculated: $compatibility")
+        
+        // Update user points if compatibility exists
+        if (userProfile != null && compatibility != null) {
+            val updatedProfile = userProfile.copy(
+                pointBalance = userProfile.pointBalance + compatibility.pointsEarned,
+                totalPointsEarned = userProfile.totalPointsEarned + compatibility.pointsEarned
+            )
+            _userProfile.value = updatedProfile
+            Logger.d("User profile updated with points: ${compatibility.pointsEarned}")
+        }
+        
+        _uiState.value = _uiState.value.copy(
+            isLoading = false,
+            weatherData = weatherData,
+            compatibility = compatibility,
+            aiHealthAdvice = cachedHealthAdvice,
+            error = null
+        )
+        
+        // Load AI health advice if not cached and user profile is available
+        if (cachedHealthAdvice == null && userProfile != null) {
             loadAIHealthAdvice(weatherData, userProfile)
         }
+        
+        Logger.d("UI state updated successfully with cached/fresh data")
     }
 
 }

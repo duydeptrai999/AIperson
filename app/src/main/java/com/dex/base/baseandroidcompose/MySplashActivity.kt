@@ -57,8 +57,17 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
+import com.dex.base.baseandroidcompose.data.preload.PreloadManager
+import javax.inject.Inject
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 
+@AndroidEntryPoint
 class MySplashActivity : ComponentActivity() {
+    
+    @Inject
+    lateinit var preloadManager: PreloadManager
     
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var googleMobileAdsConsentManager: GoogleMobileAdsConsentManager
@@ -82,16 +91,25 @@ class MySplashActivity : ComponentActivity() {
         Logger.d("onCreate: Starting splash screen")
         AdManager.initAdsAndUmp(this)
         Logger.d("AdManager initialized")
+        
+        // Bắt đầu preload dữ liệu ngay khi splash screen khởi động
+        Logger.d("Starting data preload process")
+        preloadManager.startPreloading()
 
         setContent {
             BaseAndroidComposeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     when (currentScreen) {
-                        Screen.SPLASH -> SplashScreen(
-                            isLoading = isLoading,
-                            onAdClosed = { navigateToSelectLanguage() },
-                            modifier = Modifier.padding(innerPadding)
-                        )
+                        Screen.SPLASH -> {
+                            val preloadState by preloadManager.preloadState.collectAsState()
+                            
+                            SplashScreen(
+                                isLoading = isLoading,
+                                preloadState = preloadState,
+                                onAdClosed = { navigateToSelectLanguage() },
+                                modifier = Modifier.padding(innerPadding)
+                            )
+                        }
                         Screen.SELECT_LANGUAGE -> SelectLanguageScreen(
                             onLanguageSelected = { language -> handleLanguageSelected(language) },
                             onCheckClicked = { navigateToIntro() },
@@ -314,6 +332,7 @@ class MySplashActivity : ComponentActivity() {
 @Composable
 fun SplashScreen(
     isLoading: Boolean,
+    preloadState: com.dex.base.baseandroidcompose.data.preload.PreloadState,
     onAdClosed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -375,7 +394,7 @@ fun SplashScreen(
                 modifier = Modifier.padding(bottom = 20.dp)
             ) {
                 // Progress bar
-                if (isLoading) {
+                if (isLoading || preloadState.isLoading) {
                     LinearProgressIndicator(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -385,13 +404,28 @@ fun SplashScreen(
                         trackColor = MaterialTheme.colorScheme.surfaceVariant
                     )
                     
-//                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                     
-//                    Text(
-//                        text = "Loading...",
-//                        fontSize = 16.sp,
-//                        color = MaterialTheme.colorScheme.onSurfaceVariant
-//                    )
+                    // Hiển thị trạng thái preload
+                    val loadingText = when {
+                        preloadState.isLoading -> {
+                            when {
+                                !preloadState.weatherDataReady && !preloadState.healthAdviceReady -> "Loading weather data..."
+                                preloadState.weatherDataReady && !preloadState.healthAdviceReady -> "Loading health advice..."
+                                else -> "Finalizing..."
+                            }
+                        }
+                        preloadState.error != null -> "Loading failed, continuing..."
+                        preloadState.isCompleted -> "Ready!"
+                        else -> "Initializing..."
+                    }
+                    
+                    Text(
+                        text = loadingText,
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
                 }
                 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -581,6 +615,11 @@ fun PreviewSplashScreen() {
     QuickTestTheme {
         SplashScreen(
             isLoading = true,
+            preloadState = com.dex.base.baseandroidcompose.data.preload.PreloadState(
+                isLoading = true,
+                weatherDataReady = false,
+                healthAdviceReady = false
+            ),
             onAdClosed = {}
         )
     }

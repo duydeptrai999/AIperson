@@ -43,6 +43,51 @@
 
 ---
 
+## WeatherViewModel Architecture Refactor (2025-01-17)
+
+### Sửa lỗi Dagger Hilt và Tối ưu Architecture
+**Mô tả**: Refactor WeatherViewModel để loại bỏ dependency injection ViewModel vào ViewModel
+
+**Vấn đề đã sửa**:
+- **Lỗi Dagger Hilt**: Không thể inject `PreloadedDataViewModel` vào `WeatherViewModel`
+- **Architecture phức tạp**: Dependency chain quá dài và khó maintain
+- **Parameter mismatch**: Lỗi tham số `lat, lon` vs `latitude, longitude`
+
+**Giải pháp áp dụng**:
+- ✅ **Direct Repository Access**: WeatherViewModel gọi trực tiếp các repository
+- ✅ **Simplified Logic**: Loại bỏ cached data logic phức tạp
+- ✅ **Parameter Fix**: Sửa tham số trong `getCurrentWeatherByCoordinates()`
+- ✅ **Clean Architecture**: Tuân thủ nguyên tắc MVVM đúng cách
+
+**Thay đổi chính**:
+```kotlin
+// Trước (Lỗi)
+@HiltViewModel
+class WeatherViewModel @Inject constructor(
+    private val preloadedDataViewModel: PreloadedDataViewModel // ❌ Inject ViewModel
+)
+
+// Sau (Đúng)
+@HiltViewModel
+class WeatherViewModel @Inject constructor(
+    private val weatherRepository: WeatherRepository,
+    private val aiHealthRepository: AIHealthRepository // ✅ Inject Repository
+)
+```
+
+**Phương thức đã cập nhật**:
+- `refreshWeather()`: Gọi trực tiếp `loadWeatherDataForProfile()`
+- `refreshHealthAdvice()`: Gọi trực tiếp `aiHealthRepository.getHealthAdvice()`
+- `loadWeatherByCoordinates()`: Sửa tham số `latitude, longitude`
+
+**Lợi ích**:
+- 🚀 **Performance**: Giảm overhead từ dependency chain
+- 🔧 **Maintainability**: Code đơn giản hơn, dễ debug
+- 🏗️ **Architecture**: Tuân thủ Single Responsibility Principle
+- ✅ **Build Success**: Không còn lỗi Dagger Hilt
+
+---
+
 ## Geocoding Feature - Optimized Address Display (2025-01-17)
 
 ### Tính năng Geocoding Tối Ưu

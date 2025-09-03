@@ -17,8 +17,14 @@
   - Loading states và error messages
 
 ### Fixed
+- **Dagger Hilt Dependency Injection Issues**: Sửa lỗi inject ViewModel vào ViewModel
+  - Loại bỏ dependency injection của `PreloadedDataViewModel` khỏi `WeatherViewModel`
+  - Refactor `WeatherViewModel` để sử dụng trực tiếp các repository thay vì thông qua `PreloadedDataViewModel`
+  - Cập nhật phương thức `refreshWeather()` và `refreshHealthAdvice()` để gọi trực tiếp repository
+  - Sửa lỗi tham số trong `getCurrentWeatherByCoordinates()` từ `lat, lon` thành `latitude, longitude`
+  - Loại bỏ cached data logic để đơn giản hóa architecture
 - Sửa lỗi compile trong `MySplashActivity.kt`: Loại bỏ tham số thừa trong `Logger.d()`
-- Build thành công sau khi khắc phục lỗi "Too many arguments for 'fun d(message: String): Unit'"
+- Build thành công sau khi khắc phục tất cả lỗi biên dịch Kotlin và Dagger Hilt
 
 ### Technical Details
 - Sử dụng MVVM pattern với Hilt dependency injection
